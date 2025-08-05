@@ -1,0 +1,1095 @@
+// MULTI-AGENT STORY GENERATOR - Translated from Python to Sleepy Syntax
+// "Put the thing inside the other thing, colon when going deeper"
+
+{
+  multi_agent_story_generator$complete_system:(
+    // ===== CONFIGURATION =====
+    config:(
+      lm_studio:(
+        base_url:"http://localhost:1234/v1",
+        api_key:"lm-studio"
+      ),
+      defaults:(
+        temperature:0.7,
+        max_tokens:500,
+        turns:6,
+        parts:4
+      ),
+      directories:(
+        stories:"stories",
+        presets:"presets", 
+        templates:"templates",
+        characters:"characters",
+        prompts:"prompts",
+        markdown:"markdown",
+        settings:"settings",
+        model_presets:"model_presets"
+      ),
+      filename_templates:(
+        chat:"{initials}_{mode}_{MMDD}_{HHMM}",
+        story:"{initials}_{mode}_{MMDD}_{HHMM}"
+      )
+    ),
+
+    // ===== STYLES & UI =====
+    styles:(
+      theme:(
+        primary:#6366f1,
+        secondary:#8b5cf6,
+        success:#10b981,
+        warning:#f59e0b,
+        danger:#ef4444,
+        background:#1a1a1a,
+        surface:#2d2d2d,
+        text:#ffffff
+      ),
+      character_emojis:(
+        bot:🤖, wizard:🧙, knight:⚔️,
+        cat:🐱, dragon:🐉, pirate:🏴‍☠️,
+        scientist:🧬, chef:👨‍🍳, artist:🎨
+      ),
+      story_genres:(
+        adventure:[🗺️, ⚔️, 🏰],
+        mystery:[🔍, 🕵️, 🔐],
+        romance:[💕, 🌹, 💖],
+        horror:[👻, 🦇, 🌙],
+        sci_fi:[🚀, 👽, 🛸],
+        fantasy:[🧙, 🐉, ⚔️],
+        comedy:[😂, 🎭, 🎪]
+      )
+    ),
+
+    // ===== DATA MODELS =====
+    models:(
+      Character:(
+        name:string_required,
+        model:string_required,
+        system_prompt:text_required,
+        params:object_default_empty,
+        cot:boolean_default_false,
+        emoji:string_default_🎭,
+        context_limit:int_default_4096
+      ),
+      SessionConfig:(
+        mode:enum_chat_story_required,
+        characters:array_characters_required,
+        turns:int_nullable,
+        parts:int_nullable,
+        scene:string_nullable,
+        prompt:string_nullable,
+        editor:character_nullable
+      ),
+      Task:(
+        type:string_required,
+        config:session_config_required,
+        id:string_auto_hash,
+        status:enum_queued_processing_completed_default_queued,
+        progress:float_default_0,
+        created_at:timestamp_auto,
+        completed_at:timestamp_nullable,
+        result:string_nullable
+      ),
+      ModelPreset:(
+        name:string_required,
+        description:string_nullable,
+        model:string_default_default-model,
+        cot:boolean_default_false,
+        context_limit:int_default_4096,
+        sampling:(
+          temperature:float_default_0.7,
+          top_k:int_default_40,
+          top_p:float_default_0.9,
+          repeat_penalty:float_default_1.1,
+          max_tokens:int_default_500
+        ),
+        response_format:object_nullable
+      )
+    ),
+
+    // ===== API ENDPOINTS =====
+    api:(
+      // Connection & Health
+      GET:/health:(
+        exec:test_lm_studio_connection(),
+        returns:(
+          status:connection_active?ok:error,
+          message:connection_active?Connected_to_LM_Studio:Connection_failed
+        )
+      ),
+      GET:/test-connection:(
+        exec:(
+          models:client.models.list(),
+          status:models.exists?connected:disconnected
+        ),
+        returns:(
+          connected:status==connected,
+          models:models.data
+        )
+      ),
+
+      // Characters
+      GET:/characters:(
+        exec:(
+          characters:load_all_characters(),
+          forEach:characters:[
+            char:(
+              id:file.stem,
+              name:data.lore.name,
+              type:data.lore.type,
+              description:data.lore.description,
+              model:data.model,
+              hasImage:data.lore.image?true:false,
+              emoji:get_character_emoji(data.lore.name)
+            )
+          ]
+        ),
+        returns:(
+          characters:characters,
+          count:characters.length
+        )
+      ),
+      GET:/characters/:id:(
+        validate:character_exists,
+        exec:(
+          char_file:find_character_file(params.id),
+          char_data:json.load(char_file),
+          image_url:char_data.lore.image?construct_image_url(char_data.lore.image):null
+        ),
+        returns:(
+          id:params.id,
+          data:char_data,
+          file_path:char_file,
+          image_url:image_url
+        )
+      ),
+      POST:/characters:(
+        body:(
+          name:string_required,
+          description:string_nullable,
+          personality:string_nullable,
+          background:string_nullable,
+          type:string_nullable,
+          modelPreset:string_nullable
+        ),
+        validate:(
+          name:not_empty
+        ),
+        exec:(
+          char_data:(
+            lore:(
+              name:body.name,
+              description:body.description,
+              personality:body.personality,
+              background:body.background,
+              type:body.type
+            )
+          ),
+          if:body.modelPreset:[
+            char_data:apply_model_preset_to_character(char_data, body.modelPreset)
+          ],
+          safe_name:sanitize_filename(body.name),
+          char_file:generate_unique_filename(safe_name),
+          save:json.dump(char_data, char_file)
+        ),
+        returns:(
+          id:char_file.stem,
+          message:Character_created_successfully,
+          file_path:char_file
+        )
+      ),
+      PUT:/characters/:id:(
+        validate:character_exists,
+        body:character_updates,
+        exec:(
+          char_file:find_character_file(params.id),
+          char_data:json.load(char_file),
+          updated_data:merge_updates(char_data, body),
+          if:body.modelPreset:[
+            updated_data:apply_model_preset_to_character(updated_data, body.modelPreset)
+          ],
+          save:json.dump(updated_data, char_file)
+        ),
+        returns:(
+          id:params.id,
+          message:Character_updated_successfully
+        )
+      ),
+      DELETE:/characters/:id:(
+        validate:(
+          character_exists:true,
+          not_example_character:!char_file.contains("examples")
+        ),
+        exec:(
+          char_file:find_character_file(params.id),
+          delete:char_file.unlink()
+        ),
+        returns:(
+          message:Character_deleted_successfully
+        )
+      ),
+
+      // Model Presets
+      GET:/model-presets:(
+        exec:(
+          presets:load_model_presets(),
+          forEach:presets:[
+            preset.id:preset_id
+          ]
+        ),
+        returns:presets
+      ),
+      GET:/model-presets/:id:(
+        validate:preset_exists,
+        returns:load_model_preset(params.id)
+      ),
+      POST:/model-presets:(
+        body:(
+          id:string_required,
+          name:string_required,
+          description:string_nullable,
+          model:string_default_default-model,
+          cot:boolean_default_false,
+          sampling:object_required,
+          response_format:object_nullable
+        ),
+        exec:(
+          preset_data:construct_preset(body),
+          saved:save_model_preset(body.id, preset_data)
+        ),
+        returns:(
+          message:Model_preset_created_successfully,
+          id:body.id
+        )
+      ),
+      DELETE:/model-presets/:id:(
+        validate:preset_exists,
+        exec:(
+          preset_file:find_preset_file(params.id),
+          if:params.id.in(default_presets):[
+            add_deleted_preset(params.id)
+          ],
+          if:params.id.in(sanitization_presets):[
+            track_deleted_sanitization_preset(params.id)
+          ],
+          delete:preset_file.unlink()
+        ),
+        returns:(
+          message:Model_preset_deleted_successfully
+        )
+      ),
+
+      // Sessions
+      POST:/sessions:(
+        body:(
+          mode:enum_chat_story_required,
+          characters:array_required,
+          turns:int_nullable,
+          parts:int_nullable,
+          prompt:string_nullable,
+          modelName:string_nullable,
+          modelParams:object_nullable,
+          editor:object_nullable,
+          presetId:string_nullable
+        ),
+        validate:(
+          mode:valid_mode,
+          characters:not_empty
+        ),
+        exec:(
+          session_id:generate_session_id(),
+          session:(
+            id:session_id,
+            mode:body.mode,
+            characters:body.characters,
+            turns:body.turns||defaults.turns,
+            parts:body.parts||defaults.parts,
+            prompt:body.prompt,
+            status:in_progress,
+            created_at:now()
+          ),
+          save_session:save_session_metadata(session),
+          task:create_generation_task(session)
+        ),
+        returns:(
+          session_id:session_id,
+          mode:body.mode,
+          estimated_time:calculate_estimated_time(body.mode, body.turns||body.parts)
+        )
+      ),
+      GET:/sessions/:id:(
+        validate:session_exists,
+        exec:(
+          session:load_session(params.id),
+          progress:calculate_progress(session),
+          content:session.status==completed?load_session_content(params.id):null
+        ),
+        returns:(
+          session:session,
+          progress:progress,
+          content:content
+        )
+      ),
+      GET:/sessions:(
+        query:(
+          limit:int_default_50,
+          offset:int_default_0,
+          status:enum_all_completed_in_progress_default_all,
+          sort:enum_created_updated_default_created
+        ),
+        exec:(
+          sessions:load_all_sessions(query),
+          total:count_sessions(query.status)
+        ),
+        returns:(
+          sessions:sessions,
+          pagination:(
+            total:total,
+            limit:query.limit,
+            offset:query.offset,
+            pages:Math.ceil(total/query.limit)
+          )
+        )
+      ),
+      DELETE:/sessions/:id:(
+        validate:session_exists,
+        exec:(
+          session_dir:get_session_directory(params.id),
+          delete:recursive_delete(session_dir)
+        ),
+        returns:(
+          message:Session_deleted_successfully
+        )
+      ),
+
+      // Generation
+      POST:/generate:(
+        body:(
+          mode:enum_chat_story_required,
+          config:session_config_required,
+          stream:boolean_default_false
+        ),
+        validate:(
+          config:valid_session_config,
+          characters:characters_exist
+        ),
+        exec:(
+          if:body.mode==chat:[
+            result:generate_chat_session(body.config),
+            stats:update_session_stats(chats_completed:+1, words_written:+result.word_count)
+          ],
+          if:body.mode==story:[
+            result:generate_story_session(body.config),
+            stats:update_session_stats(stories_generated:+1, words_written:+result.word_count)
+          ],
+          filename:create_filename_from_template(body.mode, body.config),
+          save:save_generation_result(filename, result)
+        ),
+        returns:(
+          success:true,
+          filename:filename,
+          content:result.content,
+          stats:result.stats,
+          file_path:result.file_path
+        )
+      ),
+
+      // Templates
+      GET:/templates:(
+        exec:(
+          character_templates:load_character_templates(),
+          session_templates:load_session_templates()
+        ),
+        returns:(
+          character:character_templates,
+          session:session_templates
+        )
+      ),
+      POST:/templates/character:(
+        body:(
+          characterId:string_required,
+          templateName:string_required,
+          description:string_nullable
+        ),
+        exec:(
+          char_data:load_character(body.characterId),
+          template:create_character_template(char_data, body.templateName),
+          save:save_template(template)
+        ),
+        returns:(
+          id:template.id,
+          message:Character_template_created_successfully,
+          placeholders:template.placeholders
+        )
+      ),
+      POST:/templates/character/:id/populate:(
+        body:(
+          placeholders:object_required,
+          save:boolean_default_false
+        ),
+        exec:(
+          template:load_template(params.id),
+          populated:populate_template(template, body.placeholders),
+          if:body.save:[
+            char_file:save_character(populated)
+          ]
+        ),
+        returns:(
+          character_data:populated,
+          saved:body.save
+        )
+      ),
+
+      // Settings & Configuration
+      GET:/settings:(
+        returns:load_config()
+      ),
+      PUT:/settings:(
+        body:config_updates,
+        exec:(
+          config:load_config(),
+          updated:merge_configs(config, body),
+          save:save_config(updated)
+        ),
+        returns:(
+          message:Settings_updated_successfully,
+          config:updated
+        )
+      ),
+
+      // Session Statistics
+      GET:/session-stats:(
+        returns:load_session_stats()
+      ),
+      POST:/session-stats/reset:(
+        exec:reset_session_stats(),
+        returns:(
+          message:Session_statistics_reset,
+          stats:default_session_stats
+        )
+      ),
+
+      // Filename Templates
+      GET:/filename-templates:(
+        exec:(
+          config:load_config(),
+          templates:config.filename_templates
+        ),
+        returns:templates
+      ),
+      POST:/filename-templates:(
+        body:template_updates,
+        exec:(
+          config:load_config(),
+          config.filename_templates:body,
+          save:save_config(config)
+        ),
+        returns:(
+          message:Filename_templates_updated,
+          filename_templates:body
+        )
+      ),
+
+      // Prompts
+      GET:/prompts/:mode:(
+        validate:(
+          mode:enum_chat_story
+        ),
+        exec:(
+          prompt_files:list_prompt_files(mode),
+          template_files:list_template_files()
+        ),
+        returns:(
+          prompts:merge_file_lists(prompt_files, template_files)
+        )
+      ),
+      GET:/prompts/:mode/:filename:(
+        validate:(
+          mode:enum_chat_story,
+          filename:safe_filename
+        ),
+        exec:(
+          content:read_prompt_file(mode, filename)
+        ),
+        returns:(
+          content:content
+        )
+      ),
+
+      // Quick Chats
+      GET:/quick-chats:(
+        exec:(
+          chats:load_quick_chats(),
+          forEach:chats:[
+            chat:(
+              id:file.stem,
+              name:data.name,
+              lastMessage:data.messages.last.content,
+              updatedAt:data.messages.last.timestamp||file.mtime,
+              messageCount:data.messages.length
+            )
+          ]
+        ),
+        returns:(
+          chats:chats,
+          count:chats.length
+        )
+      ),
+      POST:/quick-chats:(
+        body:(
+          name:string_required,
+          messages:array_required
+        ),
+        exec:(
+          chat_id:generate_chat_id(),
+          chat_data:(
+            id:chat_id,
+            name:body.name,
+            messages:body.messages,
+            created_at:now()
+          ),
+          save:save_quick_chat(chat_id, chat_data)
+        ),
+        returns:(
+          id:chat_id,
+          message:Quick_chat_saved_successfully
+        )
+      ),
+
+      // Model Calls
+      POST:/chat:(
+        body:(
+          character:character_required,
+          history:array_default_empty,
+          message:string_required
+        ),
+        exec:(
+          response:chat_call(body.character, body.history, body.message),
+          cleaned:body.character.cot?strip_thought(response):response,
+          formatted:format_speaker_dialog(cleaned, body.character.name)
+        ),
+        returns:(
+          response:formatted,
+          raw_response:response,
+          character_name:body.character.name
+        )
+      ),
+
+      // Editor/Sanitization
+      POST:/sanitize:(
+        body:(
+          text:string_required,
+          editor:character_required
+        ),
+        exec:(
+          cleaned:editor_clean(body.editor, body.text)
+        ),
+        returns:(
+          original:body.text,
+          cleaned:cleaned,
+          changed:body.text!=cleaned
+        )
+      )
+    ),
+
+    // ===== CORE FUNCTIONS =====
+    functions:(
+      // Character Management
+      load_character_sheet:(path)=>(
+        data:json.load(path),
+        validate:(
+          model:required,
+          lore:exists
+        ),
+        char_name:data.lore.name||path.stem,
+        system_prompt:build_system_prompt(data),
+        if:data.cot:[
+          system_prompt:append_cot_instructions(system_prompt)
+        ],
+        returns:Character(
+          name:char_name,
+          model:data.model,
+          system_prompt:system_prompt,
+          params:data.sampling||{},
+          cot:data.cot||false,
+          emoji:get_character_emoji(char_name),
+          context_limit:data.context_limit||4096
+        )
+      ),
+
+      // AI Processing
+      chat_call:(character, history, user_msg)=>(
+        context_manager:ContextWindowManager(
+          max_tokens:character.context_limit,
+          reserve_tokens:500,
+          method:SIMPLE
+        ),
+        all_messages:history.concat({role:user, content:user_msg}),
+        messages:context_manager.prepare_messages(all_messages, character.system_prompt),
+        params:(
+          model:character.model,
+          messages:messages,
+          temperature:character.params.temperature||0.7,
+          ...extract_openai_params(character.params),
+          extra_body:extract_lm_studio_params(character.params)
+        ),
+        response:client.chat.completions.create(params),
+        result:response.choices[0].message.content,
+        track:model_tracker.track_generation(character.model, response),
+        returns:result.strip()
+      ),
+
+      // Session Generation
+      generate_chat_session:(config)=>(
+        characters:load_characters(config.characters),
+        history:[],
+        content:[],
+        forEach:range(config.turns):[
+          turn:(
+            character:characters[index%characters.length],
+            prompt:index==0?config.prompt:generate_turn_prompt(history),
+            response:chat_call(character, history, prompt),
+            cleaned:character.cot?strip_thought(response):response,
+            formatted:format_speaker_dialog(cleaned, character.name),
+            history:history.append({role:assistant, content:response}),
+            content:content.append(formatted)
+          )
+        ],
+        if:config.editor:[
+          content:editor_clean(config.editor, content.join("\n\n"))
+        ],
+        returns:(
+          content:content,
+          word_count:count_words(content),
+          stats:generate_stats(content)
+        )
+      ),
+
+      generate_story_session:(config)=>(
+        characters:load_characters(config.characters),
+        parts:[],
+        forEach:range(config.parts):[
+          part:(
+            character:random.choice(characters),
+            context:parts.join("\n\n"),
+            prompt:generate_story_prompt(config.prompt, context, part_number),
+            response:chat_call(character, [], prompt),
+            cleaned:character.cot?strip_thought(response):response,
+            parts:parts.append(cleaned)
+          )
+        ],
+        content:parts.join("\n\n"),
+        if:config.editor:[
+          content:editor_clean(config.editor, content)
+        ],
+        returns:(
+          content:content,
+          word_count:count_words(content),
+          stats:generate_stats(content),
+          genre:detect_story_genre(config.prompt)
+        )
+      ),
+
+      // Utility Functions
+      get_character_emoji:(name)=>(
+        name_lower:name.toLowerCase(),
+        forEach:CHARACTER_EMOJIS:[
+          if:keyword.in(name_lower):[
+            returns:emoji
+          ]
+        ],
+        fallbacks:[🎭, 👤, 🌟, 💫, 🎪, 🎨, 🎯, 🎲],
+        returns:random.choice(fallbacks)
+      ),
+
+      strip_thought:(text)=>(
+        if:text.contains("THOUGHT:")&&text.contains("SAY:"):[
+          text:regex.replace("(?is)thought:.*?say:\\s*", "", text)
+        ],
+        returns:regex.replace("(?i)^say:\\s*", "", text).strip()
+      ),
+
+      format_speaker_dialog:(text, speaker_name)=>(
+        pattern:regex.escape(speaker_name)+"\\s*:\\s*",
+        if:regex.match(pattern, text):[
+          cleaned:regex.replace(pattern, "", text).strip(),
+          returns:"**"+speaker_name+":** "+cleaned
+        ],
+        returns:text
+      ),
+
+      detect_story_genre:(prompt)=>(
+        prompt_lower:prompt.toLowerCase(),
+        detected_emojis:[],
+        genre_keywords:(
+          adventure:[adventure, quest, journey, explore, treasure],
+          mystery:[mystery, detective, murder, clue, secret],
+          romance:[love, romance, heart, wedding, kiss],
+          horror:[horror, scary, ghost, demon, dark],
+          sci_fi:[space, alien, robot, future, technology],
+          fantasy:[magic, wizard, dragon, kingdom, spell],
+          comedy:[funny, comedy, laugh, joke, silly]
+        ),
+        forEach:genre_keywords:[
+          if:any(keyword.in(prompt_lower)):[
+            detected_emojis:detected_emojis.extend(STORY_GENRES[genre][:2])
+          ]
+        ],
+        returns:detected_emojis[:3]||[📖, ✨]
+      ),
+
+      create_filename_from_template:(template, mode, char_names, meta)=>(
+        now:datetime.now(),
+        valid_names:filter_valid_names(char_names),
+        initials:join_initials(valid_names[:4])||"ANON",
+        char1:valid_names[0]||"Anonymous",
+        char_count:valid_names.length,
+        turns:meta.turns||"",
+        parts:meta.parts||"",
+        genre:mode==story?join_genre_emojis(detect_story_genre(meta.prompt)):"",
+        replacements:(
+          "{mode}":mode,
+          "{initials}":initials,
+          "{char1}":char1,
+          "{char_count}":char_count,
+          "{turns}":turns,
+          "{parts}":parts,
+          "{YYYY}":now.strftime("%Y"),
+          "{MM}":now.strftime("%m"),
+          "{DD}":now.strftime("%d"),
+          "{HH}":now.strftime("%H"),
+          "{mm}":now.strftime("%M"),
+          "{MMDD}":now.strftime("%m%d"),
+          "{HHMM}":now.strftime("%H%M"),
+          "{timestamp}":now.timestamp(),
+          "{session}":generate_session_id(),
+          "{genre}":genre,
+          "{random}":random.randint(1000, 9999)
+        ),
+        filename:replace_all(template, replacements),
+        returns:sanitize_filename(filename)
+      )
+    ),
+
+    // ===== FRONTEND UI =====
+    frontend:(
+      layout$main:(
+        header$navigation:(
+          row:[
+            logo:(
+              icon:🤖,
+              h1:Multi-Agent_Story_Generator
+            ),
+            nav:(
+              tabs:[
+                tab:(label:Generate, active:true),
+                tab:(label:Queue),
+                tab:(label:Characters),
+                tab:(label:Presets),
+                tab:(label:Settings)
+              ]
+            ),
+            status:(
+              if:api.connection.active:[
+                badge$success:Connected_to_LM_Studio
+              ],
+              unless:api.connection.active:[
+                badge$error:Disconnected
+              ]
+            )
+          ]
+        ),
+        main$content:(
+          tab$generate:(
+            section$mode:(
+              h2:Select_Mode,
+              radio_group:(
+                options:[
+                  {value:chat, label:"💬 Chat Mode", description:"Characters take turns speaking"},
+                  {value:story, label:"📖 Story Mode", description:"Characters write story parts"}
+                ],
+                value:api.session.mode
+              )
+            ),
+            section$characters:(
+              h2:Select_Characters,
+              grid$characters:[
+                forEach:api.characters.available:[
+                  card$character:(
+                    checkbox:item.selected,
+                    img:item.image||item.emoji,
+                    h4:item.name,
+                    p:item.description,
+                    badge:item.model
+                  )
+                ]
+              ],
+              button$create:Create_New_Character
+            ),
+            section$config:(
+              if:api.session.mode==chat:[
+                field$turns:(
+                  label:Number_of_Turns,
+                  input_number:(
+                    value:api.session.turns,
+                    min:1,
+                    max:100
+                  )
+                )
+              ],
+              if:api.session.mode==story:[
+                field$parts:(
+                  label:Number_of_Parts,
+                  input_number:(
+                    value:api.session.parts,
+                    min:1,
+                    max:20
+                  )
+                ),
+                field$prompt:(
+                  label:Story_Prompt,
+                  textarea:(
+                    value:api.session.prompt,
+                    placeholder:"A mysterious adventure in..."
+                  )
+                )
+              ],
+              field$editor:(
+                label:Use_Editor_(Optional),
+                select:(
+                  options:api.characters.available,
+                  value:api.session.editor
+                )
+              )
+            ),
+            section$actions:(
+              button$primary:(
+                text:Generate,
+                onClick:api.generate.start(),
+                loading:api.generate.isLoading
+              ),
+              if:api.generate.isLoading:[
+                progress:(
+                  value:api.generate.progress,
+                  label:api.generate.status
+                )
+              ]
+            )
+          ),
+          tab$queue:(
+            table$tasks:(
+              thead:[
+                th:ID,
+                th:Mode,
+                th:Characters,
+                th:Status,
+                th:Progress,
+                th:Actions
+              ],
+              tbody:(
+                forEach:api.queue.tasks:[
+                  tr:[
+                    td:item.id,
+                    td:(
+                      badge:(
+                        text:item.mode,
+                        color:item.mode==chat?primary:secondary
+                      )
+                    ),
+                    td:item.characters.join(", "),
+                    td:(
+                      badge$status:(
+                        text:item.status,
+                        &queued:[color:warning],
+                        &processing:[color:primary],
+                        &completed:[color:success]
+                      )
+                    ),
+                    td:(
+                      progress:(
+                        value:item.progress,
+                        size:small
+                      )
+                    ),
+                    td:(
+                      button$view:View,
+                      button$delete:Delete
+                    )
+                  ]
+                ]
+              )
+            )
+          ),
+          tab$characters:(
+            grid$character-cards:[
+              forEach:api.characters.all:[
+                card$character:(
+                  img:item.image||item.emoji,
+                  h3:item.name,
+                  p:item.description,
+                  row$meta:[
+                    badge:item.type,
+                    badge:item.model
+                  ],
+                  row$actions:[
+                    button:Edit,
+                    button:Duplicate,
+                    button$danger:Delete
+                  ]
+                )
+              ]
+            ],
+            fab$create:(
+              icon:plus,
+              onClick:api.characters.create()
+            )
+          ),
+          tab$presets:(
+            section$model-presets:(
+              h2:Model_Presets,
+              grid$presets:[
+                forEach:api.presets.model:[
+                  card$preset:(
+                    h4:item.name,
+                    p:item.description,
+                    code$params:(
+                      text:JSON.stringify(item.sampling, null, 2)
+                    ),
+                    row$actions:[
+                      button:Apply,
+                      button:Edit,
+                      button$danger:Delete
+                    ]
+                  )
+                ]
+              ]
+            ),
+            section$session-presets:(
+              h2:Session_Presets,
+              list$presets:[
+                forEach:api.presets.session:[
+                  row$preset:[
+                    column:[
+                      h5:item.name,
+                      p:item.description
+                    ],
+                    spacer,
+                    button:Load,
+                    button:Delete
+                  ]
+                ]
+              ]
+            )
+          ),
+          tab$settings:(
+            form$settings:(
+              section$connection:(
+                h3:LM_Studio_Connection,
+                field$url:(
+                  label:Base_URL,
+                  input:api.settings.lm_studio.base_url
+                ),
+                button$test:Test_Connection
+              ),
+              section$defaults:(
+                h3:Default_Values,
+                field$temperature:(
+                  label:Temperature,
+                  slider:(
+                    value:api.settings.defaults.temperature,
+                    min:0,
+                    max:2,
+                    step:0.1
+                  )
+                ),
+                field$max_tokens:(
+                  label:Max_Tokens,
+                  input_number:(
+                    value:api.settings.defaults.max_tokens,
+                    min:100,
+                    max:4096
+                  )
+                )
+              ),
+              section$filename:(
+                h3:Filename_Templates,
+                field$chat_template:(
+                  label:Chat_Template,
+                  input:api.settings.filename_templates.chat
+                ),
+                field$story_template:(
+                  label:Story_Template,
+                  input:api.settings.filename_templates.story
+                ),
+                collapsible$variables:(
+                  summary:Available_Variables,
+                  forEach:FILENAME_VARIABLES:[
+                    row:[
+                      code:item.key,
+                      span:item.description
+                    ]
+                  ]
+                )
+              ),
+              button$save:Save_Settings
+            )
+          )
+        ),
+        footer$stats:(
+          row$session-stats:[
+            stat$stories:(
+              icon:📖,
+              value:api.stats.stories_generated,
+              label:Stories_Generated
+            ),
+            stat$chats:(
+              icon:💬,
+              value:api.stats.chats_completed,
+              label:Chats_Completed
+            ),
+            stat$words:(
+              icon:✏️,
+              value:api.stats.words_written,
+              label:Words_Written
+            ),
+            button$reset:(
+              icon:refresh,
+              onClick:api.stats.reset()
+            )
+          ]
+        )
+      )
+    ),
+
+    // ===== DEPLOYMENT =====
+    deployment:(
+      backend:(
+        platform:flask,
+        runtime:python3,
+        dependencies:[
+          openai,
+          flask,
+          flask-cors,
+          pathlib,
+          json,
+          datetime,
+          hashlib
+        ],
+        env:(
+          FLASK_ENV:production,
+          LMSTUDIO_BASE_URL:env.LMSTUDIO_BASE_URL||"http://localhost:1234/v1"
+        )
+      ),
+      frontend:(
+        platform:react,
+        framework:vite,
+        ui_library:tailwind,
+        state:zustand
+      ),
+      infrastructure:(
+        local_model_server:lm_studio,
+        file_storage:local_filesystem,
+        database:json_files
+      )
+    )
+  )
+}

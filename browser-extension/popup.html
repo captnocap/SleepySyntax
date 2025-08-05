@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 400px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      margin: 4px 0 0 0;
+      color: #64748b;
+      font-size: 12px;
+    }
+    
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .section h3 {
+      margin: 0 0 12px 0;
+      color: #334155;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .api-key-section {
+      border-left: 4px solid #3b82f6;
+    }
+    
+    .input-group {
+      margin-bottom: 12px;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 4px;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: #2563eb;
+    }
+    
+    .btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: #64748b;
+      margin-top: 8px;
+    }
+    
+    .btn-secondary:hover {
+      background: #475569;
+    }
+    
+    .status {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    
+    .status.analyzing {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    
+    .status.complete {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fca5a5;
+    }
+    
+    .code-output {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 8px;
+      min-height: 60px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .copy-btn {
+      background: #059669;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+    
+    .copy-btn:hover {
+      background: #047857;
+    }
+    
+    .reasoning {
+      background: #f1f5f9;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #475569;
+      margin-top: 8px;
+      border-left: 3px solid #cbd5e1;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .confidence-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+    
+    .confidence-ai {
+      background: #dcfce7;
+      color: #166534;
+    }
+    
+    .confidence-fallback {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status-indicator {
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      text-align: center;
+    }
+    
+    #statusText {
+      font-size: 12px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Sleepy Syntax Generator</h1>
+    <p>Convert web elements to AI-native syntax</p>
+  </div>
+
+  <div class="section api-key-section">
+    <h3>AI Configuration</h3>
+    <div class="input-group">
+      <label for="apiKey">Claude API Key</label>
+      <input type="password" id="apiKey" placeholder="sk-ant-api..." />
+    </div>
+    <button class="btn" id="saveApiKey">Save API Key</button>
+  </div>
+
+  <div class="section">
+    <h3>How to Use</h3>
+    <ol style="font-size: 12px; color: #64748b; line-height: 1.4; padding-left: 16px;">
+      <li>Configure your Claude API key above</li>
+      <li>Right-click any element on any webpage</li>
+      <li>Select "🤖 Generate Sleepy Syntax"</li>
+      <li>AI analyzes the element and downloads a .sleepy file</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h3>Status</h3>
+    <div id="statusIndicator" class="status-indicator">
+      <span id="statusText">Ready to use</span>
+    </div>
+  </div>
+
+  <script src="popup-simple.js"></script>
+</body>
+</html>

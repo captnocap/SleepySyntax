@@ -1,0 +1,543 @@
+{
+  saas$theme: (
+    styles: (
+      base: [
+        body: (
+          bg: #1a1a1a,
+          color: #fff,
+          font: Inter
+        ),button: (
+          px: 4,
+          py: 2,
+          bg: #3b82f6,
+          text: #fff,
+          rounded: lg,
+          hover-bg: #2563eb
+        ),input: (
+          px: 3,
+          py: 2,
+          border: #374151,
+          rounded: md,
+          focus-border: #3b82f6
+        ),card: (
+          bg: #111827,
+          p: 6,
+          rounded: xl,
+          shadow: lg
+        )
+      ]
+    ),frontend: (
+      auth: (
+        login: (
+          column: [
+            logo: SleepyApp,
+            card: (
+              column: [
+                h1: Welcome_Back,
+                input: api.auth.email,
+                input_password: api.auth.password,
+                row: [
+                  checkbox: remember_me,
+                  link: forgot
+                ],button$primary: Sign_In,
+                divider: or,
+                row: [
+                  button$oauth: Google,
+                  button$oauth: GitHub
+                ]
+              ]
+            )
+          ]
+        ),register: (
+          column: [
+            logo: SleepyApp,
+            card: (
+              column: [
+                h1: Create_Account,
+                input: api.auth.firstName,
+                input: api.auth.lastName,
+                input_email: api.auth.email,
+                input_password: api.auth.password,
+                checkbox: agree_to_terms,
+                button$primary: Create_Account
+              ]
+            )
+          ]
+        )
+      ),dashboard: (
+        row: [
+          sidebar$dark: (
+            column: [
+              row: [
+                img_avatar: api.user.avatar,
+                column: [
+                  h3: api.user.name,
+                  small: api.user.role
+                ]
+              ],nav: (
+                column: [
+                  link$active: Dashboard,
+                  link: Projects,
+                  link: Team,
+                  link: Billing,
+                  link: Settings
+                ]
+              )
+            ]
+          ),main: (
+            column: [
+              header: (
+                row: [
+                  h1: Dashboard,
+                  row: [
+                    input_search: api.search.query,
+                    button$primary: New_Project
+                  ]
+                ]
+              ),row: [
+                stat_card: (
+                  column: [
+                    icon: users,
+                    h2: api.stats.totalUsers,
+                    p: Active_Users
+                  ]
+                ),stat_card: (
+                  column: [
+                    icon: projects,
+                    h2: api.stats.totalProjects,
+                    p: Total_Projects
+                  ]
+                ),stat_card: (
+                  column: [
+                    icon: revenue,
+                    h2: api.stats.monthlyRevenue,
+                    p: Monthly_Revenue
+                  ]
+                ),stat_card: (
+                  column: [
+                    icon: growth,
+                    h2: api.stats.growthRate,
+                    p: Growth_Rate
+                  ]
+                )
+              ],section: (
+                column: [
+                  row: [
+                    h2: Recent_Projects,
+                    button$ghost: View_All
+                  ],forEach: api.projects: [
+                    card$hover: (
+                      row: [
+                        img: item.thumbnail,
+                        column: [
+                          h3: item.name,
+                          p: item.description,
+                          row: [
+                            badge: item.status,
+                            small: item.updatedAt
+                          ]
+                        ],column: [
+                          button$secondary: Edit,
+                          button$danger: Delete
+                        ]
+                      ]
+                    )
+                  ]
+                ),section: (
+                  column: [
+                    h2: Team_Activity,
+                    forEach: api.activity: [
+                      row: [
+                        img_avatar: item.user.avatar,
+                        column: [
+                          p: item.action,
+                          small: item.timestamp
+                        ]
+                      ]
+                    ]
+                  ]
+                )
+              ]
+            )
+          ]
+        ),projects: (
+          row: [
+            sidebar: (
+              column: [
+                h3: Filters,
+                forEach: api.filters: [
+                  column: [
+                    label: item.name,
+                    forEach: item.options: [
+                      checkbox: item.label
+                    ]
+                  ]
+                ]
+              ]
+            ),main: (
+              column: [
+                header: (
+                  row: [
+                    h1: Projects,
+                    row: [
+                      select: api.sortOptions,
+                      button$primary: New_Project
+                    ]
+                  ]
+                ),projects_grid: (
+                  forEach: api.projects: [
+                    card$project: (
+                      column: [
+                        img_cover: item.thumbnail,
+                        column: [
+                          h3: item.name,
+                          p: item.description,
+                          row: [
+                            badge: item.status,
+                            small: item.members_count_members
+                          ]
+                        ],row: [
+                          button$secondary: Edit,
+                          button$ghost: View,
+                          popover_menu: (
+                            column: [
+                              button: Duplicate,
+                              button: Archive,
+                              button$danger: Delete
+                            ]
+                          )
+                        ]
+                      ]
+                    )
+                  ]
+                ),pagination: (
+                  row: [
+                    button$ghost: Previous,
+                    forEach: api.pagination.pages: [
+                      button$page: item.number
+                    ],button$ghost: Next
+                  ]
+                )
+              ]
+            )
+          ),profile: (
+            container: (
+              column: [
+                section: (
+                  row: [
+                    img_avatar: api.user.avatar,
+                    column: [
+                      h1: api.user.name,
+                      p: api.user.email,
+                      badge: api.user.plan
+                    ]
+                  ]
+                ),tabs: (
+                  tab: [
+                    label: Account,
+                    content: (
+                      column: [
+                        row: [
+                          column: [
+                            label: Name,
+                            input: api.user.name
+                          ],column: [
+                            label: Email,
+                            input_email: api.user.email
+                          ]
+                        ],row: [
+                          column: [
+                            label: Company,
+                            input: api.user.company
+                          ],column: [
+                            label: Role,
+                            select: api.roleOptions
+                          ]
+                        ],button$primary: Save_Changes
+                      ]
+                    )
+                  ],tab: [
+                    label: Billing,
+                    content: (
+                      column: [
+                        card: (
+                          column: [
+                            h3: Current_Plan,
+                            p: api.billing.planName,
+                            p: api.billing.price_per_month,
+                            button$primary: Upgrade
+                          ]
+                        ),section: (
+                          column: [
+                            h3: Payment_History,
+                            forEach: api.billing.history: [
+                              row: [
+                                span: item.date,
+                                span: item.description,
+                                span: item.amount
+                              ]
+                            ]
+                          ]
+                        )
+                      ]
+                    )
+                  ],tab: [
+                    label: Settings,
+                    content: (
+                      column: [
+                        row: [
+                          label: Notifications,
+                          toggle: api.settings.notifications
+                        ],row: [
+                          label: Two_Factor,
+                          if: api.user.twoFactorEnabled: [
+                            button$danger: Disable_2FA
+                          ],unless: api.user.twoFactorEnabled: [
+                            button$primary: Enable_2FA
+                          ]
+                        ],button$danger: Delete_Account
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          )
+        ),api: (
+          auth: (
+            POST:/auth/login: (
+              body: (
+                email: string,
+                password: string
+              ),validate: (
+                email: required,
+                password: min_8
+              ),exec: (
+                user: db.users.findByEmail(
+                  body.email
+                ),if: user.exists: (
+                  if: bcrypt.compare(
+                    body.password,
+                    user.password
+                  )
+                  : (
+                    token: jwt.sign(
+                      user.id
+                    ),audit: log_login(
+                      user.id
+                    ),returns: (
+                      token: token,
+                      user: user.safe_data
+                    )
+                  ),else: (
+                    audit: log_failed_login(
+                      body.email
+                    ),returns: error.invalid_credentials
+                  )
+                ),else: (
+                  returns: error.invalid_credentials
+                )
+              )
+            ),POST:/auth/register: (
+              body: (
+                firstName: string,
+                lastName: string,
+                email: string,
+                password: string
+              ),validate: (
+                email: unique,
+                password: min_8_special
+              ),exec: (
+                password_hash: bcrypt.hash(
+                  body.password
+                ),user: db.users.create(
+                  body
+                ),verification_token: generate_token(
+                  user.id
+                ),email: send_verification(
+                  user.email,
+                  verification_token
+                ),returns: (
+                  message: check_email
+                )
+              )
+            ),POST:/auth/logout: (
+              auth: jwt,
+              exec: (
+                db.sessions.invalidate(
+                  auth.sessionId
+                ),returns: success
+              )
+            )
+          ),projects: (
+            GET:/projects: (
+              auth: jwt,
+              returns: db.projects.findByUser(
+                auth.userId
+              )
+            ),POST:/projects: (
+              auth: jwt,
+              body: (
+                name: string,
+                description: string
+              ),exec: (
+                project: db.projects.create(
+                  auth.userId,
+                  body
+                ),audit: log_project_created(
+                  project.id
+                ),returns: project
+              )
+            ),PUT:/projects/: id: (
+              auth: jwt,
+              body: project_updates,
+              validate: ownership,
+              exec: (
+                db.projects.update(
+                  params.id,
+                  body
+                ),returns: success
+              )
+            ),DELETE:/projects/: id: (
+              auth: jwt,
+              validate: ownership,
+              exec: (
+                db.projects.delete(
+                  params.id
+                ),audit: log_project_deleted(
+                  params.id
+                ),returns: success
+              )
+            )
+          ),users: (
+            GET:/profile: (
+              auth: jwt,
+              returns: db.users.findById(
+                auth.userId
+              )
+            ),PUT:/profile: (
+              auth: jwt,
+              body: user_updates,
+              exec: (
+                db.users.update(
+                  auth.userId,
+                  body
+                ),returns: success
+              )
+            ),DELETE:/profile: (
+              auth: jwt,
+              exec: (
+                db.users.delete(
+                  auth.userId
+                ),db.projects.deleteByUser(
+                  auth.userId
+                ),returns: success
+              )
+            )
+          ),billing: (
+            GET:/billing: (
+              auth: jwt,
+              returns: (
+                plan: db.users.getPlan(
+                  auth.userId
+                ),history: db.billing.getHistory(
+                  auth.userId
+                )
+              )
+            ),POST:/billing/upgrade: (
+              auth: jwt,
+              body: (
+                planId: string
+              ),exec: (
+                stripe.createSubscription(
+                  auth.userId,
+                  body.planId
+                ),db.users.updatePlan(
+                  auth.userId,
+                  body.planId
+                ),returns: success
+              )
+            )
+          )
+        ),database: (
+          users: (
+            id: uuid_primary,
+            firstName: string_required,
+            lastName: string_required,
+            email: string_unique_required,
+            password: string_required,
+            company: string_nullable,
+            role: string_default_user,
+            plan: string_default_free,
+            twoFactorEnabled: boolean_default_false,
+            emailVerified: boolean_default_false,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),projects: (
+            id: uuid_primary,
+            userId: uuid_foreign_users,
+            name: string_required,
+            description: text_nullable,
+            status: enum_active_archived_deleted,
+            thumbnail: url_nullable,
+            memberCount: integer_default_1,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),billing: (
+            id: uuid_primary,
+            userId: uuid_foreign_users,
+            planId: string_required,
+            amount: decimal_required,
+            currency: string_default_usd,
+            status: enum_pending_completed_failed,
+            createdAt: timestamp_auto
+          ),audit_logs: (
+            id: uuid_primary,
+            userId: uuid_foreign_users_nullable,
+            action: string_required,
+            details: json_nullable,
+            ipAddress: string_nullable,
+            createdAt: timestamp_auto
+          ),sessions: (
+            id: uuid_primary,
+            userId: uuid_foreign_users,
+            token: string_unique_required,
+            expiresAt: timestamp_required,
+            createdAt: timestamp_auto
+          )
+        ),security: (
+          jwt: (
+            secret: env.JWT_SECRET,
+            expiry: 24h
+          ),bcrypt: (
+            rounds: 12
+          ),cors: (
+            origin: env.FRONTEND_URL,
+            credentials: true
+          ),rateLimit: (
+            login: 5_per_15min,
+            register: 3_per_hour
+          )
+        ),deployment: (
+          frontend: (
+            platform: vercel,
+            build: npm_run_build,
+            env: (
+              NEXT_PUBLIC_API_URL: env.API_URL
+            )
+          ),backend: (
+            platform: railway,
+            runtime: node18,
+            env: (
+              DATABASE_URL: env.DATABASE_URL,
+              JWT_SECRET: env.JWT_SECRET,
+              STRIPE_SECRET: env.STRIPE_SECRET
+            )
+          ),database: (
+            provider: postgresql,
+            host: env.DB_HOST,
+            migrations: auto
+          )
+        )
+      )
+    }

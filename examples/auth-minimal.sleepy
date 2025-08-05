@@ -1,0 +1,18 @@
+// MINIMAL AUTH - "It's fine"
+
+{auth:(
+  frontend:(
+    login:(email, password),
+    signup:(name, email, password),
+    forgot_password
+  ),
+  api:(
+    POST:/login,
+    POST:/signup,
+    POST:/reset
+  ),
+  database:(
+    users:(email, password_hash),
+    sessions:(token, expires)
+  )
+)}

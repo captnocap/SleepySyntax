@@ -1,0 +1,1449 @@
+{
+  medivault$secure_healthcare: (
+    styles: (
+      base: [
+        body: (
+          bg: #0f172a,
+          color: #e2e8f0,
+          font: Inter
+        ),card: (
+          bg: #1e293b,
+          p: 6,
+          rounded: xl,
+          shadow: 2xl,
+          border: #334155
+        ),button$primary: (
+          px: 4,
+          py: 2,
+          bg: #059669,
+          text: #fff,
+          rounded: lg,
+          hover-bg: #047857
+        ),button$secondary: (
+          px: 3,
+          py: 1,
+          bg: #374151,
+          text: #cbd5e1,
+          rounded: md
+        ),input: (
+          px: 3,
+          py: 2,
+          bg: #1e293b,
+          border: #374151,
+          rounded: md,
+          focus-border: #059669
+        ),modal: (
+          bg: #111827,
+          p: 8,
+          rounded: 2xl,
+          shadow: 3xl
+        ),badge$success: (
+          bg: #059669,
+          text: #fff,
+          px: 2,
+          py: 1,
+          rounded: full
+        ),badge$warning: (
+          bg: #ca8a04,
+          text: #fff,
+          px: 2,
+          py: 1,
+          rounded: full
+        ),badge$danger: (
+          bg: #dc2626,
+          text: #fff,
+          px: 2,
+          py: 1,
+          rounded: full
+        ),header: (
+          bg: #0f172a,
+          border-b: #334155,
+          backdrop-blur
+        )
+      ]
+    ),frontend: (
+      auth: (
+        login: (
+          column$auth: [
+            logo: (
+              row: [
+                icon: hospital,
+                span: MediVault
+              ]
+            ),card$auth: (
+              column: [
+                h2: Secure_Health_Access,
+                p: Login_to_your_medical_portal,
+                input_email: api.auth.email,
+                input_password: api.auth.password,
+                row$auth-actions: [
+                  checkbox: api.auth.rememberMe,
+                  link: forgot: Forgot_Password
+                ],button$primary: Sign_In_Securely,
+                divider: or,
+                row$oauth: [
+                  button$secondary: (
+                    row: [
+                      icon: google,
+                      span: Work_Email
+                    ]
+                  )
+                ]
+              ]
+            )
+          ]
+        ),mfa: (
+          column$mfa: [
+            card$security: (
+              column: [
+                icon$2fa: 🔐,
+                h2: Two-Factor_Verification,
+                p: Enter_the_code_from_your_authenticator,
+                input_code: api.auth.mfaCode,
+                row$actions: [
+                  button$ghost: Use_Backup_Code,
+                  button$primary: Verify
+                ]
+              ]
+            )
+          ]
+        )
+      ),dashboard: (
+        row$layout: [
+          sidebar$nav: (
+            column: [
+              row$user: [
+                img_avatar: api.user.avatar,
+                column: [
+                  h3: Dr._api.user.name,
+                  small: api.user.role
+                ]
+              ],nav: (
+                column: [
+                  link$active: (
+                    row: [
+                      icon: dashboard,
+                      span: Dashboard
+                    ]
+                  ),link: (
+                    row: [
+                      icon: patients,
+                      span: Patients
+                    ]
+                  ),link: (
+                    row: [
+                      icon: records,
+                      span: Medical_Records
+                    ]
+                  ),link: (
+                    row: [
+                      icon: appointments,
+                      span: Appointments
+                    ]
+                  ),link: (
+                    row: [
+                      icon: prescriptions,
+                      span: Prescriptions
+                    ]
+                  ),link: (
+                    row: [
+                      icon: billing,
+                      span: Billing
+                    ]
+                  ),link: (
+                    row: [
+                      icon: reports,
+                      span: Analytics
+                    ]
+                  ),link: (
+                    row: [
+                      icon: settings,
+                      span: Settings
+                    ]
+                  )
+                ]
+              ),section$quick: (
+                column: [
+                  h4: Quick_Actions,
+                  button$secondary: (
+                    row: [
+                      icon: plus,
+                      span: New_Patient
+                    ]
+                  ),button$secondary: (
+                    row: [
+                      icon: calendar,
+                      span: Schedule_Visit
+                    ]
+                  )
+                ]
+              )
+            ]
+          ),main$content: (
+            column: [
+              header: (
+                row$between: [
+                  column: [
+                    h1: Welcome_Dr._api.user.firstName,
+                    p: api.dashboard.date
+                  ],row: [
+                    input_search: api.search.query,
+                    button$ghost: (
+                      icon: notifications
+                    ),popover: user_menu: (
+                      column: [
+                        button: Profile,
+                        button: Security,
+                        divider,
+                        button$danger: Sign_Out
+                      ]
+                    )
+                  ]
+                ]
+              ),section$vitals: (
+                row$vitals: [
+                  card$vital: (
+                    column: [
+                      h3: Active_Patients,
+                      h2: api.stats.activePatients,
+                      p: +2_today
+                    ]
+                  ),card$vital: (
+                    column: [
+                      h3: Appointments_Today,
+                      h2: api.stats.todayAppointments,
+                      p: Next_at_10: 30_AM
+                    ]
+                  ),card$vital: (
+                    column: [
+                      h3: Pending_Reviews,
+                      h2: api.stats.pendingReviews,
+                      p: Requires_sign-off
+                    ]
+                  ),card$vital: (
+                    column: [
+                      h3: Critical_Alerts,
+                      h2: api.stats.criticalAlerts,
+                      p: Immediate_attention
+                    ]
+                  )
+                ]
+              ),section$recent-patients: (
+                column: [
+                  row$header: [
+                    h2: Recent_Patients,
+                    button$ghost: View_All
+                  ],table$patients: (
+                    column: [
+                      row$header: [
+                        th: ID,
+                        th: Name,
+                        th: Age,
+                        th: Condition,
+                        th: Last_Visit,
+                        th: Status,
+                        th: Actions
+                      ],forEach: api.patients.recent: [
+                        row$patient: (
+                          row: [
+                            td: item.id,
+                            td: (
+                              row: [
+                                img_avatar: item.avatar,
+                                span$item.name
+                              ]
+                            ),td: item.age,
+                            td: (
+                              badge$condition: item.condition
+                            ),td: item.lastVisit,
+                            td: (
+                              badge$status: item.status
+                            ),td: (
+                              row: [
+                                button$ghost: View,
+                                button$secondary: Chart,
+                                button$primary: Visit
+                              ]
+                            )
+                          ]
+                        )
+                      ]
+                    ]
+                  )
+                ]
+              ),section$upcoming: (
+                column: [
+                  h2: Upcoming_Appointments,
+                  row$appointments: [
+                    forEach: api.appointments.upcoming: [
+                      card$appt: (
+                        column: [
+                          row$appt-header: [
+                            h4: item.patientName,
+                            span$badge: item.type
+                          ],row$appt-details: [
+                            span: item.time,
+                            span: item.doctor
+                          ],p: item.notes,
+                          button$primary: Start_Visit
+                        ]
+                      )
+                    ]
+                  ]
+                ]
+              )
+            ]
+          )
+        ]
+      ),patients: (
+        row$layout: [
+          sidebar$filters: (
+            column: [
+              h3: Patient_Filters,
+              forEach: api.filters: [
+                column: [
+                  label: item.name,
+                  forEach: item.options: [
+                    checkbox: item.label
+                  ]
+                ]
+              ]
+            ]
+          ),main$content: (
+            column: [
+              header: (
+                row$between: [
+                  h1: All_Patients,
+                  row: [
+                    button$secondary: Import_Data,
+                    button$primary: New_Patient
+                  ]
+                ]
+              ),patient_grid: (
+                forEach: api.patients: [
+                  card$hover: (
+                    row: [
+                      img_avatar: item.avatar,
+                      column: [
+                        h3: item.name,
+                        p: item.age,
+                        _years,
+                        _Diagnosed_with: _item.condition,
+                        small: Last_seen: _item.lastVisit
+                      ],column: [
+                        button$secondary: View_Profile,
+                        button$primary: Open_Chart,
+                        popover: column: [
+                          button: Send_Message,
+                          button: Schedule_Follow_Up,
+                          button$danger: Flag_As_Urgent
+                        ]
+                      )
+                    ]
+                  )
+                ]
+              ),pagination: (
+                row: [
+                  button$ghost: Previous,
+                  forEach: api.pagination.pages: [
+                    button$page: item.number
+                  ],button$ghost: Next
+                ]
+              )
+            ]
+          )
+        ),chart: (
+          container: (
+            column: [
+              header: (
+                row$between: [
+                  h1: Medical_Chart_for_api.patient.name,
+                  row: [
+                    button$secondary: Export_PDF,
+                    button$primary: Sign_and_Close
+                  ]
+                ]
+              ),tabs: (
+                tab: [
+                  label: Overview,
+                  content: (
+                    column: [
+                      section$demographics: (
+                        column: [
+                          row: [
+                            column: [
+                              label: Name,
+                              p: api.patient.name
+                            ],column: [
+                              label: DOB,
+                              p: api.patient.dob
+                            ]
+                          ],row: [
+                            column: [
+                              label: Gender,
+                              p: api.patient.gender
+                            ],column: [
+                              label: Blood_Type,
+                              p: api.patient.bloodType
+                            ]
+                          ],row: [
+                            column: [
+                              label: Primary_Care,
+                              p: api.patient.pcp
+                            ],column: [
+                              label: Insurance,
+                              p: api.patient.insurance
+                            ]
+                          ]
+                        ]
+                      ),section$vitals: (
+                        column: [
+                          h3: Vital_Signs,
+                          row: [
+                            column: [
+                              p: Temperature: _api.vitals.temp
+                            ],column: [
+                              p: Heart_Rate: _api.vitals.hr
+                            ]
+                          ],row: [
+                            column: [
+                              p: Blood_Pressure: _api.vitals.bp
+                            ],column: [
+                              p: O2_Sat: _api.vitals.o2
+                            ]
+                          ]
+                        ]
+                      ),section$allergies: (
+                        column: [
+                          h3: Allergies,
+                          forEach: api.patient.allergies: [
+                            badge$danger: item.name
+                          ]
+                        ]
+                      )
+                    ]
+                  )
+                ],tab: [
+                  label: Encounters,
+                  content: (
+                    column: [
+                      forEach: api.encounters: [
+                        card$encounter: (
+                          column: [
+                            row$header: [
+                              h4: item.visitType,
+                              p$meta: item.date_by_provider
+                            ],p: item.chiefComplaint,
+                            div$notes: (
+                              p: item.notes
+                            ),row$actions: [
+                              button$secondary: Edit_Notes,
+                              button$ghost: Add_Lab_Order
+                            ]
+                          ]
+                        )
+                      ]
+                    )
+                  ],tab: [
+                    label: Medications,
+                    content: (
+                      column: [
+                        h3: Current_Medications,
+                        forEach: api.medications.current: [
+                          card$med: (
+                            row: [
+                              column: [
+                                h4: item.name,
+                                p: Dosage: _item.dosage,
+                                _Route: _item.route
+                              ],column: [
+                                p: Frequency: _item.frequency,
+                                p: Prescribed: _item.prescribedBy
+                              ],column: [
+                                button$secondary: Edit,
+                                button$danger: Discontinue
+                              ]
+                            ]
+                          )
+                        ]
+                      ),section$history: (
+                        column: [
+                          h3: Medication_History,
+                          forEach: api.medications.history: [
+                            row: [
+                              span: item.name,
+                              span: item.discontinuedDate,
+                              span: item.reason
+                            ]
+                          ]
+                        )
+                      ]
+                    )
+                  ],tab: [
+                    label: Labs_&_Imaging,
+                    content: (
+                      column: [
+                        h3: Recent_Lab_Results,
+                        forEach: api.labs.recent: [
+                          card$lab: (
+                            column: [
+                              h4: item.testName,
+                              p: Performed: _item.date,
+                              p: Result: _item.result,
+                              if: item.abnormal: [
+                                badge$warning: Abnormal
+                              ],row: [
+                                button$secondary: View_Report,
+                                button$ghost: Order_Follow_Up
+                              ]
+                            ]
+                          )
+                        ]
+                      ),section$imaging: (
+                        column: [
+                          h3: Imaging_Reports,
+                          forEach: api.imaging: [
+                            card$image: (
+                              column: [
+                                h4: item.studyType,
+                                p: Date: _item.date,
+                                p: Facility: _item.facility,
+                                row: [
+                                  button$secondary: View_Images,
+                                  button$ghost: Request_Consult
+                                ]
+                              ]
+                            )
+                          ]
+                        )
+                      ]
+                    )
+                  ],tab: [
+                    label: Documents,
+                    content: (
+                      column: [
+                        h3: Uploaded_Documents,
+                        forEach: api.documents: [
+                          row$doc: [
+                            span: item.title,
+                            span$item.date,
+                            span$item.type,
+                            button$ghost: Download,
+                            button$danger: Delete
+                          ]
+                        ]
+                      )
+                    ]
+                  )
+                ],tab: [
+                  label: Consents,
+                  content: (
+                    column: [
+                      h3: Signed_Consents,
+                      forEach: api.consents: [
+                        row$consent: [
+                          span: item.type,
+                          span$item.dateSigned,
+                          span: item.status,
+                          button$ghost: View
+                        ]
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ),section$actions: (
+            row: [
+              button$secondary: Schedule_Appointment,
+              button$secondary: Send_Message,
+              button$primary: Place_Orders
+            ]
+          )
+        ]
+      )
+    ),appointments: (
+      row$layout: [
+        sidebar$calendar-nav: (
+          column: [
+            h3: Calendar,
+            nav: (
+              column: [
+                link$active: Today,
+                link: Week,
+                link: Month
+              ]
+            ),section$filters: (
+              column: [
+                label: Provider,
+                select: api.filters.provider,
+                label: Status,
+                select: api.filters.status
+              ]
+            )
+          ]
+        ),main$content: (
+          column: [
+            header: (
+              row$between: [
+                h1: Appointments,
+                row: [
+                  button$secondary: Generate_Schedule,
+                  button$primary: New_Appointment
+                ]
+              ]
+            ),calendar$view: (
+              div$calendar: api.calendar.rendered
+            ),section$day-appointments: (
+              column: [
+                h2: Today's_Appointments,
+                forEach: api.appointments.today: [
+                  card$appt: (
+                    row: [
+                      column: [
+                        h4: item.patientName,
+                        p: item.time,
+                        p: item.reason
+                      ],column: [
+                        button$secondary: Chart,
+                        button$primary: Begin_Visit
+                      ]
+                    ]
+                  )
+                ]
+              ),section$pending-requests: (
+                column: [
+                  h2: Appointment_Requests,
+                  forEach: api.appointments.pending: [
+                    card$request: (
+                      row: [
+                        column: [
+                          p: From: _item.patientName,
+                          small: Urgency: _item.urgency
+                        ],column: [
+                          p: item.reason
+                        ],row: [
+                          button$secondary: Decline,
+                          button$primary: Approve
+                        ]
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        )
+      ),prescriptions: (
+        column$layout: [
+          header: (
+            row$between: [
+              h1: Prescription_Center,
+              row: [
+                button$secondary: Refill_Requests,
+                button$primary: New_Prescription
+              ]
+            ]
+          ),section$active: (
+            column: [
+              h3: Active_Prescriptions,
+              forEach: api.prescriptions.active: [
+                card$rx: (
+                  row: [
+                    column: [
+                      h4: item.medication,
+                      p: Sig: _item.sig
+                    ],column: [
+                      p: Refills_Left: _item.refills
+                    ],column: [
+                      p: Last_Filled: _item.lastFilled
+                    ],column: [
+                      button$secondary: Edit,
+                      button$ghost: Print,
+                      button$danger: Discontinue
+                    ]
+                  ]
+                )
+              ]
+            ),section$history: (
+              column: [
+                h3: Prescription_History,
+                table$rx-history: (
+                  column: [
+                    row$header: [
+                      th: Medication,
+                      th: Patient,
+                      th: Date_Issued,
+                      th: Pharmacy,
+                      th: Status
+                    ],forEach: api.prescriptions.history: [
+                      row$rx: [
+                        td: item.medication,
+                        td: item.patientName,
+                        td: item.dateIssued,
+                        td: item.pharmacy,
+                        td: (
+                          badge$status: item.status
+                        )
+                      ]
+                    ]
+                  )
+                ]
+              )
+            ]
+          )
+        ),billing: (
+          column$layout: [
+            header: (
+              row$between: [
+                h1: Medical_Billing,
+                row: [
+                  button$secondary: Insurance_Claims,
+                  button$primary: Submit_Charge
+                ]
+              ]
+            ),section$charges: (
+              column: [
+                h3: Unbilled_Services,
+                forEach: api.billing.unbilled: [
+                  card$charge: (
+                    column: [
+                      row$header: [
+                        h4: item.patientName,
+                        p: item.date
+                      ],p: Procedure: _item.procedure_code,
+                      div$amount: (
+                        strong: api.billing.format(
+                          item.amount
+                        )
+                      ),row: [
+                        button$secondary: Edit,
+                        button$primary: Submit_to_Insurance
+                      ]
+                    ]
+                  )
+                ]
+              ),section$claims: (
+                column: [
+                  h3: Insurance_Claims_Status,
+                  table$claims: (
+                    column: [
+                      row$header: [
+                        th: Claim_ID,
+                        th: Patient,
+                        th: Date_Submitted,
+                        th: Insurer,
+                        th: Status,
+                        th: Amount,
+                        th: Actions
+                      ],forEach: api.billing.claims: [
+                        row$claim: [
+                          td: item.claimId,
+                          td: item.patientName,
+                          td: item.submittedDate,
+                          td: item.insurer,
+                          td: (
+                            badge$status: item.status
+                          ),td: item.amount,
+                          td: (
+                            row: [
+                              button$ghost: Track,
+                              button$secondary: Appeal
+                            ]
+                          )
+                        ]
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ),settings: (
+            container: (
+              column: [
+                tabs: (
+                  tab: [
+                    label: Profile,
+                    content: (
+                      column: [
+                        h2: Personal_Information,
+                        row: [
+                          column: [
+                            label: First_Name,
+                            input: api.user.firstName
+                          ],column: [
+                            label: Last_Name,
+                            input: api.user.lastName
+                          ]
+                        ],row: [
+                          column: [
+                            label: Email,
+                            input_email: api.user.email
+                          ],column: [
+                            label: Phone,
+                            input_phone: api.user.phone
+                          ]
+                        ],row: [
+                          column: [
+                            label: License_Number,
+                            input: api.user.license
+                          ],column: [
+                            label: NPI_Number,
+                            input: api.user.npi
+                          ]
+                        ],button$primary: Save_Changes
+                      ]
+                    )
+                  ],tab: [
+                    label: Security,
+                    content: (
+                      column: [
+                        h3: Two-Factor_Authentication,
+                        if: api.user.mfaEnabled: [
+                          badge$success: Active,
+                          button$danger: Disable
+                        ],unless: api.user.mfaEnabled: [
+                          button$primary: Enable_2FA
+                        ],h3: Session_Settings,
+                        label: Automatic_Logout_After: ,
+                        select: api.user.sessionTimeout,
+                        label: Trusted_Devices: ,
+                        button$secondary: Review_Devices
+                      ]
+                    )
+                  ],tab: [
+                    label: Preferences,
+                    content: (
+                      column: [
+                        label: Default_Dashboard_View,
+                        select: api.user.dashboardView,
+                        label: Charting_Template,
+                        select: api.user.chartTemplate,
+                        label: Notification_Preferences,
+                        row: [
+                          checkbox: api.user.notify.appointment,
+                          span: Appointment_Reminders
+                        ],row: [
+                          checkbox: api.user.notify.labs,
+                          span: Lab_Result_Alerts
+                        ],row: [
+                          checkbox: api.user.notify.messages,
+                          span: New_Patient_Messages
+                        ],button$primary: Save_Preferences
+                      ]
+                    )
+                  ],tab: [
+                    label: Integrations,
+                    content: (
+                      column: [
+                        h3: EHR_Integrations,
+                        forEach: api.integrations.ehr: [
+                          card$integration: (
+                            row: [
+                              img: item.logo,
+                              h4: item.name,
+                              p: Connected_as: _item.account,
+                              if: item.active: [
+                                badge$success: Active
+                              ],unless: item.active: [
+                                button$primary: Connect
+                              ]
+                            ]
+                          )
+                        ]
+                      ),section$api-keys: (
+                        column: [
+                          h3: API_Access,
+                          label: Your_Private_Key,
+                          p$monospace: api.user.apiKey,
+                          button$secondary: Regenerate_Key,
+                          small: Regenerating_will_invalidate_existing_connections
+                        ]
+                      )
+                    ]
+                  )
+                ]
+              )
+            )
+          ),api: (
+            auth: (
+              POST:/auth/login: (
+                body: (
+                  email: string,
+                  password: string
+                ),validate: (
+                  email: required_valid,
+                  password: min_12
+                ),rateLimit: (
+                  5_per_15min
+                ),exec: (
+                  user: db.users.findByEmail(
+                    body.email
+                  ),if: user.exists: (
+                    if: user.locked: (
+                      audit: log_blocked_login(
+                        user.id
+                      ),returns: error.account_locked
+                    ),if: bcrypt.compare(
+                      body.password,
+                      user.hash
+                    )
+                    : (
+                      if: user.mfaEnabled: (
+                        session: create_mfa_session(
+                          user.id
+                        ),sms: send_mfa_code(
+                          user.phone
+                        ),returns: (
+                          requiresMFA: true,
+                          sessionId: session.id
+                        )
+                      ),else: (
+                        token: jwt.sign(
+                          {
+                            id: user.id,
+                            role: user.role
+                          }
+                        ),session: record_login(
+                          user.id
+                        ),audit: log_login(
+                          user.id
+                        ),returns: (
+                          token: token,
+                          user: user.safe,
+                          practices: user.practices
+                        )
+                      )
+                    ),else: (
+                      audit: log_failed_login(
+                        body.email
+                      ),returns: error.invalid_credentials
+                    )
+                  ),else: (
+                    returns: error.invalid_credentials
+                  )
+                )
+              ),POST:/auth/verify-mfa: (
+                body: (
+                  sessionId: string,
+                  code: string
+                ),exec: (
+                  session: db.mfa.findById(
+                    body.sessionId
+                  ),if: session.valid: (
+                    if: verify_code(
+                      session.userId,
+                      body.code
+                    )
+                    : (
+                      user: db.users.findById(
+                        session.userId
+                      ),token: jwt.sign(
+                        {
+                          id: user.id,
+                          role: user.role
+                        }
+                      ),db.mfa.delete(
+                        session.id
+                      ),returns: (
+                        token: token,
+                        user: user.safe
+                      )
+                    ),else: (
+                      returns: error.invalid_code
+                    )
+                  ),else: (
+                    returns: error.expired_session
+                  )
+                )
+              )
+            ),patients: (
+              GET:/patients: (
+                auth: jwt,
+                role: doctor_or_nurse,
+                returns: db.patients.search(
+                  query
+                )
+              ),GET:/patients/: id: (
+                auth: jwt,
+                role: authorized_staff,
+                audit: log_record_access(
+                  user.id,
+                  params.id
+                ),returns: (
+                  patient: db.patients.findById(
+                    params.id
+                  ),history: db.encounters.findByPatient(
+                    params.id
+                  )
+                )
+              ),POST:/patients: (
+                auth: jwt,
+                role: doctor,
+                exec: (
+                  patient: db.patients.create(
+                    body
+                  ),audit: log_patient_created(
+                    user.id,
+                    patient.id
+                  ),returns: patient
+                )
+              ),PUT:/patients/: id: (
+                auth: jwt,
+                role: doctor,
+                exec: (
+                  db.patients.update(
+                    params.id,
+                    body
+                  ),audit: log_patient_updated(
+                    user.id,
+                    params.id
+                  ),returns: success
+                )
+              )
+            ),encounters: (
+              POST:/encounters: (
+                auth: jwt,
+                role: doctor,
+                exec: (
+                  encounter: db.encounters.create(
+                    {
+                      doctorId: auth.id,
+                      patientId: body.patientId,
+                      notes: body.notes
+                    }
+                  ),ai: generate_summary(
+                    encounter.id
+                  ),audit: log_encounter_created(
+                    auth.id,
+                    encounter.id
+                  ),returns: encounter
+                )
+              ),GET:/encounters/: id: (
+                auth: jwt,
+                role: authorized_staff,
+                returns: db.encounters.withNotes(
+                  params.id
+                )
+              )
+            ),medications: (
+              POST:/medications: (
+                auth: jwt,
+                role: doctor,
+                exec: (
+                  rx: db.medications.create(
+                    body
+                  ),pharmacy: notify_new_prescription(
+                    rx
+                  ),audit: log_prescription_created(
+                    auth.id,
+                    rx.id
+                  ),returns: rx
+                )
+              ),DELETE:/medications/: id: (
+                auth: jwt,
+                role: doctor,
+                exec: (
+                  med: db.medications.findById(
+                    params.id
+                  ),if: med.active: (
+                    db.medications.discontinue(
+                      params.id,
+                      auth.id
+                    ),audit: log_medication_discontinued(
+                      auth.id,
+                      params.id
+                    ),returns: success
+                  ),else: (
+                    returns: error.already_discontinued
+                  )
+                )
+              )
+            ),appointments: (
+              GET:/appointments: (
+                auth: jwt,
+                returns: db.appointments.forProvider(
+                  auth.id,
+                  query
+                )
+              ),POST:/appointments: (
+                auth: jwt,
+                role: doctor_or_scheduler,
+                exec: (
+                  appt: db.appointments.schedule(
+                    body
+                  ),calendar: sync_to_provider_calendar(
+                    appt
+                  ),if: appt.patientEmail: (
+                    email: send_appointment_confirmation(
+                      appt
+                    )
+                  ),audit: log_appointment_created(
+                    auth.id,
+                    appt.id
+                  ),returns: appt
+                )
+              ),PUT:/appointments/: id/status: (
+                auth: jwt,
+                exec: (
+                  db.appointments.updateStatus(
+                    params.id,
+                    body.status
+                  ),if: body.status==='completed': (
+                    encounter: create_draft(
+                      params.id
+                    )
+                  ),returns: success
+                )
+              )
+            )
+          ),billing: (
+            POST:/charges: (
+              auth: jwt,
+              role: billing_specialist,
+              exec: (
+                charge: db.charges.create(
+                  body
+                ),audit: log_charge_created(
+                  auth.id,
+                  charge.id
+                ),returns: charge
+              )
+            ),POST:/claims: (
+              auth: jwt,
+              role: billing_specialist,
+              exec: (
+                claim: db.claims.submit(
+                  body
+                ),edi: send_to_insurance(
+                  claim
+                ),audit: log_claim_submitted(
+                  auth.id,
+                  claim.id
+                ),returns: (
+                  claim: claim,
+                  tracking: claim.trackingId
+                )
+              )
+            )
+          )
+        ),ai: (
+          clinical: (
+            summary: (
+              prompt: "GenerateaSOAPnotefrom: {
+                {
+                  encounter_notes
+                }
+              }
+              ",
+              model: gpt-4o,
+              temperature: 0.3
+            ),risk: (
+              prompt: "Assesspatient{
+                {
+                  patient.id
+                }
+              }
+              forreadmissionriskbasedon: {
+                {
+                  vitals
+                }
+              },{
+                {
+                  medications
+                }
+              },{
+                {
+                  history
+                }
+              }
+              ",
+              model: claude-3-opus,
+              temperature: 0.2
+            )
+          )
+        ),database: (
+          users: (
+            id: uuid_primary,
+            name: string_required,
+            email: string_unique_required,
+            password: string_encrypted_required,
+            role: enum_doctor_nurse_admin_staff_required,
+            license: string_nullable,
+            npi: string_nullable,
+            organizationId: uuid_foreign_organizations_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),patients: (
+            id: uuid_primary,
+            firstName: string_required,
+            lastName: string_required,
+            dob: date_required,
+            gender: enum_male_female_other_unknown,
+            ssn: string_encrypted_nullable,
+            bloodType: enum_A+A-B+B-AB+AB-O+O-nullable,
+            primaryCarePhysician: uuid_foreign_users_nullable,
+            insuranceProvider: string_nullable,
+            insuranceId: string_nullable,
+            emergencyContact: json_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),encounters: (
+            id: uuid_primary,
+            patientId: uuid_foreign_patients,
+            doctorId: uuid_foreign_users,
+            visitType: enum_initial_followup_urgent_consult_required,
+            chiefComplaint: text_nullable,
+            notes: text_required,
+            diagnoses: json_nullable,
+            procedures: json_nullable,
+            vitals: json_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),medications: (
+            id: uuid_primary,
+            patientId: uuid_foreign_patients,
+            medicationName: string_required,
+            dosage: string_required,
+            route: enum_oral_iv_im_sc_inhalation_topical_required,
+            frequency: string_required,
+            startDate: date_required,
+            refills: integer_default_0,
+            lastFilled: date_nullable,
+            discontinuedDate: date_nullable,
+            discontinuedBy: uuid_foreign_users_nullable,
+            reasonDiscontinued: string_nullable,
+            status: enum_active_discontinued_required,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),allergies: (
+            id: uuid_primary,
+            patientId: uuid_foreign_patients,
+            allergen: string_required,
+            reaction: string_required,
+            severity: enum_mild_moderate_severe_life_threatening_required,
+            notes: string_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),appointments: (
+            id: uuid_primary,
+            patientId: uuid_foreign_patients,
+            providerId: uuid_foreign_users,
+            startTime: timestamp_required,
+            endTime: timestamp_required,
+            reason: string_required,
+            status: enum_scheduled_completed_cancelled_no_show_required,
+            location: string_nullable,
+            notes: text_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),charges: (
+            id: uuid_primary,
+            encounterId: uuid_foreign_encounters_nullable,
+            patientId: uuid_foreign_patients,
+            procedureCode: string_required,
+            description: string_required,
+            amount: decimal_required,
+            billedToInsurance: boolean_default_false,
+            insuranceClaimId: uuid_foreign_claims_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),claims: (
+            id: uuid_primary,
+            patientId: uuid_foreign_patients,
+            chargeIds: array_of_uuids,
+            insurer: string_required,
+            policyNumber: string_required,
+            claimAmount: decimal_required,
+            status: enum_submitted_pending_approved_denied_appealed_required,
+            trackingNumber: string_unique_required,
+            followUpDate: date_nullable,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),organizations: (
+            id: uuid_primary,
+            name: string_required,
+            address: json_required,
+            phone: string_required,
+            email: string_required,
+            taxId: string_encrypted_required,
+            createdAt: timestamp_auto,
+            updatedAt: timestamp_auto
+          ),audit_logs: (
+            id: uuid_primary,
+            userId: uuid_foreign_users_nullable,
+            patientId: uuid_foreign_patients_nullable,
+            action: string_required,
+            details: json_nullable,
+            ipAddress: string_required,
+            userAgent: string_nullable,
+            success: boolean_required,
+            createdAt: timestamp_auto
+          ),consent_forms: (
+            id: uuid_primary,
+            patientId: uuid_foreign_patients,
+            formType: string_required,
+            signedBy: uuid_foreign_users,
+            signedAt: timestamp_required,
+            documentUrl: string_required,
+            verificationMethod: enum_electronic_wet_sign_biometric,
+            createdAt: timestamp_auto
+          )
+        ),security: (
+          encryption: (
+            at_rest: AES-256,
+            at_transit: TLS_1.3,
+            fields: [
+              ssn,
+              medical_record_number,
+              insuranceId,
+              taxId,
+              password
+            ]
+          ),authentication: (
+            jwt: (
+              secret: env.JWT_SECRET,
+              expiry: 1h,
+              refresh: 7d
+            ),mfa: (
+              required: true,
+              methods: [
+                authenticator_app,
+                sms,
+                biometric
+              ]
+            )
+          ),authorization: (
+            rbac: (
+              roles: [
+                doctor,
+                nurse,
+                admin,
+                billing,
+                staff
+              ],permissions: (
+                doctor: [
+                  read: patients,
+                  write: encounters,
+                  write: prescriptions,
+                  sign: charts
+                ],nurse: [
+                  read: patients,
+                  read: encounters,
+                  write: vitals
+                ],admin: [
+                  manage: users,
+                  view: all
+                ],billing: [
+                  read: patients,
+                  write: charges
+                ]
+              )
+            ),apiKeys: (
+              scope: limited,
+              expiry: required
+            )
+          ),compliance: (
+            hipaa: (
+              safeguards: technical_administrative_physical,
+              auditLogs: required_6_years,
+              baa: signed,
+              deidentification: required
+            ),gdrp: (
+              rightToAccess: true,
+              rightToErasure: true,
+              dataMinimization: true
+            ),hitech: (
+              breachNotification: 72h,
+              meaningfulUse: certified
+            ),phipa: (
+              if: canada: true
+            )
+          ),monitoring: (
+            audit: (
+              events: [
+                login,
+                logout,
+                record_access,
+                prescription_create,
+                patient_update
+              ],retention: 7_years,
+              immutable: true
+            ),alerts: (
+              critical: (
+                on: [
+                  unauthorized_access,
+                  failed_login_5x,
+                  data_export
+                ],channels: [
+                  sms,
+                  email,
+                  pagerduty
+                ]
+              )
+            ),policies: (
+              password: min_12_complex,
+              sessionTimeout: 15m,
+              deviceTrust: required
+            )
+          )
+        ),deployment: (
+          frontend: (
+            platform: vercel,
+            env: (
+              NEXT_PUBLIC_API_URL: env.API_URL
+            ),cdn: cloudflare,
+            ssl: required
+          ),backend: (
+            platform: aws_ecs,
+            runtime: node20,
+            scaling: (
+              min: 2,
+              max: 20
+            ),loadBalancer: enabled,
+            env: (
+              DATABASE_URL: env.DATABASE_URL,
+              JWT_SECRET: env.JWT_SECRET,
+              AWS_KMS_KEY: env.KMS_KEY,
+              TWILIO_SID: env.TWILIO_SID,
+              SENDGRID_API_KEY: env.SENDGRID_API_KEY
+            )
+          ),database: (
+            provider: postgresql,
+            version: 15,
+            instance: db.r6g.4xlarge,
+            replicas: 2,
+            encryption: aws_kms,
+            iamAuth: true,
+            backup: (
+              encrypted: true,
+              retention: 7_years,
+              crossRegion: true
+            )
+          ),infrastructure: (
+            vpc: private_subnets,
+            securityGroups: strict,
+            region: us-east-1,
+            disasterRecovery: (
+              region: us-west-2,
+              rto: 2h,
+              rpo: 15m
+            )
+          ),monitoring: (
+            apm: datadog,
+            logging: cloudwatch,
+            alerting: slack_and_sms
+          ),compliance: (
+            backups: (
+              tested: quarterly
+            ),audits: (
+              internal: biannual,
+              external: annual
+            ),training: (
+              roleBased: true,
+              annual: true
+            )
+          )
+        ]
+      )
+    }

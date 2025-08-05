@@ -1,0 +1,306 @@
+{
+  text_input: [
+    div: (
+      column: [
+        row: [
+          input: api.user.message.content
+        ]
+      ],row$functions_row: (
+        div: [
+          row: (
+            button$popover: 'Settings'[
+              popover: (
+                forEach: api.user.settings: [
+                  row: [
+                    p: item.name,
+                    value?radio?slider?checkbox: item.value
+                  ]
+                ],row: [
+                  button: api.user.settings.save,
+                  button: api.user.settings.reset
+                ]
+              )
+            ],button$popover: 'MCP'[
+              popover: (
+                forEach: api.user.mcp: (
+                  row: [
+                    p: item.nameradio: item.value
+                  ]
+                )
+              )
+            ],button$popover: 'SelectAModel'|api.model.lastUsed[
+              popover: (
+                forEach: api.model: (
+                  row: [
+                    p: item.name
+                  ]
+                )
+              )
+            ]
+          )
+        ],div$width`33%`,
+        div: (
+          row: [
+            button: api.user.message.send
+          ]
+        )
+      )
+    )
+  ]
+}
+{
+  selectCharacter$styles: [
+    display:     flex,
+    flexDirection:     row,
+    padding:     0,
+    margin:     0,
+    width:     100%,
+    height:     fit-content,
+    img: (
+      ratio: 1,
+      width:     125px,
+      borderRadius:     none,
+      border:     1px solid #84827c,
+      &isSelected: [
+        border:     1px solid #c96442,
+        margin:    0 2 0 2
+      ]
+    ),span: (
+      fontSize:     14px,
+      &isSelected: [
+        color:     #c96442
+      ]
+    )
+  ]
+}
+{
+  selectCharacter: [
+    forEach: api.character.list: (
+      div: [
+      if: item.isSelected: [
+          img&isSelected: item.image,
+          span: item.name
+        ],else: [
+          img: item.image,
+          span: item.name
+        ]
+      ]
+    )
+  ]
+}
+{
+  showCharacter$styles: [
+    img: (
+      ratio: 1,
+      width:     325px,
+      border:     1px solid #84827c
+    ),h1: (
+      fontSize:     20px,
+      color:     #c96442
+    ),p: (
+      width:     fit-content,
+      fontSize:     16px,
+      color:     #ffa500
+    ),span: (
+        fontSize:     16px,
+      color:   #faf9f5
+    )
+  ]
+}
+{
+  showCharacter: [
+    if: api.character.selected: [
+      div: (
+        column: [
+          section$header: (
+            row: [
+              img: api.character.image,
+              column: [
+                row: (
+                  h1: api.character.name,
+                  favoritesButton: api.character.favorites
+                )
+                p: api.character.description
+              ]
+            ]
+          ),if: traitsArray.length>0: [
+            row$traits-grid: [
+              column$traits-left: [
+                forEach: traitsArray.slice(
+                  0,
+                  halfCount
+                )
+                : [
+                  row$detail: (
+                    span$field-name: capitalize(
+                      item.key
+                    ),span$separator: : ,
+                    span$field-value: toString(
+                      item.value
+                    )
+                  )
+                ]
+              ],column$traits-right: [
+                forEach: traitsArray.slice(
+                  halfCount
+                )
+                : [
+                  row$detail: (
+                    span$field-name: capitalize(
+                      item.key
+                    ),span$separator: : ,
+                    span$field-value: toString(
+                      item.value
+                    )
+                  )
+                ]
+              ]
+            ]
+          ]
+        ]
+      )
+    ]
+  ]
+}
+{
+  traits_grid$styles: row: [
+    display:     flex,
+    flexDirection:     row,
+    justifyContent:     spaceBetween,
+    alignItems:     center,
+    margin:     1 0 1 0
+  ],column: [
+    width:     50%
+  ],span$field-name: [
+    fontWeight: bold,
+    color:     #faf9f5
+  ],span$separator: [
+    margin:     0 5px
+  ],span$field-value: [
+    color:     #c96442
+  ]
+}
+{
+  functions_row$styles: [
+    display:     flex,
+    flexDirection:     row,
+    justifyContent:     spaceBetween,
+    alignItems:     center,
+    margin:     3111,
+    width:     100%,
+    button: [
+      backgroundColor:     orange,
+      color:     white,
+      fontSize:     16px,
+      padding:     5px10px,
+      borderRadius:     5px&: hover: [
+        backgroundColor:     darkorange
+      ]
+    ]
+  ]
+}
+
+{
+  popover$styles: [
+    position:     absolute,
+    backgroundColor:     #262624,
+    border:     1px solid #ccc,
+    borderRadius:     5px,
+    padding:     10px,
+    boxShadow:     0 2px 10px rgba(
+      0,
+      0,
+      0,
+      0.1
+    ),zIndex: 1000
+  ]
+}
+{
+  appbody$styles: [
+    backgroundColor:     #30302e,
+    input: [
+      width:     100%,
+      margin:     1 0 1 0,
+      placeholder: 'Typeyourmessagehere...'
+    ]
+    row: [
+      display:     flex,
+      flexDirection:     row,
+      justifyContent:     space-between,
+      alignItems:     center,
+      margin:     1 0 1 0
+    ]
+  ]
+}
+{
+  messages: [
+    forEach: api.user.chat.messages: (
+      column: [
+        row: (
+          p: item.sender,
+          p: item.timestamp
+        )
+        p: item.content,
+        row: (
+          row: [
+            button: 'Edit'[
+              onClick: item.edit(
+                id
+              )
+            ],button: 'Delete'[
+              onClick: item.delete(
+                id
+              )
+            ]
+          ]
+        )
+      ]
+      if: item.sender==item.user: [
+        null
+      ],else: [
+        button: 'Regenerate'[
+          onClick: item.regenerate(
+            id
+          )
+        ]
+        span: item.modelName,
+        span: item.inferenceUsed
+      ]
+    )
+  ]
+}
+{
+  chat: [
+    div: (
+      column: [
+        characterBanner,
+        messages,
+        suggestions,
+        text_input
+      ]
+    )
+  ]
+}
+{
+  wrap: [
+    div: (
+      column: [
+        %children%
+      ]
+    )
+  ]
+}
+{
+  appWrap$appbody: [
+    wrap: (
+      title,
+      navbar,
+      pages: [
+        chat,
+        characters,
+        stories,
+        settings
+      ],footer
+    )
+  ]
+}

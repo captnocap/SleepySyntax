@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+*.log
+
+# Build outputs
+out/
+*.vsix
+
+# Temporary files
+temp/
+*.tmp
+*.temp
+
+# IDE files
+.vscode/settings.json
+.DS_Store
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Archives and large binaries
+archived-html/
+*.zip
+*.tar.gz
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# Embedded git repositories
+reverse-engineered/ollama/
+reverse-engineered/open-webui/

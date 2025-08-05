@@ -1,0 +1,13 @@
+{
+  div:[
+    button$dark:api.function.send,
+    input$wide,
+    placeholder:(Type here...):api.function.input,
+    forEach:api.items:[
+      row:[
+        cell$primary:item.name,
+        cell$secondary:item.value
+      ]
+    ]
+  ]
+}

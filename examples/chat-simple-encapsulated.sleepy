@@ -1,0 +1,242 @@
+{
+  chatapp$simple_chat_interface: (
+    // ===== COMPONENT DEFINITIONS =====
+    text_input: [
+      div: (
+        column: [
+          row: [
+            input: api.user.message.content
+          ]
+        ],
+        row$functions_row: (
+          div: [
+            row: (
+              button$popover: 'Settings'[
+                popover: (
+                  forEach: api.user.settings: [
+                    row: [
+                      p: item.name,
+                      value: item.value // radio|slider|checkbox based on item.type
+                    ]
+                  ],
+                  row: [
+                    button: api.user.settings.save,
+                    button: api.user.settings.reset
+                  ]
+                )
+              ],
+              button$popover: 'MCP'[
+                popover: (
+                  forEach: api.user.mcp: [
+                    row: [
+                      p: item.name,
+                      radio: item.value
+                    ]
+                  ]
+                )
+              ],
+              button$popover: 'SelectAModel'[
+                popover: (
+                  forEach: api.model: [
+                    row: [
+                      p: item.name
+                    ]
+                  ]
+                )
+              ]
+            )
+          ],
+          div: (
+            row: [
+              button: api.user.message.send
+            ]
+          )
+        )
+      )
+    ],
+
+    selectCharacter: [
+      forEach: api.character.list: [
+        div: (
+          if: item.isSelected: [
+            img$isSelected: item.image,
+            span$isSelected: item.name
+          ],
+          unless: item.isSelected: [
+            img: item.image,
+            span: item.name
+          ]
+        )
+      ]
+    ],
+
+    showCharacter: [
+      if: api.character.selected: [
+        div: (
+          column: [
+            row: (
+              img: api.character.image,
+              column: [
+                h1: api.character.name,
+                p: api.character.description
+              ]
+            )
+          ]
+        )
+      ]
+    ],
+
+    messages: [
+      forEach: api.user.chat.messages: [
+        column: [
+          row: (
+            p: item.sender,
+            p: item.timestamp
+          ),
+          p: item.content,
+          row: (
+            if: item.sender==api.user.id: [
+              row: [
+                button: 'Edit'[onClick: item.edit(id)],
+                button: 'Delete'[onClick: item.delete(id)]
+              ]
+            ],
+            unless: item.sender==api.user.id: [
+              row: [
+                button: 'Regenerate'[onClick: item.regenerate(id)],
+                span: item.modelName,
+                span: item.inferenceUsed
+              ]
+            ]
+          )
+        ]
+      ]
+    ],
+
+    chat: [
+      div: (
+        column: [
+          characterBanner,
+          messages,
+          text_input
+        ]
+      )
+    ],
+
+    wrap: [
+      div: (
+        column: [
+          %children%
+        ]
+      )
+    ],
+
+    appWrap$appbody: [
+      wrap: (
+        title,
+        navbar,
+        pages: [
+          chat,
+          characters,
+          stories,
+          settings
+        ],
+        footer
+      )
+    ],
+
+    // ===== STYLE DEFINITIONS =====
+    styles: (
+      selectCharacter$styles: [
+        display: flex,
+        flexDirection: row,
+        padding: 0,
+        margin: 0,
+        width: 100%,
+        height: fit-content,
+        img: (
+          ratio: 1,
+          width: 125px,
+          borderRadius: none,
+          border: 1px_solid_#84827c,
+          &isSelected: [
+            border: 1px_solid_#c96442,
+            margin: 0_2px_0_2px
+          ]
+        ),
+        span: (
+          fontSize: 14px,
+          &isSelected: [
+            color: #c96442
+          ]
+        )
+      ],
+
+      showCharacter$styles: [
+        img: (
+          ratio: 1,
+          width: 325px,
+          border: 1px_solid_#84827c
+        ),
+        h1: (
+          fontSize: 20px,
+          color: #c96442
+        ),
+        p: (
+          width: fit-content,
+          fontSize: 16px,
+          color: #ffa500
+        ),
+        span: (
+          fontSize: 16px,
+          color: #faf9f5
+        )
+      ],
+
+      functions_row$styles: [
+        display: flex,
+        flexDirection: row,
+        justifyContent: space-between,
+        alignItems: center,
+        margin: 3px_1px_1px_1px,
+        width: 100%,
+        button: (
+          backgroundColor: orange,
+          color: white,
+          fontSize: 16px,
+          padding: 5px_10px,
+          borderRadius: 5px,
+          &hover: [
+            backgroundColor: darkorange
+          ]
+        )
+      ],
+
+      popover$styles: [
+        position: absolute,
+        backgroundColor: #262624,
+        border: 1px_solid_#ccc,
+        borderRadius: 5px,
+        padding: 10px,
+        boxShadow: 0_2px_10px_rgba(0,0,0,0.1),
+        zIndex: 1000
+      ],
+
+      appbody$styles: [
+        backgroundColor: #30302e,
+        input: (
+          width: 100%,
+          margin: 1px_0_1px_0,
+          placeholder: 'Type your message here...'
+        ),
+        row: (
+          display: flex,
+          flexDirection: row,
+          justifyContent: space-between,
+          alignItems: center,
+          margin: 1px_0_1px_0
+        )
+      ]
+    )
+  )
+}

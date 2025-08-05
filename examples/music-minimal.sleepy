@@ -1,0 +1,20 @@
+// MINIMAL MUSIC PLAYER - "That's about it"
+
+{music:(
+  frontend:(
+    player:(controls, progress, volume),
+    library:(songs, playlists, artists),
+    ui:(now_playing, queue)
+  ),
+  api:(
+    GET:/songs,
+    GET:/playlists,
+    POST:/playlists
+  ),
+  database:(
+    songs:(title, artist, album, file),
+    playlists:(name, songs),
+    users:(favorites, history)
+  ),
+  audio:web_audio_api
+)}

@@ -1,0 +1,17 @@
+// MINIMAL PORTFOLIO - "You can use it for whatever you want, I'm not stopping you"
+
+{portfolio:(
+  frontend:(
+    hero:(name, title, bio),
+    projects:(grid, details),
+    contact:(form, social)
+  ),
+  api:(
+    GET:/projects,
+    POST:/contact
+  ),
+  database:(
+    projects:(title, description, image, link),
+    messages:(name, email, message)
+  )
+)}

@@ -1,0 +1,18 @@
+// MINIMAL DASHBOARD - "idk ask ChatGPT"
+
+{dashboard:(
+  frontend:(
+    sidebar:(nav, user_info),
+    main:(widgets, charts, tables),
+    header:(title, notifications)
+  ),
+  api:(
+    GET:/analytics,
+    GET:/users,
+    GET:/revenue
+  ),
+  database:(
+    analytics:(views, clicks, conversions),
+    users:(name, email, status)
+  )
+)}

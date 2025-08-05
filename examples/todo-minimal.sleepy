@@ -1,0 +1,18 @@
+// MINIMAL TODO - "Rectangles go brr"
+
+{todo:(
+  frontend:(
+    input:(new_task),
+    list:(tasks, filters),
+    footer:(count, clear)
+  ),
+  api:(
+    GET:/tasks,
+    POST:/tasks,
+    PUT:/tasks/:id,
+    DELETE:/tasks/:id
+  ),
+  database:(
+    tasks:(text, completed, created)
+  )
+)}

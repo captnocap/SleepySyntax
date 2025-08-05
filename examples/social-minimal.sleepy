@@ -1,0 +1,22 @@
+// MINIMAL SOCIAL - "Brackets go brr"
+
+{social:(
+  frontend:(
+    feed,
+    profile,
+    messages,
+    notifications
+  ),
+  api:(
+    GET:/posts,
+    POST:/posts,
+    POST:/follow,
+    GET:/messages
+  ),
+  database:(
+    users:(username, avatar, bio),
+    posts:(content, author, likes),
+    follows:(follower, following)
+  ),
+  realtime:websockets
+)}

@@ -1,0 +1,648 @@
+{
+  multi_agent_chat_system$complete_interface: (
+    // ===== CONFIGURATION =====
+    config: (
+      lm_studio: (
+        base_url: "http://localhost:1234/v1",
+        api_key: "lm-studio"
+      ),
+      defaults: (
+        temperature: 0.7,
+        max_tokens: 500,
+        turns: 6,
+        parts: 4
+      ),
+      directories: (
+        stories: "stories",
+        characters: "characters",
+        sessions: "sessions",
+        presets: "presets"
+      )
+    ),
+
+    // ===== STYLES & THEME =====
+    styles: (
+      theme: (
+        primary: #c96442,
+        secondary: #6366f1,
+        success: #10b981,
+        warning: #f59e0b,
+        danger: #ef4444,
+        background: #30302e,
+        surface: #262624,
+        text: #faf9f5,
+        textSecondary: #84827c,
+        accent: #ffa500
+      ),
+      character_emojis: (
+        bot: 🤖, wizard: 🧙, knight: ⚔️,
+        cat: 🐱, dragon: 🐉, pirate: 🏴‍☠️,
+        scientist: 🧬, chef: 👨‍🍳, artist: 🎨
+      )
+    ),
+
+    // ===== DATA MODELS =====
+    models: (
+      Character: (
+        id: string_required,
+        name: string_required,
+        model: string_required,
+        system_prompt: text_required,
+        params: object_default_empty,
+        image: url_nullable,
+        emoji: string_default_🎭,
+        description: text_nullable,
+        isSelected: boolean_default_false,
+        context_limit: int_default_4096
+      ),
+      Message: (
+        id: string_auto_hash,
+        sender: enum_user_assistant_required,
+        content: text_required,
+        timestamp: timestamp_auto,
+        character_name: string_nullable,
+        model_name: string_nullable,
+        tokens_used: int_nullable,
+        editable: boolean_default_true
+      ),
+      Session: (
+        id: string_auto_hash,
+        mode: enum_chat_story_required,
+        characters: array_characters_required,
+        messages: array_messages_default_empty,
+        turns: int_nullable,
+        parts: int_nullable,
+        prompt: string_nullable,
+        status: enum_active_completed_default_active,
+        created_at: timestamp_auto
+      )
+    ),
+
+    // ===== API ENDPOINTS =====
+    api: (
+      // Connection & Health
+      GET:/health: (
+        exec: test_lm_studio_connection(),
+        returns: (
+          status: connection_active ? ok : error,
+          message: connection_active ? "Connected to LM Studio" : "Connection failed"
+        )
+      ),
+
+      // Characters
+      GET:/characters: (
+        exec: (
+          characters: load_all_characters(),
+          forEach: characters: [
+            char: (
+              id: file.stem,
+              name: data.lore.name,
+              description: data.lore.description,
+              model: data.model,
+              image: data.lore.image,
+              emoji: get_character_emoji(data.lore.name),
+              isSelected: false
+            )
+          ]
+        ),
+        returns: (
+          characters: characters,
+          count: characters.length
+        )
+      ),
+
+      POST:/characters: (
+        body: (
+          name: string_required,
+          description: string_nullable,
+          model: string_required,
+          system_prompt: text_required,
+          image: url_nullable
+        ),
+        exec: (
+          character: create_character(body),
+          save: save_character(character)
+        ),
+        returns: (
+          id: character.id,
+          message: "Character created successfully"
+        )
+      ),
+
+      // Sessions & Chat
+      POST:/sessions: (
+        body: (
+          mode: enum_chat_story_required,
+          characters: array_required,
+          turns: int_nullable,
+          prompt: string_nullable
+        ),
+        exec: (
+          session: create_session(body),
+          save: save_session(session)
+        ),
+        returns: (
+          session_id: session.id,
+          mode: session.mode
+        )
+      ),
+
+      POST:/chat/send: (
+        body: (
+          session_id: string_required,
+          message: string_required,
+          character_id: string_nullable
+        ),
+        exec: (
+          session: load_session(body.session_id),
+          if: session.mode == "chat": [
+            response: process_chat_message(session, body.message, body.character_id)
+          ],
+          if: session.mode == "story": [
+            response: process_story_part(session, body.message)
+          ],
+          save: update_session(session, response)
+        ),
+        returns: (
+          message: response.message,
+          character_name: response.character_name,
+          tokens_used: response.tokens_used
+        )
+      ),
+
+      POST:/chat/regenerate: (
+        body: (
+          session_id: string_required,
+          message_id: string_required
+        ),
+        exec: (
+          session: load_session(body.session_id),
+          message: find_message(session, body.message_id),
+          regenerated: regenerate_message(session, message),
+          save: update_message(session, message.id, regenerated)
+        ),
+        returns: (
+          message: regenerated.content,
+          character_name: regenerated.character_name
+        )
+      ),
+
+      DELETE:/chat/message: (
+        body: (
+          session_id: string_required,
+          message_id: string_required
+        ),
+        exec: (
+          session: load_session(body.session_id),
+          delete: remove_message(session, body.message_id),
+          save: save_session(session)
+        ),
+        returns: (
+          message: "Message deleted successfully"
+        )
+      )
+    ),
+
+    // ===== CORE FUNCTIONS =====
+    functions: (
+      // Character Management
+      load_character_sheet: (path) => (
+        data: json.load(path),
+        char_name: data.lore.name || path.stem,
+        system_prompt: build_system_prompt(data),
+        returns: Character(
+          id: generate_id(),
+          name: char_name,
+          model: data.model,
+          system_prompt: system_prompt,
+          params: data.sampling || {},
+          image: data.lore.image,
+          emoji: get_character_emoji(char_name),
+          description: data.lore.description,
+          context_limit: data.context_limit || 4096
+        )
+      ),
+
+      // Chat Processing
+      process_chat_message: (session, user_message, character_id) => (
+        character: character_id ? find_character(character_id) : get_next_character(session),
+        history: session.messages,
+        response: chat_call(character, history, user_message),
+        user_msg: Message(
+          sender: "user",
+          content: user_message,
+          timestamp: now()
+        ),
+        ai_msg: Message(
+          sender: "assistant",
+          content: response,
+          character_name: character.name,
+          model_name: character.model,
+          timestamp: now()
+        ),
+        session.messages: session.messages.concat([user_msg, ai_msg]),
+        returns: (
+          message: ai_msg,
+          character_name: character.name,
+          tokens_used: calculate_tokens(response)
+        )
+      ),
+
+      // AI Communication
+      chat_call: (character, history, user_msg) => (
+        messages: prepare_messages(character.system_prompt, history, user_msg),
+        params: (
+          model: character.model,
+          messages: messages,
+          temperature: character.params.temperature || 0.7,
+          max_tokens: character.params.max_tokens || 500
+        ),
+        response: client.chat.completions.create(params),
+        returns: response.choices[0].message.content.strip()
+      ),
+
+      get_character_emoji: (name) => (
+        name_lower: name.toLowerCase(),
+        forEach: CHARACTER_EMOJIS: [
+          if: keyword.in(name_lower): [
+            returns: emoji
+          ]
+        ],
+        fallbacks: [🎭, 👤, 🌟, 💫, 🎪, 🎨],
+        returns: random.choice(fallbacks)
+      )
+    ),
+
+    // ===== FRONTEND UI =====
+    frontend: (
+      // Main Application Layout
+      appWrap$appbody: [
+        wrap: (
+          header$navigation,
+          main$chat_interface,
+          sidebar$character_panel,
+          footer$controls
+        )
+      ],
+
+      // Header Navigation
+      header$navigation: (
+        row$space_between: [
+          logo: (
+            icon: 🤖,
+            h1: "Multi-Agent Chat"
+          ),
+          connection_status: (
+            if: api.connection.active: [
+              badge$success: "Connected to LM Studio"
+            ],
+            unless: api.connection.active: [
+              badge$error: "Disconnected"
+            ]
+          ),
+          mode_selector: (
+            radio_group: (
+              options: [
+                {value: "chat", label: "💬 Chat Mode"},
+                {value: "story", label: "📖 Story Mode"}
+              ],
+              value: api.session.mode
+            )
+          )
+        ]
+      ),
+
+      // Main Chat Interface
+      main$chat_interface: (
+        column: [
+          // Character Banner
+          if: api.session.activeCharacter: [
+            characterBanner: (
+              row: [
+                img: api.session.activeCharacter.image || api.session.activeCharacter.emoji,
+                column: [
+                  h2: api.session.activeCharacter.name,
+                  p: api.session.activeCharacter.description,
+                  small: api.session.activeCharacter.model
+                ]
+              ]
+            )
+          ],
+
+          // Messages Display
+          messages_container: (
+            column$messages: [
+              forEach: api.session.messages: [
+                message_bubble: (
+                  row$message: [
+                    if: item.sender == "user": [
+                      spacer,
+                      card$user_message: (
+                        column: [
+                          p: item.content,
+                          row$message_meta: [
+                            small: item.timestamp,
+                            button$ghost: [
+                              text: "Edit",
+                              onClick: api.message.edit(item.id)
+                            ],
+                            button$ghost: [
+                              text: "Delete",
+                              onClick: api.message.delete(item.id)
+                            ]
+                          ]
+                        ]
+                      )
+                    ],
+                    unless: item.sender == "user": [
+                      img$character_avatar: item.character_emoji || "🤖",
+                      card$ai_message: (
+                        column: [
+                          row$character_info: [
+                            h5: item.character_name,
+                            small: item.model_name
+                          ],
+                          p: item.content,
+                          row$message_actions: [
+                            small: item.timestamp,
+                            button$ghost: [
+                              text: "Regenerate",
+                              onClick: api.message.regenerate(item.id)
+                            ],
+                            button$ghost: [
+                              text: "Copy",
+                              onClick: api.message.copy(item.id)
+                            ]
+                          ]
+                        ]
+                      ),
+                      spacer
+                    ]
+                  ]
+                )
+              ]
+            ]
+          ),
+
+          // Input Area
+          text_input: (
+            row$input_row: [
+              column$input_field: [
+                textarea$message: (
+                  value: api.user.message.content,
+                  placeholder: "Type your message here...",
+                  onEnter: api.message.send()
+                )
+              ],
+              column$input_actions: [
+                button$primary: [
+                  text: "Send",
+                  onClick: api.message.send(),
+                  disabled: api.message.sending
+                ],
+                row$functions_row: [
+                  button$popover: "Settings" [
+                    popover: (
+                      column: [
+                        h4: "Chat Settings",
+                        forEach: api.user.settings: [
+                          row: [
+                            label: item.name,
+                            if: item.type == "slider": [
+                              slider: item.value
+                            ],
+                            if: item.type == "checkbox": [
+                              checkbox: item.value
+                            ],
+                            if: item.type == "radio": [
+                              radio: item.value
+                            ]
+                          ]
+                        ],
+                        row: [
+                          button$secondary: "Reset",
+                          button$primary: "Save"
+                        ]
+                      ]
+                    )
+                  ],
+                  button$popover: "Models" [
+                    popover: (
+                      column: [
+                        h4: "Select Model",
+                        forEach: api.models.available: [
+                          row$model_option: [
+                            radio: item.selected,
+                            column: [
+                              h5: item.name,
+                              small: item.description
+                            ]
+                          ]
+                        ]
+                      ]
+                    )
+                  ]
+                ]
+              ]
+            ]
+          )
+        ]
+      ),
+
+      // Character Selection Sidebar
+      sidebar$character_panel: (
+        column: [
+          h3: "Characters",
+          selectCharacter: [
+            forEach: api.characters.list: [
+              card$character: (
+                column: [
+                  if: item.isSelected: [
+                    img$selected: item.image || item.emoji,
+                    span$selected: item.name
+                  ],
+                  unless: item.isSelected: [
+                    img: item.image || item.emoji,
+                    span: item.name
+                  ],
+                  p$description: item.description,
+                  checkbox: (
+                    checked: item.isSelected,
+                    onChange: api.character.toggle(item.id)
+                  )
+                ]
+              )
+            ]
+          ],
+          button$create: [
+            text: "Create Character",
+            onClick: api.character.create_modal()
+          ]
+        ]
+      ),
+
+      // Story Mode Configuration
+      story_config: (
+        if: api.session.mode == "story": [
+          section$story_settings: (
+            column: [
+              h3: "Story Configuration",
+              field$prompt: (
+                label: "Story Prompt",
+                textarea: (
+                  value: api.session.prompt,
+                  placeholder: "A mysterious adventure begins..."
+                )
+              ),
+              field$parts: (
+                label: "Number of Parts",
+                input_number: (
+                  value: api.session.parts,
+                  min: 1,
+                  max: 20
+                )
+              ),
+              button$generate: [
+                text: "Generate Story",
+                onClick: api.story.generate()
+              ]
+            ]
+          )
+        ]
+      )
+    ),
+
+    // ===== COMPONENT STYLES =====
+    component_styles: (
+      appbody$styles: [
+        backgroundColor: #30302e,
+        color: #faf9f5,
+        fontFamily: "Inter, sans-serif",
+        input: [
+          width: "100%",
+          backgroundColor: #262624,
+          border: "1px solid #84827c",
+          padding: "12px",
+          color: #faf9f5,
+          "&:focus": [
+            borderColor: #c96442,
+            outline: "none"
+          ]
+        ],
+        button$primary: [
+          backgroundColor: #c96442,
+          color: "white",
+          border: "none",
+          padding: "10px 20px",
+          cursor: "pointer",
+          "&:hover": [
+            backgroundColor: "#a55235"
+          ]
+        ],
+        button$secondary: [
+          backgroundColor: #84827c,
+          color: "white",
+          border: "none",
+          padding: "8px 16px",
+          cursor: "pointer"
+        ],
+        button$ghost: [
+          backgroundColor: "transparent",
+          color: #84827c,
+          border: "1px solid #84827c",
+          padding: "6px 12px",
+          cursor: "pointer",
+          "&:hover": [
+            backgroundColor: #262624
+          ]
+        ]
+      ],
+
+      selectCharacter$styles: [
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        img: [
+          width: "80px",
+          height: "80px",
+          border: "2px solid #84827c",
+          "&$selected": [
+            borderColor: #c96442,
+            boxShadow: "0 0 8px rgba(201, 100, 66, 0.3)"
+          ]
+        ],
+        span: [
+          fontSize: "14px",
+          fontWeight: "500",
+          "&$selected": [
+            color: #c96442
+          ]
+        ],
+        card$character: [
+          backgroundColor: #262624,
+          padding: "16px",
+          border: "1px solid #84827c",
+          cursor: "pointer",
+          "&:hover": [
+            borderColor: #c96442
+          ]
+        ]
+      ],
+
+      popover$styles: [
+        position: "absolute",
+        backgroundColor: #262624,
+        border: "1px solid #84827c",
+        padding: "16px",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+        zIndex: 1000,
+        minWidth: "300px"
+      ],
+
+      messages_container$styles: [
+        maxHeight: "60vh",
+        overflowY: "auto",
+        padding: "16px",
+        gap: "16px",
+        card$user_message: [
+          backgroundColor: #c96442,
+          color: "white",
+          padding: "12px 16px",
+          marginLeft: "20%"
+        ],
+        card$ai_message: [
+          backgroundColor: #262624,
+          color: #faf9f5,
+          padding: "12px 16px",
+          marginRight: "20%",
+          border: "1px solid #84827c"
+        ]
+      ]
+    ),
+
+    // ===== DEPLOYMENT =====
+    deployment: (
+      backend: (
+        platform: "flask",
+        runtime: "python3",
+        dependencies: [
+          "openai",
+          "flask",
+          "flask-cors",
+          "pathlib",
+          "json"
+        ],
+        env: (
+          FLASK_ENV: "production",
+          LMSTUDIO_BASE_URL: env.LMSTUDIO_BASE_URL || "http://localhost:1234/v1"
+        )
+      ),
+      frontend: (
+        platform: "react",
+        framework: "vite",
+        ui_library: "tailwind",
+        state: "zustand"
+      )
+    )
+  )
+}

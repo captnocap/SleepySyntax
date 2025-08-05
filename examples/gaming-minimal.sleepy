@@ -1,0 +1,18 @@
+// MINIMAL GAMING - "Maximum chaos, minimum responsibility"
+
+{game:(
+  frontend:(
+    canvas:(player, enemies, ui),
+    controls:(keyboard, touch),
+    menu:(start, settings, scores)
+  ),
+  api:(
+    GET:/scores,
+    POST:/scores
+  ),
+  database:(
+    scores:(player, score, level),
+    players:(username, highscore)
+  ),
+  realtime:websockets
+)}

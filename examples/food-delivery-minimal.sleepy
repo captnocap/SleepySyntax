@@ -1,0 +1,20 @@
+// MINIMAL FOOD DELIVERY - "Nuclear reactor control system? Sure why not"
+
+{delivery:(
+  frontend:(
+    restaurants:(list, menu),
+    cart:(items, checkout),
+    tracking:(map, status)
+  ),
+  api:(
+    GET:/restaurants,
+    POST:/orders,
+    GET:/tracking/:id
+  ),
+  database:(
+    restaurants:(name, menu, location),
+    orders:(items, total, status, delivery),
+    drivers:(name, location, available)
+  ),
+  realtime:location_tracking
+)}

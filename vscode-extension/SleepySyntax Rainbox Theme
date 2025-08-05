@@ -1,0 +1,145 @@
+{
+  "name": "SleepySyntax Rainbow",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#1a1a1a",
+    "editor.foreground": "#d4d4d4"
+  },
+  "tokenColors": [
+    {
+      "name": "Comment",
+      "scope": "comment",
+      "settings": {
+        "foreground": "#6A9955",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Container Level 1 - Purple",
+      "scope": [
+        "entity.name.type.container.level1.sleepy",
+        "punctuation.definition.container.begin.level1.sleepy",
+        "punctuation.definition.container.end.level1.sleepy"
+      ],
+      "settings": {
+        "foreground": "#C586C0",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Layout Level 2 - Blue", 
+      "scope": [
+        "entity.name.type.layout.level2.sleepy",
+        "punctuation.definition.layout.begin.level2.sleepy",
+        "punctuation.definition.layout.end.level2.sleepy"
+      ],
+      "settings": {
+        "foreground": "#4FC1FF",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "List Level 3 - Green",
+      "scope": [
+        "punctuation.definition.list.begin.level3.sleepy",
+        "punctuation.definition.list.end.level3.sleepy"
+      ],
+      "settings": {
+        "foreground": "#4EC9B0",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Nested Level 4 - Orange",
+      "scope": [
+        "entity.name.type.nested.level4.sleepy"
+      ],
+      "settings": {
+        "foreground": "#FFAB70",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "ForEach Level 5 - Red",
+      "scope": [
+        "keyword.control.foreach.level5.sleepy"
+      ],
+      "settings": {
+        "foreground": "#F48771",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Conditional Level 6 - Yellow",
+      "scope": [
+        "keyword.control.conditional.level6.sleepy"
+      ],
+      "settings": {
+        "foreground": "#DCDCAA",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "API Bindings - Bright Green",
+      "scope": [
+        "variable.other.api.sleepy",
+        "variable.other.api.level5.sleepy",
+        "variable.other.api.level6.sleepy"
+      ],
+      "settings": {
+        "foreground": "#9CDCFE",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Item Bindings - Cyan",
+      "scope": "variable.other.item.sleepy",
+      "settings": {
+        "foreground": "#4CDCD6",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "HTML Elements - Light Blue",
+      "scope": "entity.name.tag.element.sleepy",
+      "settings": {
+        "foreground": "#92C5F8"
+      }
+    },
+    {
+      "name": "Input Elements - Light Green", 
+      "scope": "entity.name.tag.input.sleepy",
+      "settings": {
+        "foreground": "#B5CEA8"
+      }
+    },
+    {
+      "name": "Button Elements - Light Orange",
+      "scope": "entity.name.tag.button.sleepy", 
+      "settings": {
+        "foreground": "#FFD68A"
+      }
+    },
+    {
+      "name": "Layout Elements - Light Purple",
+      "scope": "entity.name.tag.layout.sleepy",
+      "settings": {
+        "foreground": "#D4AAFC"
+      }
+    },
+    {
+      "name": "String Content - White",
+      "scope": "string.unquoted.sleepy",
+      "settings": {
+        "foreground": "#CE9178"
+      }
+    },
+    {
+      "name": "Separators - Gray",
+      "scope": "punctuation.separator.sleepy",
+      "settings": {
+        "foreground": "#808080"
+      }
+    }
+  ]
+}

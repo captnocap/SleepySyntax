@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sleepy Syntax Results</title>
+  <link rel="stylesheet" href="results.css">
+</head>
+<body>
+  <div class="results-container">
+    <div class="header">
+      <div class="title-section">
+        <h1>🤖 Sleepy Syntax Generator</h1>
+        <p class="subtitle">AI-generated component code</p>
+      </div>
+      <div class="controls">
+        <button id="minimizeBtn" class="btn-control" title="Minimize">−</button>
+        <button id="closeBtn" class="btn-control" title="Close">×</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="status-section">
+        <div class="status" id="statusMessage">Ready to generate code...</div>
+      </div>
+
+      <div class="code-section">
+        <div class="code-header">
+          <h3>Generated Sleepy Code</h3>
+          <span class="confidence-badge" id="confidenceBadge">waiting</span>
+        </div>
+        
+        <div class="code-output" id="codeOutput">
+          Click any element on the page to generate Sleepy syntax...
+        </div>
+        
+        <div class="code-actions">
+          <button class="btn btn-copy" id="copyBtn" disabled>
+            📋 Copy to Clipboard
+          </button>
+          <button class="btn btn-new" id="newAnalysisBtn">
+            🔄 Analyze New Element
+          </button>
+        </div>
+
+        <div class="reasoning" id="reasoning" style="display: none;">
+          <h4>Analysis Details</h4>
+          <p id="reasoningText"></p>
+        </div>
+      </div>
+
+      <div class="element-info" id="elementInfo" style="display: none;">
+        <h4>Selected Element</h4>
+        <div class="element-details" id="elementDetails"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="results.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+// MINIMAL CALENDAR - "Put the thing inside the other thing"
+
+{calendar:(
+  frontend:(
+    grid:(months, weeks, days),
+    events:(list, details),
+    create:(form, popup)
+  ),
+  api:(
+    GET:/events,
+    POST:/events,
+    PUT:/events/:id
+  ),
+  database:(
+    events:(title, date, time, description),
+    users:(name, timezone)
+  )
+)}

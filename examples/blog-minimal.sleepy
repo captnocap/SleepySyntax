@@ -1,0 +1,19 @@
+// MINIMAL BLOG - "Put thing in other thing, colon when going deeper"
+
+{blog$minimal:(
+  frontend:(
+    header:(logo, nav:[home, about, contact]),
+    main:(posts_list, sidebar),
+    footer
+  ),
+  api:(
+    GET:/posts,
+    GET:/posts/:id,
+    POST:/posts,
+    DELETE:/posts/:id
+  ),
+  database:(
+    posts:(title, content, author, date),
+    users:(name, email)
+  )
+)}

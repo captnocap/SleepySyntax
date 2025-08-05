@@ -1,0 +1,172 @@
+{
+  "name": "sleepy-syntax-pro",
+  "displayName": "SleepySyntax Pro",
+  "description": "Advanced language support for SleepySyntax - the full-stack notation that lets you sleep at night",
+  "version": "2.0.0",
+  "publisher": "sleepy-team",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": ["Programming Languages", "Formatters", "Themes"],
+  "keywords": ["sleepy", "syntax", "ui", "layout", "dsl", "full-stack", "api", "database"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "sleepy",
+        "aliases": ["SleepySyntax", "sleepy"],
+        "extensions": [".sleepy"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/sleepy-light.svg",
+          "dark": "./icons/sleepy-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sleepy",
+        "scopeName": "source.sleepy",
+        "path": "./syntaxes/sleepy.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "SleepySyntax Rainbow Pro",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sleepy-rainbow-pro-theme.json"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "sleepy",
+        "scopes": {
+          "section": ["keyword.section"],
+          "apiEndpoint": ["support.function.api"],
+          "styleVariant": ["entity.name.style"],
+          "apiBinding": ["variable.other.api"],
+          "databaseField": ["variable.other.field"]
+        }
+      }
+    ],
+    "configuration": {
+      "title": "SleepySyntax Pro",
+      "properties": {
+        "sleepy.enableRainbowNesting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable rainbow coloring for nested brackets and sections"
+        },
+        "sleepy.enableAutoFormat": {
+          "type": "boolean", 
+          "default": true,
+          "description": "Auto-format SleepySyntax on save"
+        },
+        "sleepy.enableSemanticHighlighting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable enhanced semantic highlighting for full-stack features"
+        },
+        "sleepy.enableStructureAnalysis": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time structure analysis and code lenses"
+        },
+        "sleepy.apiCompletionSource": {
+          "type": "string",
+          "enum": ["built-in", "custom", "auto-detect"],
+          "default": "auto-detect",
+          "description": "Source for API completion suggestions"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "sleepy.format",
+        "title": "Format SleepySyntax",
+        "category": "SleepySyntax",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "sleepy.validate",
+        "title": "Validate Structure",
+        "category": "SleepySyntax",
+        "icon": "$(check)"
+      },
+      {
+        "command": "sleepy.analyze",
+        "title": "Analyze Architecture",
+        "category": "SleepySyntax",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "sleepy.generateCode",
+        "title": "Generate Code",
+        "category": "SleepySyntax",
+        "icon": "$(code)"
+      },
+      {
+        "command": "sleepy.toggleTheme",
+        "title": "Toggle Rainbow Theme",
+        "category": "SleepySyntax",
+        "icon": "$(color-mode)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == sleepy",
+          "command": "sleepy.format",
+          "group": "sleepy@1"
+        },
+        {
+          "when": "resourceLangId == sleepy", 
+          "command": "sleepy.analyze",
+          "group": "sleepy@2"
+        },
+        {
+          "when": "resourceLangId == sleepy",
+          "command": "sleepy.generateCode", 
+          "group": "sleepy@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sleepy.format",
+          "when": "resourceLangId == sleepy"
+        },
+        {
+          "command": "sleepy.validate",
+          "when": "resourceLangId == sleepy"
+        },
+        {
+          "command": "sleepy.analyze",
+          "when": "resourceLangId == sleepy"
+        },
+        {
+          "command": "sleepy.generateCode",
+          "when": "resourceLangId == sleepy"
+        }
+      ]
+    },
+    "snippets": [
+      {
+        "language": "sleepy",
+        "path": "./snippets/sleepy-snippets.json"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onLanguage:sleepy"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "14.x",
+    "typescript": "^4.4.4"
+  }
+}

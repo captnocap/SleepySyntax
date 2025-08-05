@@ -1,0 +1,1170 @@
+{
+  chatai$intelligent_messaging: (
+    styles: (
+      base: [
+        body: (
+          bg: #1a1a1a,
+          color: #ffffff,
+          font: Inter
+        ),
+        card: (
+          bg: #2d2d2d,
+          p: 6,
+          rounded: xl,
+          shadow: lg,
+          border: #404040
+        ),
+        button$primary: (
+          px: 4,
+          py: 2,
+          bg: #c96442,
+          text: #fff,
+          rounded: lg,
+          hover-bg: #a55235,
+          focus-ring: #c96442
+        ),
+        button$secondary: (
+          px: 3,
+          py: 2,
+          bg: #404040,
+          text: #e0e0e0,
+          rounded: md,
+          hover-bg: #505050
+        ),
+        button$ghost: (
+          px: 3,
+          py: 2,
+          bg: transparent,
+          text: #c0c0c0,
+          rounded: md,
+          hover-bg: #303030
+        ),
+        input: (
+          px: 4,
+          py: 3,
+          bg: #2d2d2d,
+          border: #404040,
+          rounded: lg,
+          focus-border: #c96442,
+          focus-ring: #c9644240
+        ),
+        popover: (
+          bg: #262624,
+          p: 4,
+          rounded: lg,
+          shadow: xl,
+          border: #404040
+        ),
+        sidebar: (
+          bg: #1f1f1f,
+          border-r: #404040
+        ),
+        header: (
+          bg: #2d2d2d,
+          border-b: #404040,
+          backdrop-blur
+        )
+      ]
+    ),
+    frontend: (
+      auth: (
+        login: (
+          column$auth-container: [
+            logo: (
+              row: [
+                icon: 🤖,
+                h1: ChatAI
+              ]
+            ),
+            card$auth: (
+              column: [
+                h2: Welcome_Back,
+                p: Access_your_AI_conversations,
+                input_email: api.auth.email,
+                input_password: api.auth.password,
+                row$auth-options: [
+                  checkbox: api.auth.rememberDevice,
+                  link: Forgot_Password?
+                ],
+                button$primary: Sign_In,
+                divider: or,
+                row$oauth: [
+                  button$secondary: (
+                    row: [
+                      icon: google,
+                      span: Google
+                    ]
+                  ),
+                  button$secondary: (
+                    row: [
+                      icon: github,
+                      span: GitHub
+                    ]
+                  )
+                ],
+                small$security: Protected_by_enterprise_security
+              ]
+            )
+          ]
+        )
+      ),
+      dashboard: (
+        row$main-layout: [
+          sidebar$navigation: (
+            column: [
+              row$user-info: [
+                img_avatar: api.user.avatar,
+                column: [
+                  h3: api.user.name,
+                  small: api.user.planType,
+                  badge$status: api.user.status
+                ]
+              ],
+              nav$main: (
+                column: [
+                  link$active: (
+                    row: [
+                      icon: chat,
+                      span: Conversations
+                    ]
+                  ),
+                  link: (
+                    row: [
+                      icon: users,
+                      span: Characters
+                    ]
+                  ),
+                  link: (
+                    row: [
+                      icon: book,
+                      span: Stories
+                    ]
+                  ),
+                  link: (
+                    row: [
+                      icon: brain,
+                      span: Models
+                    ]
+                  ),
+                  link: (
+                    row: [
+                      icon: settings,
+                      span: Settings
+                    ]
+                  )
+                ]
+              ),
+              section$quick-actions: (
+                column: [
+                  h4: Quick_Actions,
+                  button$secondary: (
+                    row: [
+                      icon: plus,
+                      span: New_Chat
+                    ]
+                  ),
+                  button$secondary: (
+                    row: [
+                      icon: upload,
+                      span: Import_Character
+                    ]
+                  ),
+                  button$secondary: (
+                    row: [
+                      icon: download,
+                      span: Export_Chats
+                    ]
+                  )
+                ]
+              )
+            ]
+          ),
+          main$content: (
+            column: [
+              header$chat: (
+                row$space-between: [
+                  column: [
+                    h1: api.chat.characterName,
+                    p: api.chat.modelInfo
+                  ],
+                  row$header-actions: [
+                    button$popover: 'Settings'[
+                      popover: (
+                        column: [
+                          h4: Chat_Settings,
+                          forEach: api.settings.chat: [
+                            row: [
+                              label: item.label,
+                              if: item.type=='toggle': [
+                                toggle: item.value
+                              ],
+                              if: item.type=='slider': [
+                                slider: item.value
+                              ],
+                              if: item.type=='select': [
+                                select: item.options
+                              ]
+                            ]
+                          ],
+                          divider,
+                          row: [
+                            button$secondary: Reset_to_Defaults,
+                            button$primary: Save_Settings
+                          ]
+                        ]
+                      )
+                    ],
+                    button$popover: 'Models'[
+                      popover: (
+                        column: [
+                          h4: Select_Model,
+                          forEach: api.models.available: [
+                            row$model-option: [
+                              radio: item.id,
+                              column: [
+                                h5: item.name,
+                                small: item.description,
+                                if: item.isPremium: [
+                                  badge$premium: Pro
+                                ]
+                              ],
+                              span$price: item.costPerMessage
+                            ]
+                          ],
+                          button$primary: Switch_Model
+                        ]
+                      )
+                    ],
+                    button$ghost: (
+                      icon: share
+                    ),
+                    popover$user-menu: (
+                      column: [
+                        button: Profile,
+                        button: Billing,
+                        button: API_Keys,
+                        divider,
+                        button$danger: Sign_Out
+                      ]
+                    )
+                  ]
+                ]
+              ),
+              section$messages: (
+                column$chat-container: [
+                  forEach: api.chat.messages: [
+                    if: item.sender=='user': [
+                      row$message-user: [
+                        spacer,
+                        card$user-message: (
+                          column: [
+                            p: item.content,
+                            row$message-meta: [
+                              small: item.timestamp,
+                              button$ghost: Edit,
+                              button$ghost: Delete
+                            ]
+                          ]
+                        ),
+                        img_avatar$user: api.user.avatar
+                      ]
+                    ],
+                    unless: item.sender=='user': [
+                      row$message-ai: [
+                        img_avatar$character: item.character.avatar,
+                        card$ai-message: (
+                          column: [
+                            row$character-info: [
+                              h5: item.character.name,
+                              small: item.model
+                            ],
+                            p: item.content,
+                            if: item.isStreaming: [
+                              div$typing-indicator: (
+                                span: ●●●
+                              )
+                            ],
+                            row$message-actions: [
+                              small: item.timestamp,
+                              button$ghost: Copy,
+                              button$ghost: Regenerate,
+                              button$ghost: Continue
+                            ]
+                          ]
+                        ),
+                        spacer
+                      ]
+                    ]
+                  ]
+                ]
+              ),
+              section$input: (
+                row$chat-input: [
+                  textarea$message: api.input.message,
+                  column$input-actions: [
+                    button$primary: (
+                      if: api.input.isGenerating: [
+                        icon: stop,
+                        span: Stop
+                      ],
+                      unless: api.input.isGenerating: [
+                        icon: send,
+                        span: Send
+                      ]
+                    ),
+                    row$quick-actions: [
+                      button$ghost: (
+                        icon: attachment
+                      ),
+                      button$ghost: (
+                        icon: microphone
+                      ),
+                      button$ghost: (
+                        icon: camera
+                      )
+                    ]
+                  ]
+                ]
+              )
+            ]
+          )
+        ]
+      ),
+      characters: (
+        row$characters-layout: [
+          sidebar$character-filters: (
+            column: [
+              h3: Character_Types,
+              nav$filters: (
+                column: [
+                  link$active: All_Characters,
+                  link: My_Characters,
+                  link: Popular,
+                  link: Assistants,
+                  link: Creative,
+                  link: Educational,
+                  link: Entertainment
+                ]
+              ),
+              section$tags: (
+                column: [
+                  h4: Tags,
+                  forEach: api.characters.tags: [
+                    checkbox: (
+                      row: [
+                        input: item.selected,
+                        label: item.name
+                      ]
+                    )
+                  ]
+                ]
+              )
+            ]
+          ),
+          main$characters: (
+            column: [
+              header$characters: (
+                row$space-between: [
+                  h1: Characters,
+                  row: [
+                    input_search: api.characters.search,
+                    select$sort: api.characters.sortOptions,
+                    button$primary: Create_Character
+                  ]
+                ]
+              ),
+              grid$character-grid: [
+                forEach: api.characters.list: [
+                  card$character: (
+                    column: [
+                      img$character-avatar: item.avatar,
+                      column$character-info: [
+                        h3: item.name,
+                        p: item.description,
+                        row$character-stats: [
+                          span$chats: item.chatCount_chats,
+                          span$rating: item.rating⭐
+                        ]
+                      ],
+                      row$character-actions: [
+                        if: item.isSelected: [
+                          button$primary: Continue_Chat,
+                          button$secondary: View_Profile
+                        ],
+                        unless: item.isSelected: [
+                          button$secondary: Start_Chat,
+                          button$ghost: Preview
+                        ]
+                      ]
+                    ]
+                  )
+                ]
+              ],
+              pagination: (
+                row: [
+                  button$ghost: Previous,
+                  forEach: api.characters.pagination: [
+                    button$page: item.number
+                  ],
+                  button$ghost: Next
+                ]
+              )
+            ]
+          )
+        ]
+      ),
+      character_detail: (
+        container: (
+          column: [
+            header$character: (
+              row$space-between: [
+                row: [
+                  img$character-large: api.character.avatar,
+                  column: [
+                    h1: api.character.name,
+                    p: api.character.tagline,
+                    row$character-meta: [
+                      badge$category: api.character.category,
+                      span: Created_by_api.character.creator,
+                      span: api.character.chatCount_conversations
+                    ]
+                  ]
+                ],
+                row: [
+                  button$secondary: Edit_Character,
+                  button$primary: Start_Conversation
+                ]
+              ]
+            ),
+            tabs$character-tabs: (
+              tab: [
+                label: Overview,
+                content: (
+                  column: [
+                    section$description: (
+                      column: [
+                        h3: About,
+                        p: api.character.description
+                      ]
+                    ),
+                    section$personality: (
+                      column: [
+                        h3: Personality_Traits,
+                        forEach: api.character.traits: [
+                          badge$trait: item.name
+                        ]
+                      ]
+                    ),
+                    section$example-chats: (
+                      column: [
+                        h3: Example_Conversations,
+                        forEach: api.character.examples: [
+                          card$example: (
+                            column: [
+                              p$user: item.userMessage,
+                              p$character: item.characterResponse
+                            ]
+                          )
+                        ]
+                      ]
+                    )
+                  ]
+                )
+              ],
+              tab: [
+                label: Configuration,
+                content: (
+                  column: [
+                    section$prompt: (
+                      column: [
+                        h3: System_Prompt,
+                        textarea: api.character.systemPrompt,
+                        button$secondary: Edit_Prompt
+                      ]
+                    ),
+                    section$settings: (
+                      column: [
+                        h3: Generation_Settings,
+                        forEach: api.character.settings: [
+                          row: [
+                            label: item.label,
+                            slider: item.value,
+                            span: item.description
+                          ]
+                        ]
+                      ]
+                    )
+                  ]
+                )
+              ],
+              tab: [
+                label: Analytics,
+                content: (
+                  column: [
+                    row$stats: [
+                      card$stat: (
+                        column: [
+                          h2: api.character.analytics.totalChats,
+                          p: Total_Conversations
+                        ]
+                      ),
+                      card$stat: (
+                        column: [
+                          h2: api.character.analytics.avgRating,
+                          p: Average_Rating
+                        ]
+                      ),
+                      card$stat: (
+                        column: [
+                          h2: api.character.analytics.activeUsers,
+                          p: Active_Users
+                        ]
+                      )
+                    ],
+                    chart$usage: api.character.analytics.usageChart
+                  ]
+                )
+              ]
+            )
+          ]
+        )
+      ),
+      settings: (
+        container: (
+          column: [
+            header$settings: (
+              h1: Settings
+            ),
+            tabs$settings: (
+              tab: [
+                label: Account,
+                content: (
+                  column: [
+                    section$profile: (
+                      column: [
+                        h3: Profile_Information,
+                        row: [
+                          column: [
+                            label: Name,
+                            input: api.user.name
+                          ],
+                          column: [
+                            label: Email,
+                            input_email: api.user.email
+                          ]
+                        ],
+                        row: [
+                          column: [
+                            label: Avatar,
+                            img_avatar: api.user.avatar,
+                            button$ghost: Change_Avatar
+                          ]
+                        ],
+                        button$primary: Save_Changes
+                      ]
+                    )
+                  ]
+                )
+              ],
+              tab: [
+                label: Preferences,
+                content: (
+                  column: [
+                    section$interface: (
+                      column: [
+                        h3: Interface_Preferences,
+                        row: [
+                          label: Theme,
+                          select: api.preferences.theme
+                        ],
+                        row: [
+                          label: Language,
+                          select: api.preferences.language
+                        ],
+                        row: [
+                          checkbox: api.preferences.animations,
+                          label: Enable_Animations
+                        ]
+                      ]
+                    ),
+                    section$chat: (
+                      column: [
+                        h3: Chat_Preferences,
+                        row: [
+                          label: Default_Model,
+                          select: api.preferences.defaultModel
+                        ],
+                        row: [
+                          checkbox: api.preferences.autoSave,
+                          label: Auto-save_Conversations
+                        ],
+                        row: [
+                          checkbox: api.preferences.streamResponse,
+                          label: Stream_AI_Responses
+                        ]
+                      ]
+                    )
+                  ]
+                )
+              ],
+              tab: [
+                label: Privacy,
+                content: (
+                  column: [
+                    section$data: (
+                      column: [
+                        h3: Data_&_Privacy,
+                        row: [
+                          checkbox: api.privacy.shareUsage,
+                          label: Share_Anonymous_Usage_Data
+                        ],
+                        row: [
+                          checkbox: api.privacy.personalizedAds,
+                          label: Personalized_Recommendations
+                        ],
+                        button$secondary: Download_My_Data,
+                        button$danger: Delete_Account
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        )
+      )
+    ),
+    api: (
+      auth: (
+        POST:/auth/login: (
+          body: (
+            email: string,
+            password: string,
+            deviceId: string
+          ),
+          validate: (
+            email: required_valid,
+            password: required_min_8
+          ),
+          rateLimit: (
+            max: 5_per_15min,
+            key: ip
+          ),
+          exec: (
+            user: db.users.findByEmail(body.email),
+            if: user.exists: (
+              if: bcrypt.compare(body.password, user.passwordHash): (
+                session: create_session(user.id, body.deviceId),
+                audit: log_login(user.id, request.ip),
+                returns: (
+                  token: jwt.sign({userId: user.id, role: user.role}),
+                  user: user.safeProfile,
+                  preferences: db.preferences.findByUserId(user.id)
+                )
+              ),
+              else: (
+                audit: log_failed_login(body.email, request.ip),
+                returns: error.invalid_credentials
+              )
+            ),
+            else: (
+              returns: error.invalid_credentials
+            )
+          )
+        ),
+        POST:/auth/logout: (
+          auth: jwt_required,
+          exec: (
+            db.sessions.invalidate(auth.sessionId),
+            audit: log_logout(auth.userId),
+            returns: success
+          )
+        )
+      ),
+      chat: (
+        GET:/chats: (
+          auth: jwt_required,
+          query: (
+            limit: int,
+            offset: int,
+            characterId: string
+          ),
+          returns: (
+            chats: db.chats.findByUserId(auth.userId, query),
+            pagination: calculate_pagination(query)
+          )
+        ),
+        POST:/chats: (
+          auth: jwt_required,
+          body: (
+            characterId: string,
+            title: string
+          ),
+          exec: (
+            chat: db.chats.create({
+              userId: auth.userId,
+              characterId: body.characterId,
+              title: body.title
+            }),
+            audit: log_chat_created(auth.userId, chat.id),
+            returns: chat
+          )
+        ),
+        GET:/chats/:id/messages: (
+          auth: jwt_required,
+          validate: chat_ownership,
+          returns: (
+            messages: db.messages.findByChatId(params.id),
+            character: db.characters.findById(chat.characterId)
+          )
+        ),
+        POST:/chats/:id/messages: (
+          auth: jwt_required,
+          validate: chat_ownership,
+          body: (
+            content: string,
+            attachments: array
+          ),
+          exec: (
+            message: db.messages.create({
+              chatId: params.id,
+              sender: 'user',
+              content: body.content,
+              attachments: body.attachments
+            }),
+            ai_response: generate_ai_response(params.id, message),
+            ai_message: db.messages.create({
+              chatId: params.id,
+              sender: 'assistant',
+              content: ai_response.content,
+              model: ai_response.model,
+              metadata: ai_response.metadata
+            }),
+            usage: log_usage(auth.userId, ai_response.tokens),
+            returns: (
+              userMessage: message,
+              aiMessage: ai_message
+            )
+          )
+        ),
+        DELETE:/chats/:id: (
+          auth: jwt_required,
+          validate: chat_ownership,
+          exec: (
+            db.chats.delete(params.id),
+            db.messages.deleteByChatId(params.id),
+            audit: log_chat_deleted(auth.userId, params.id),
+            returns: success
+          )
+        )
+      ),
+      characters: (
+        GET:/characters: (
+          auth: jwt_required,
+          query: (
+            category: string,
+            tags: array,
+            search: string,
+            limit: int,
+            offset: int
+          ),
+          returns: (
+            characters: db.characters.search(query),
+            categories: db.characters.getCategories(),
+            tags: db.characters.getTags()
+          )
+        ),
+        GET:/characters/:id: (
+          auth: jwt_required,
+          returns: (
+            character: db.characters.findByIdWithDetails(params.id),
+            analytics: calculate_character_analytics(params.id)
+          )
+        ),
+        POST:/characters: (
+          auth: jwt_required,
+          body: (
+            name: string,
+            description: string,
+            avatar: string,
+            systemPrompt: string,
+            traits: array,
+            category: string
+          ),
+          validate: (
+            name: required_min_3_max_50,
+            description: required_min_10_max_500,
+            systemPrompt: required_min_50
+          ),
+          exec: (
+            character: db.characters.create({
+              ...body,
+              creatorId: auth.userId,
+              isPublic: false
+            }),
+            audit: log_character_created(auth.userId, character.id),
+            returns: character
+          )
+        ),
+        PUT:/characters/:id: (
+          auth: jwt_required,
+          validate: character_ownership,
+          body: character_updates,
+          exec: (
+            db.characters.update(params.id, body),
+            audit: log_character_updated(auth.userId, params.id),
+            returns: success
+          )
+        )
+      ),
+      models: (
+        GET:/models: (
+          auth: jwt_required,
+          returns: (
+            available: db.models.getAvailable(auth.user.plan),
+            usage: db.usage.getByUserId(auth.userId, current_month)
+          )
+        ),
+        POST:/models/generate: (
+          auth: jwt_required,
+          body: (
+            model: string,
+            messages: array,
+            settings: object
+          ),
+          validate: (
+            model: required_available,
+            messages: required_non_empty
+          ),
+          rateLimit: (
+            max: api.getRateLimit(auth.user.plan),
+            window: 1_hour
+          ),
+          exec: (
+            if: check_usage_limits(auth.userId, body.model): (
+              response: call_ai_model(body.model, body.messages, body.settings),
+              usage: log_model_usage(auth.userId, response.tokens, body.model),
+              billing: charge_usage(auth.userId, response.cost),
+              returns: (
+                response: response.content,
+                model: body.model,
+                tokens: response.tokens,
+                cost: response.cost
+              )
+            ),
+            else: (
+              returns: error.usage_limit_exceeded
+            )
+          )
+        )
+      ),
+      users: (
+        GET:/profile: (
+          auth: jwt_required,
+          returns: (
+            user: db.users.findByIdWithProfile(auth.userId),
+            preferences: db.preferences.findByUserId(auth.userId),
+            usage: db.usage.getCurrentMonth(auth.userId),
+            billing: db.billing.getCurrentPlan(auth.userId)
+          )
+        ),
+        PUT:/profile: (
+          auth: jwt_required,
+          body: profile_updates,
+          exec: (
+            db.users.update(auth.userId, body),
+            audit: log_profile_updated(auth.userId),
+            returns: success
+          )
+        ),
+        PUT:/preferences: (
+          auth: jwt_required,
+          body: preferences_updates,
+          exec: (
+            db.preferences.upsert(auth.userId, body),
+            returns: success
+          )
+        )
+      ),
+      analytics: (
+        GET:/usage: (
+          auth: jwt_required,
+          query: (
+            period: enum_day_week_month_year
+          ),
+          returns: (
+            usage: db.usage.getAnalytics(auth.userId, query.period),
+            costs: db.billing.getCosts(auth.userId, query.period),
+            models: db.usage.getModelBreakdown(auth.userId, query.period)
+          )
+        )
+      )
+    ),
+    database: (
+      users: (
+        id: uuid_primary,
+        name: string_required,
+        email: string_unique_required,
+        passwordHash: string_required,
+        avatar: url_nullable,
+        role: enum_user_admin_default_user,
+        plan: enum_free_pro_enterprise_default_free,
+        emailVerified: boolean_default_false,
+        createdAt: timestamp_auto,
+        updatedAt: timestamp_auto
+      ),
+      characters: (
+        id: uuid_primary,
+        name: string_required,
+        description: text_required,
+        avatar: url_nullable,
+        systemPrompt: text_required,
+        traits: json_array,
+        category: string_required,
+        tags: json_array,
+        creatorId: uuid_foreign_users,
+        isPublic: boolean_default_false,
+        settings: json_nullable,
+        chatCount: integer_default_0,
+        rating: decimal_default_0,
+        createdAt: timestamp_auto,
+        updatedAt: timestamp_auto
+      ),
+      chats: (
+        id: uuid_primary,
+        userId: uuid_foreign_users,
+        characterId: uuid_foreign_characters,
+        title: string_required,
+        messageCount: integer_default_0,
+        lastMessageAt: timestamp_nullable,
+        isArchived: boolean_default_false,
+        createdAt: timestamp_auto,
+        updatedAt: timestamp_auto
+      ),
+      messages: (
+        id: uuid_primary,
+        chatId: uuid_foreign_chats,
+        sender: enum_user_assistant_required,
+        content: text_required,
+        attachments: json_array_nullable,
+        model: string_nullable,
+        metadata: json_nullable,
+        tokens: integer_nullable,
+        cost: decimal_nullable,
+        createdAt: timestamp_auto
+      ),
+      models: (
+        id: uuid_primary,
+        name: string_unique_required,
+        provider: string_required,
+        apiKey: string_encrypted_required,
+        costPerToken: decimal_required,
+        maxContextLength: integer_required,
+        capabilities: json_array,
+        planRequirement: enum_free_pro_enterprise_default_free,
+        isActive: boolean_default_true,
+        createdAt: timestamp_auto
+      ),
+      usage: (
+        id: uuid_primary,
+        userId: uuid_foreign_users,
+        modelId: uuid_foreign_models,
+        chatId: uuid_foreign_chats_nullable,
+        tokens: integer_required,
+        cost: decimal_required,
+        date: date_required,
+        createdAt: timestamp_auto
+      ),
+      preferences: (
+        id: uuid_primary,
+        userId: uuid_foreign_users,
+        theme: enum_light_dark_auto_default_auto,
+        language: enum_en_es_fr_de_default_en,
+        defaultModel: uuid_foreign_models_nullable,
+        autoSave: boolean_default_true,
+        streamResponse: boolean_default_true,
+        animations: boolean_default_true,
+        notifications: json_nullable,
+        createdAt: timestamp_auto,
+        updatedAt: timestamp_auto
+      ),
+      sessions: (
+        id: uuid_primary,
+        userId: uuid_foreign_users,
+        deviceId: string_required,
+        token: string_unique_required,
+        ipAddress: string_required,
+        userAgent: string_nullable,
+        expiresAt: timestamp_required,
+        isActive: boolean_default_true,
+        createdAt: timestamp_auto
+      ),
+      audit_logs: (
+        id: uuid_primary,
+        userId: uuid_foreign_users_nullable,
+        action: string_required,
+        resourceType: string_nullable,
+        resourceId: string_nullable,
+        details: json_nullable,
+        ipAddress: string_required,
+        userAgent: string_nullable,
+        createdAt: timestamp_auto
+      ),
+      billing: (
+        id: uuid_primary,
+        userId: uuid_foreign_users,
+        plan: enum_free_pro_enterprise_required,
+        billingCycle: enum_monthly_yearly_nullable,
+        amount: decimal_nullable,
+        currency: string_default_usd,
+        status: enum_active_cancelled_past_due_default_active,
+        subscriptionId: string_nullable,
+        currentPeriodStart: date_nullable,
+        currentPeriodEnd: date_nullable,
+        createdAt: timestamp_auto,
+        updatedAt: timestamp_auto
+      )
+    ),
+    security: (
+      authentication: (
+        jwt: (
+          secret: env.JWT_SECRET,
+          algorithm: HS256,
+          expiry: 24h
+        ),
+        sessions: (
+          timeout: 30d,
+          maxConcurrent: 5
+        ),
+        passwordPolicy: (
+          minLength: 8,
+          requireUppercase: true,
+          requireNumbers: true,
+          preventReuse: 5
+        )
+      ),
+      authorization: (
+        rbac: (
+          roles: [user, admin],
+          permissions: (
+            user: [
+              read: own_chats,
+              write: own_chats,
+              read: public_characters,
+              write: own_characters
+            ],
+            admin: [
+              read: all,
+              write: all,
+              manage: users
+            ]
+          )
+        )
+      ),
+      rateLimit: (
+        login: 5_per_15min,
+        api_calls: (
+          free: 100_per_hour,
+          pro: 1000_per_hour,
+          enterprise: unlimited
+        ),
+        chat_messages: (
+          free: 50_per_day,
+          pro: 1000_per_day,
+          enterprise: unlimited
+        )
+      ),
+      dataProtection: (
+        encryption: (
+          atRest: AES-256,
+          inTransit: TLS_1.3,
+          fields: [passwordHash, apiKeys]
+        ),
+        privacy: (
+          dataRetention: 2_years,
+          anonymization: automatic,
+          userDeletion: complete_within_30d
+        )
+      )
+    ),
+    ai: (
+      models: (
+        gpt-4: (
+          provider: openai,
+          costPerToken: 0.00003,
+          maxTokens: 8192,
+          planRequirement: pro
+        ),
+        claude-3: (
+          provider: anthropic,
+          costPerToken: 0.000015,
+          maxTokens: 200000,
+          planRequirement: enterprise
+        ),
+        llama-2: (
+          provider: together,
+          costPerToken: 0.0000002,
+          maxTokens: 4096,
+          planRequirement: free
+        )
+      ),
+      generation: (
+        temperature: configurable_0_to_2,
+        maxTokens: configurable_per_model,
+        streamResponse: true,
+        safetyFilters: enabled,
+        moderationApi: openai_moderation
+      ),
+      character_engine: (
+        systemPromptTemplate: "You are {{character.name}}, {{character.description}}. {{character.traits}}",
+        memoryWindow: 50_messages,
+        personalityConsistency: enforced,
+        responseStyle: character_specific
+      )
+    ),
+    deployment: (
+      frontend: (
+        platform: vercel,
+        build: npm_run_build,
+        env: (
+          NEXT_PUBLIC_API_URL: env.API_URL,
+          NEXT_PUBLIC_STRIPE_KEY: env.STRIPE_PUBLIC_KEY
+        )
+      ),
+      backend: (
+        platform: railway,
+        runtime: node20,
+        scaling: (
+          min: 2,
+          max: 10
+        ),
+        env: (
+          DATABASE_URL: env.DATABASE_URL,
+          JWT_SECRET: env.JWT_SECRET,
+          OPENAI_API_KEY: env.OPENAI_API_KEY,
+          ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY,
+          STRIPE_SECRET: env.STRIPE_SECRET
+        )
+      ),
+      database: (
+        provider: postgresql,
+        version: 15,
+        instance: db.t4g.large,
+        backup: (
+          automated: daily,
+          retention: 30d
+        )
+      ),
+      monitoring: (
+        apm: sentry,
+        logging: winston,
+        metrics: prometheus,
+        alerts: (
+          errorRate: '>5%',
+          responseTime: '>2s',
+          aiApiFailures: '>10_per_hour'
+        )
+      )
+    )
+  )
+}

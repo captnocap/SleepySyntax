@@ -1,0 +1,22 @@
+// MINIMAL ECOMMERCE - "lol do whatever"
+
+{shop:(
+  frontend:(
+    header:(logo, search, cart),
+    products_grid,
+    checkout,
+    footer
+  ),
+  api:(
+    GET:/products,
+    POST:/cart/add,
+    POST:/checkout,
+    POST:/payment
+  ),
+  database:(
+    products:(name, price, stock),
+    orders:(items, total, status),
+    users:(email, address)
+  ),
+  payment:stripe
+)}

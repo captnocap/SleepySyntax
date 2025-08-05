@@ -1,0 +1,2582 @@
+{
+  enterprise_bank$secure_theme: (
+    styles: (
+      base: [
+        body: (
+          bg: #0a0f1c,
+          color: #e2e8f0,
+          font: Inter
+        ),button$primary: (
+          px: 6,
+          py: 3,
+          bg: #059669,
+          text: #fff,
+          rounded: lg,
+          shadow: lg,
+          hover-bg: #047857,
+          focus-ring: #10b981
+        ),button$danger: (
+          px: 6,
+          py: 3,
+          bg: #dc2626,
+          text: #fff,
+          rounded: lg,
+          shadow: lg,
+          hover-bg: #b91c1c
+        ),button$secondary: (
+          px: 4,
+          py: 2,
+          bg: #374151,
+          text: #e5e7eb,
+          rounded: lg,
+          hover-bg: #4b5563
+        ),input: (
+          px: 4,
+          py: 3,
+          bg: #1f2937,
+          border: #374151,
+          rounded: lg,
+          focus-border: #059669,
+          focus-ring: #065f46
+        ),card: (
+          bg: #111827,
+          p: 6,
+          rounded: xl,
+          shadow: 2xl,
+          border: #1f2937
+        ),card$balance: (
+          bg: linear-gradient(
+            135deg,
+            #059669,
+            #0d9488
+          ),p: 8,
+          rounded: 2xl,
+          shadow: 2xl,
+          text: #fff
+        ),table: (
+          bg: #1f2937,
+          rounded: lg,
+          border: #374151
+        ),modal: (
+          bg: #111827,
+          p: 8,
+          rounded: 2xl,
+          shadow: 3xl,
+          border: #1f2937
+        ),sidebar: (
+          bg: #0f172a,
+          border-r: #1e293b
+        ),header: (
+          bg: #1e293b,
+          border-b: #334155,
+          backdrop-blur
+        )
+      ]
+    ),frontend: (
+      auth: (
+        login: (
+          column$auth-container: [
+            logo: (
+              row: [
+                icon$bank: 🏦,
+                h1$brand: SecureBank_Pro
+              ]
+            ),card$auth: (
+              column: [
+                h2: Welcome_Back,
+                p$subtitle: Access_your_secure_banking_portal,
+                input_email$auth: api.auth.email,
+                input_password$auth: api.auth.password,
+                row$auth-options: [
+                  checkbox$remember: api.auth.rememberMe,
+                  link$forgot: Forgot_Password?
+                ],button$primary: Sign_In_Securely,
+                divider$auth: or,
+                row$oauth: [
+                  button$secondary: (
+                    row: [
+                      icon: google,
+                      span: Google
+                    ]
+                  ),button$secondary: (
+                    row: [
+                      icon: microsoft,
+                      span: Microsoft
+                    ]
+                  )
+                ],row$security-notice: [
+                  icon: shield,
+                  small$security: Protected_by_256-bit_encryption
+                ]
+              ]
+            )
+          ]
+        ),mfa: (
+          column$mfa-container: [
+            card$security: (
+              column: [
+                icon$large: 🔐,
+                h2: Two-Factor_Authentication,
+                p: Enter_the_6-digit_code_from_your_authenticator_app,
+                input_code$mfa: api.auth.mfaCode,
+                row$mfa-actions: [
+                  button$ghost: Use_Backup_Code,
+                  button$primary: Verify
+                ],small$security-tip: Didn't_receive_code?_Check_your_mobile_app
+              ]
+            )
+          ]
+        ),biometric: (
+          column$biometric-container: [
+            card$biometric: (
+              column: [
+                icon$biometric: 👆,
+                h2: Biometric_Verification,
+                p: Place_your_finger_on_the_sensor_or_look_at_the_camera,
+                div$biometric-scanner: (
+                  column: [
+                    div$fingerprint-area,
+                    p$status: api.biometric.status
+                  ]
+                ),row$biometric-options: [
+                  button$ghost: Use_PIN_Instead,
+                  button$primary: Continue
+                ]
+              ]
+            )
+          ]
+        )
+      ),dashboard: (
+        row$main-layout: [
+          sidebar$bank: (
+            column: [
+              row$user-info: [
+                img_avatar$banker: api.user.avatar,
+                column: [
+                  h3$username: api.user.fullName,
+                  small$account-type: api.user.accountType,
+                  badge$verification: api.user.verificationStatus
+                ]
+              ],nav$banking: (
+                column: [
+                  link$active: (
+                    row: [
+                      icon: dashboard,
+                      span: Dashboard
+                    ]
+                  ),link: (
+                    row: [
+                      icon: accounts,
+                      span: Accounts
+                    ]
+                  ),link: (
+                    row: [
+                      icon: transfers,
+                      span: Transfers
+                    ]
+                  ),link: (
+                    row: [
+                      icon: payments,
+                      span: Bill_Pay
+                    ]
+                  ),link: (
+                    row: [
+                      icon: investments,
+                      span: Investments
+                    ]
+                  ),link: (
+                    row: [
+                      icon: loans,
+                      span: Loans
+                    ]
+                  ),link: (
+                    row: [
+                      icon: cards,
+                      span: Cards
+                    ]
+                  ),link: (
+                    row: [
+                      icon: reports,
+                      span: Reports
+                    ]
+                  ),link: (
+                    row: [
+                      icon: settings,
+                      span: Settings
+                    ]
+                  )
+                ]
+              ),section$quick-actions: (
+                column: [
+                  h4: Quick_Actions,
+                  button$secondary: (
+                    row: [
+                      icon: send,
+                      span: Send_Money
+                    ]
+                  ),button$secondary: (
+                    row: [
+                      icon: deposit,
+                      span: Mobile_Deposit
+                    ]
+                  ),button$secondary: (
+                    row: [
+                      icon: atm,
+                      span: Find_ATM
+                    ]
+                  )
+                ]
+              )
+            ]
+          ),main$dashboard: (
+            column: [
+              header$dashboard: (
+                row$space-between: [
+                  column: [
+                    h1: Good_Morning_api.user.firstName,
+                    p$date: api.dashboard.currentDate
+                  ],row$header-actions: [
+                    input_search$global: api.search.query,
+                    button$ghost: (
+                      icon: notifications
+                    ),button$ghost: (
+                      icon: messages
+                    ),popover$user-menu: (
+                      column: [
+                        button: Profile,
+                        button: Security,
+                        button: Statements,
+                        divider,
+                        button$danger: Sign_Out
+                      ]
+                    )
+                  ]
+                ]
+              ),section$balance-overview: (
+                row$balance-cards: [
+                  card$balance: (
+                    column: [
+                      row$balance-header: [
+                        h3: Total_Balance,
+                        icon$visibility: api.balance.isVisible
+                      ],if: api.balance.isVisible: [
+                        h1$balance: api.balance.total
+                      ],unless: api.balance.isVisible: [
+                        h1$hidden: ••••••
+                      ],row$balance-change: [
+                        span$change-amount: api.balance.monthlyChange,
+                        span$change-percent: api.balance.changePercent
+                      ]
+                    ]
+                  ),card$available: (
+                    column: [
+                      h3: Available_Balance,
+                      h2$available: api.balance.available,
+                      p$pending: api.balance.pendingTransactions_pending
+                    ]
+                  ),card$savings: (
+                    column: [
+                      h3: Savings_Goals,
+                      h2$savings: api.savings.totalSaved,
+                      div$progress-bar: (
+                        div$progress: api.savings.progressPercent
+                      ),p$goal: api.savings.goalAmount_target
+                    ]
+                  )
+                ]
+              ),section$recent-activity: (
+                column: [
+                  row$section-header: [
+                    h2: Recent_Activity,
+                    row: [
+                      select$activity-filter: api.filters.activityType,
+                      button$ghost: Export,
+                      button$primary: View_All
+                    ]
+                  ],table$transactions: (
+                    column: [
+                      row$table-header: [
+                        th: Date,
+                        th: Description,
+                        th: Amount,
+                        th: Category,
+                        th: Status
+                      ],forEach: api.transactions.recent: [
+                        row$transaction: (
+                          row: [
+                            td: item.date,
+                            td: (
+                              column: [
+                                span$description: item.description,
+                                small$merchant: item.merchant
+                              ]
+                            ),td$amount: (
+                              span: item.amount,
+                              small$account: item.accountName
+                            ),td: (
+                              badge$category: item.category
+                            ),td: (
+                              badge$status: item.status
+                            )
+                          ]
+                        )
+                      ]
+                    ]
+                  )
+                ]
+              ),section$financial-insights: (
+                row$insights: [
+                  card$spending: (
+                    column: [
+                      h3: Monthly_Spending,
+                      chart$donut: api.insights.spendingBreakdown,
+                      forEach: api.insights.categories: [
+                        row$category: [
+                          div$color-indicator: item.color,
+                          span: item.name,
+                          span$amount: item.amount,
+                          span$percent: item.percentage
+                        ]
+                      ]
+                    ]
+                  ),card$trends: (
+                    column: [
+                      h3: Spending_Trends,
+                      chart$line: api.insights.spendingTrends,
+                      row$trend-metrics: [
+                        metric: (
+                          column: [
+                            span$metric-value: api.insights.averageMonthly,
+                            small: Avg_Monthly
+                          ]
+                        ),metric: (
+                          column: [
+                            span$metric-value: api.insights.highestCategory,
+                            small: Top_Category
+                          ]
+                        )
+                      ]
+                    ]
+                  )
+                ]
+              ),section$upcoming-bills: (
+                column: [
+                  row$bills-header: [
+                    h2: Upcoming_Bills,
+                    button$secondary: Schedule_Payment
+                  ],forEach: api.bills.upcoming: [
+                    card$bill: (
+                      row: [
+                        column: [
+                          h4: item.payee,
+                          p$amount: item.amount,
+                          small$due: item.dueDate
+                        ],column$bill-actions: [
+                          if: item.autoPay: [
+                            badge$auto: Auto_Pay
+                          ],unless: item.autoPay: [
+                            button$primary: Pay_Now
+                          ]
+                        ]
+                      ]
+                    )
+                  ]
+                ]
+              )
+            ]
+          ),accounts: (
+            row$accounts-layout: [
+              sidebar$accounts-nav: (
+                column: [
+                  h3: Account_Types,
+                  nav$account-filters: (
+                    column: [
+                      link$active: All_Accounts,
+                      link: Checking,
+                      link: Savings,
+                      link: Credit_Cards,
+                      link: Investments,
+                      link: Loans
+                    ]
+                  )
+                ]
+              ),main$accounts: (
+                column: [
+                  header$accounts: (
+                    row$space-between: [
+                      h1: My_Accounts,
+                      row: [
+                        button$secondary: Download_Statements,
+                        button$primary: Open_New_Account
+                      ]
+                    ]
+                  ),section$account-grid: (
+                    grid$accounts: [
+                      forEach: api.accounts: [
+                        card$account: (
+                          column: [
+                            row$account-header: [
+                              h3: item.name,
+                              dropdown$account-actions: (
+                                column: [
+                                  button: View_Details,
+                                  button: Download_Statement,
+                                  button: Set_Alerts,
+                                  if: item.canClose: [
+                                    button$danger: Close_Account
+                                  ]
+                                ]
+                              )
+                            ],row$account-info: [
+                              column: [
+                                h2$balance: item.balance,
+                                small$account-number: item.maskedNumber
+                              ],icon$account-type: item.type
+                            ],row$account-stats: [
+                              stat: (
+                                column: [
+                                  span$value: item.monthlyActivity,
+                                  small: This_Month
+                                ]
+                              ),stat: (
+                                column: [
+                                  span$value: item.interestRate,
+                                  small: Interest_Rate
+                                ]
+                              )
+                            ],row$quick-actions: [
+                              button$secondary: Transfer,
+                              button$secondary: Pay_Bills,
+                              button$ghost: Details
+                            ]
+                          ]
+                        )
+                      ]
+                    ),section$account-performance: (
+                      column: [
+                        h2: Account_Performance,
+                        row$performance-charts: [
+                          card$growth: (
+                            column: [
+                              h3: Account_Growth,
+                              chart$area: api.performance.growthChart
+                            ]
+                          ),card$allocation: (
+                            column: [
+                              h3: Asset_Allocation,
+                              chart$pie: api.performance.allocationChart
+                            ]
+                          )
+                        ]
+                      ]
+                    )
+                  ]
+                ),transfers: (
+                  column$transfers-layout: [
+                    header$transfers: (
+                      row$space-between: [
+                        h1: Transfer_Money,
+                        row: [
+                          button$secondary: Scheduled_Transfers,
+                          button$primary: New_Transfer
+                        ]
+                      ]
+                    ),section$transfer-form: (
+                      row$transfer-content: [
+                        card$transfer-setup: (
+                          column: [
+                            h2: Transfer_Details,
+                            row$transfer-accounts: [
+                              column$from-account: [
+                                label: From_Account,
+                                select$account-from: api.accounts.owned
+                              ],column$to-account: [
+                                label: To_Account,
+                                select$account-to: api.accounts.all
+                              ]
+                            ],column$amount-section: [
+                              label: Amount,
+                              input$amount: api.transfer.amount,
+                              row$amount-suggestions: [
+                                button$suggestion: $100,
+                                button$suggestion: $500,
+                                button$suggestion: $1000
+                              ]
+                            ],column$transfer-options: [
+                              label: Transfer_Type,
+                              radio_group$transfer-type: (
+                                column: [
+                                  radio: (
+                                    row: [
+                                      input: immediate,
+                                      label: Immediate_Transfer
+                                    ]
+                                  ),radio: (
+                                    row: [
+                                      input: scheduled,
+                                      label: Schedule_Transfer
+                                    ]
+                                  ),radio: (
+                                    row: [
+                                      input: recurring,
+                                      label: Recurring_Transfer
+                                    ]
+                                  )
+                                ]
+                              ),if: api.transfer.isScheduled: [
+                                column$schedule-options: [
+                                  label: Transfer_Date,
+                                  input_date: api.transfer.scheduledDate
+                                ]
+                              ],if: api.transfer.isRecurring: [
+                                column$recurring-options: [
+                                  label: Frequency,
+                                  select: api.transfer.frequency,
+                                  label: End_Date,
+                                  input_date: api.transfer.endDate
+                                ]
+                              ]
+                            ],column$memo-section: [
+                              label: Memo_(
+                                Optional
+                              ),textarea: api.transfer.memo
+                            ],row$transfer-actions: [
+                              button$secondary: Save_as_Template,
+                              button$primary: Review_Transfer
+                            ]
+                          ]
+                        ),card$transfer-summary: (
+                          column: [
+                            h3: Transfer_Summary,
+                            row$summary-item: [
+                              span: From,
+                              span$account: api.transfer.fromAccount
+                            ],row$summary-item: [
+                              span: To,
+                              span$account: api.transfer.toAccount
+                            ],row$summary-item: [
+                              span: Amount,
+                              span$amount: api.transfer.amount
+                            ],row$summary-item: [
+                              span: Fee,
+                              span$fee: api.transfer.fee
+                            ],divider,
+                            row$summary-total: [
+                              span$bold: Total,
+                              span$total: api.transfer.total
+                            ],button$primary: Confirm_Transfer
+                          ]
+                        )
+                      ]
+                    ),section$transfer-history: (
+                      column: [
+                        h2: Recent_Transfers,
+                        table$transfer-history: (
+                          column: [
+                            row$table-header: [
+                              th: Date,
+                              th: From,
+                              th: To,
+                              th: Amount,
+                              th: Status,
+                              th: Actions
+                            ],forEach: api.transfers.history: [
+                              row$transfer-row: [
+                                td: item.date,
+                                td: item.fromAccount,
+                                td: item.toAccount,
+                                td: item.amount,
+                                td: (
+                                  badge$status: item.status
+                                ),td: (
+                                  button$ghost: Details
+                                )
+                              ]
+                            ]
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                ),investments: (
+                  column$investments-layout: [
+                    header$investments: (
+                      row$space-between: [
+                        h1: Investment_Portfolio,
+                        row: [
+                          button$secondary: Research,
+                          button$secondary: Watchlist,
+                          button$primary: Buy/Sell
+                        ]
+                      ]
+                    ),section$portfolio-overview: (
+                      row$portfolio-cards: [
+                        card$portfolio-value: (
+                          column: [
+                            h3: Total_Portfolio_Value,
+                            h1$portfolio: api.portfolio.totalValue,
+                            row$portfolio-change: [
+                              span$change: api.portfolio.dailyChange,
+                              span$percent: api.portfolio.changePercent,
+                              icon$trend: api.portfolio.trendDirection
+                            ]
+                          ]
+                        ),card$portfolio-performance: (
+                          column: [
+                            h3: Performance_Today,
+                            chart$mini: api.portfolio.todayChart,
+                            row$performance-metrics: [
+                              metric: (
+                                column: [
+                                  span$value: api.portfolio.gainLoss,
+                                  small: Gain/Loss
+                                ]
+                              ),metric: (
+                                column: [
+                                  span$value: api.portfolio.returnPercent,
+                                  small: Return_%
+                                ]
+                              )
+                            ]
+                          ]
+                        ),card$asset-allocation: (
+                          column: [
+                            h3: Asset_Allocation,
+                            chart$donut: api.portfolio.allocation,
+                            forEach: api.portfolio.assetTypes: [
+                              row$asset: [
+                                div$color: item.color,
+                                span: item.name,
+                                span: item.percent
+                              ]
+                            ]
+                          ]
+                        )
+                      ]
+                    ),section$holdings: (
+                      column: [
+                        row$holdings-header: [
+                          h2: Holdings,
+                          row: [
+                            select$sort: api.portfolio.sortOptions,
+                            button$ghost: Filter,
+                            button$ghost: Export
+                          ]
+                        ],table$holdings: (
+                          column: [
+                            row$table-header: [
+                              th: Symbol,
+                              th: Company,
+                              th: Shares,
+                              th: Price,
+                              th: Market_Value,
+                              th: Day_Change,
+                              th: Total_Return,
+                              th: Actions
+                            ],forEach: api.portfolio.holdings: [
+                              row$holding: [
+                                td: (
+                                  column: [
+                                    span$symbol: item.symbol,
+                                    small$exchange: item.exchange
+                                  ]
+                                ),td: item.companyName,
+                                td: item.shares,
+                                td: item.currentPrice,
+                                td: item.marketValue,
+                                td: (
+                                  span$change: item.dayChange,
+                                  span$percent: item.dayChangePercent
+                                ),td: (
+                                  span$return: item.totalReturn,
+                                  span$percent: item.totalReturnPercent
+                                ),td: (
+                                  row: [
+                                    button$secondary: Buy,
+                                    button$secondary: Sell,
+                                    button$ghost: Details
+                                  ]
+                                )
+                              ]
+                            ]
+                          ]
+                        )
+                      ]
+                    ),section$market-news: (
+                      column: [
+                        h2: Market_News_&_Analysis,
+                        row$news-grid: [
+                          forEach: api.market.news: [
+                            card$news: (
+                              column: [
+                                img$news: item.image,
+                                h4: item.headline,
+                                p$news-summary: item.summary,
+                                row$news-meta: [
+                                  small$source: item.source,
+                                  small$time: item.publishedAt
+                                ],button$ghost: Read_More
+                              ]
+                            )
+                          ]
+                        ]
+                      ]
+                    )
+                  ]
+                ),bills: (
+                  column$bills-layout: [
+                    header$bills: (
+                      row$space-between: [
+                        h1: Bill_Pay,
+                        row: [
+                          button$secondary: Payee_Management,
+                          button$primary: Pay_Bills
+                        ]
+                      ]
+                    ),section$bills-overview: (
+                      row$bills-summary: [
+                        card$bills-due: (
+                          column: [
+                            h3: Bills_Due_Soon,
+                            h2$count: api.bills.dueCount,
+                            forEach: api.bills.dueSoon: [
+                              row$bill-item: [
+                                span: item.payee,
+                                span$amount: item.amount,
+                                span$due: item.dueDate
+                              ]
+                            ]
+                          ]
+                        ),card$autopay: (
+                          column: [
+                            h3: AutoPay_Enabled,
+                            h2$count: api.bills.autoPayCount,
+                            p: api.bills.autoPaySavings_saved_this_month
+                          ]
+                        ),card$payment-history: (
+                          column: [
+                            h3: Recent_Payments,
+                            forEach: api.bills.recentPayments: [
+                              row$payment: [
+                                span: item.payee,
+                                span$amount: item.amount,
+                                badge$status: item.status
+                              ]
+                            ]
+                          ]
+                        )
+                      ]
+                    ),section$bill-management: (
+                      column: [
+                        row$bill-tabs: [
+                          tab$active: All_Bills,
+                          tab: Due_Soon,
+                          tab: Scheduled,
+                          tab: AutoPay
+                        ],table$bills: (
+                          column: [
+                            row$table-header: [
+                              th: Payee,
+                              th: Amount_Due,
+                              th: Due_Date,
+                              th: Account,
+                              th: Status,
+                              th: Actions
+                            ],forEach: api.bills.all: [
+                              row$bill: [
+                                td: (
+                                  column: [
+                                    span$payee: item.payeeName,
+                                    small$account-number: item.accountNumber
+                                  ]
+                                ),td: item.amountDue,
+                                td: item.dueDate,
+                                td: item.payFromAccount,
+                                td: (
+                                  badge$status: item.status
+                                ),td: (
+                                  row: [
+                                    if: item.canPay: [
+                                      button$primary: Pay_Now
+                                    ],button$secondary: Schedule,
+                                    button$ghost: Edit
+                                  ]
+                                )
+                              ]
+                            ]
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                ),loans: (
+                  column$loans-layout: [
+                    header$loans: (
+                      row$space-between: [
+                        h1: Loans_&_Credit,
+                        row: [
+                          button$secondary: Loan_Calculator,
+                          button$primary: Apply_for_Loan
+                        ]
+                      ]
+                    ),section$loans-overview: (
+                      row$loans-summary: [
+                        card$total-debt: (
+                          column: [
+                            h3: Total_Outstanding_Debt,
+                            h1$debt: api.loans.totalDebt,
+                            row$debt-breakdown: [
+                              span: api.loans.activeLoanCount_active_loans,
+                              span: api.loans.totalMonthlyPayment_monthly
+                            ]
+                          ]
+                        ),card$credit-score: (
+                          column: [
+                            h3: Credit_Score,
+                            h1$score: api.credit.score,
+                            row$score-change: [
+                              span$change: api.credit.monthlyChange,
+                              small: from_last_month
+                            ],chart$score-history: api.credit.historyChart
+                          ]
+                        ),card$credit-utilization: (
+                          column: [
+                            h3: Credit_Utilization,
+                            h2$utilization: api.credit.utilizationPercent,
+                            div$utilization-bar: (
+                              div$utilization-progress: api.credit.utilizationPercent
+                            ),p$utilization-advice: api.credit.advice
+                          ]
+                        )
+                      ]
+                    ),section$active-loans: (
+                      column: [
+                        h2: Active_Loans,
+                        forEach: api.loans.active: [
+                          card$loan: (
+                            column: [
+                              row$loan-header: [
+                                h3: item.loanType,
+                                badge$status: item.status
+                              ],row$loan-details: [
+                                column$loan-info: [
+                                  span$balance: item.currentBalance,
+                                  small: Current_Balance,
+                                  span$payment: item.monthlyPayment,
+                                  small: Monthly_Payment
+                                ],column$loan-terms: [
+                                  span$rate: item.interestRate,
+                                  small: Interest_Rate,
+                                  span$term: item.remainingTerm,
+                                  small: Remaining_Term
+                                ]
+                              ],div$payment-progress: (
+                                div$progress: item.paymentProgress
+                              ),row$loan-actions: [
+                                button$primary: Make_Payment,
+                                button$secondary: View_Statements,
+                                button$ghost: Loan_Details
+                              ]
+                            ]
+                          )
+                        ]
+                      ),section$credit-cards: (
+                        column: [
+                          h2: Credit_Cards,
+                          row$credit-grid: [
+                            forEach: api.creditCards: [
+                              card$credit-card: (
+                                column: [
+                                  row$card-visual: [
+                                    div$card-design: (
+                                      column: [
+                                        span$card-number: item.maskedNumber,
+                                        row$card-info: [
+                                          span$cardholder: item.cardholderName,
+                                          span$expiry: item.expiryDate
+                                        ]
+                                      ]
+                                    )
+                                  ],row$card-balance: [
+                                    column: [
+                                      h3$balance: item.currentBalance,
+                                      small: Current_Balance
+                                    ],column: [
+                                      span$limit: item.creditLimit,
+                                      small: Credit_Limit
+                                    ]
+                                  ],div$utilization-bar: (
+                                    div$card-utilization: item.utilizationPercent
+                                  ),row$card-actions: [
+                                    button$primary: Make_Payment,
+                                    button$secondary: View_Statements,
+                                    button$ghost: Manage_Card
+                                  ]
+                                ]
+                              )
+                            ]
+                          ]
+                        )
+                      ]
+                    ),reports: (
+                      column$reports-layout: [
+                        header$reports: (
+                          row$space-between: [
+                            h1: Financial_Reports,
+                            row: [
+                              select$report-period: api.reports.periods,
+                              button$secondary: Schedule_Reports,
+                              button$primary: Generate_Custom
+                            ]
+                          ]
+                        ),section$report-categories: (
+                          grid$report-grid: [
+                            card$spending-report: (
+                              column: [
+                                icon$report: 📊,
+                                h3: Spending_Analysis,
+                                p: Detailed_breakdown_of_your_spending_patterns,
+                                button$primary: Generate_Report
+                              ]
+                            ),card$tax-report: (
+                              column: [
+                                icon$report: 📋,
+                                h3: Tax_Documents,
+                                p: Download_tax_forms_and_annual_statements,
+                                button$primary: Download_Forms
+                              ]
+                            ),card$investment-report: (
+                              column: [
+                                icon$report: 📈,
+                                h3: Investment_Performance,
+                                p: Portfolio_performance_and_asset_allocation,
+                                button$primary: View_Performance
+                              ]
+                            ),card$credit-report: (
+                              column: [
+                                icon$report: 🏦,
+                                h3: Credit_Report,
+                                p: Your_complete_credit_history_and_score,
+                                button$primary: View_Credit_Report
+                              ]
+                            )
+                          ]
+                        ),section$recent-reports: (
+                          column: [
+                            h2: Recent_Reports,
+                            table$reports: (
+                              column: [
+                                row$table-header: [
+                                  th: Report_Type,
+                                  th: Period,
+                                  th: Generated,
+                                  th: Status,
+                                  th: Actions
+                                ],forEach: api.reports.recent: [
+                                  row$report: [
+                                    td: item.reportType,
+                                    td: item.period,
+                                    td: item.generatedDate,
+                                    td: (
+                                      badge$status: item.status
+                                    ),td: (
+                                      row: [
+                                        button$secondary: Download,
+                                        button$ghost: Email,
+                                        button$ghost: View
+                                      ]
+                                    )
+                                  ]
+                                ]
+                              ]
+                            )
+                          ]
+                        )
+                      ]
+                    ),settings: (
+                      column$settings-layout: [
+                        header$settings: (
+                          h1: Account_Settings
+                        ),section$settings-tabs: (
+                          row$settings-content: [
+                            nav$settings-nav: (
+                              column: [
+                                link$active: Personal_Information,
+                                link: Security_&_Privacy,
+                                link: Notifications,
+                                link: Account_Preferences,
+                                link: Connected_Accounts,
+                                link: Documents
+                              ]
+                            ),main$settings-content: (
+                              column: [
+                                section$personal-info: (
+                                  column: [
+                                    h2: Personal_Information,
+                                    row$name-fields: [
+                                      column: [
+                                        label: First_Name,
+                                        input: api.user.firstName
+                                      ],column: [
+                                        label: Last_Name,
+                                        input: api.user.lastName
+                                      ]
+                                    ],row$contact-fields: [
+                                      column: [
+                                        label: Email_Address,
+                                        input_email: api.user.email
+                                      ],column: [
+                                        label: Phone_Number,
+                                        input_phone: api.user.phone
+                                      ]
+                                    ],column$address-section: [
+                                      label: Address,
+                                      input: api.user.address.street,
+                                      row$address-fields: [
+                                        column: [
+                                          label: City,
+                                          input: api.user.address.city
+                                        ],column: [
+                                          label: State,
+                                          input: api.user.address.state
+                                        ],column: [
+                                          label: ZIP_Code,
+                                          input: api.user.address.zipCode
+                                        ]
+                                      ]
+                                    ],button$primary: Save_Changes
+                                  ]
+                                ),section$security: (
+                                  column: [
+                                    h2: Security_&_Privacy,
+                                    card$password: (
+                                      column: [
+                                        h3: Password,
+                                        p: Last_changed_api.security.passwordLastChanged,
+                                        button$secondary: Change_Password
+                                      ]
+                                    ),card$two-factor: (
+                                      column: [
+                                        h3: Two-Factor_Authentication,
+                                        row$2fa-status: [
+                                          span: api.security.twoFactorEnabled,
+                                          if: api.security.twoFactorEnabled: [
+                                            badge$enabled: Enabled
+                                          ],unless: api.security.twoFactorEnabled: [
+                                            badge$disabled: Disabled
+                                          ]
+                                        ],if: api.security.twoFactorEnabled: [
+                                          button$danger: Disable_2FA
+                                        ],unless: api.security.twoFactorEnabled: [
+                                          button$primary: Enable_2FA
+                                        ]
+                                      ]
+                                    ),card$biometric: (
+                                      column: [
+                                        h3: Biometric_Authentication,
+                                        row$biometric-options: [
+                                          column: [
+                                            row: [
+                                              checkbox: api.security.fingerprintEnabled,
+                                              label: Fingerprint_Login
+                                            ],row: [
+                                              checkbox: api.security.faceIdEnabled,
+                                              label: Face_ID_Login
+                                            ]
+                                          ]
+                                        ]
+                                      ]
+                                    ),card$login-alerts: (
+                                      column: [
+                                        h3: Login_Alerts,
+                                        row$alert-options: [
+                                          column: [
+                                            row: [
+                                              checkbox: api.security.emailAlerts,
+                                              label: Email_Notifications
+                                            ],row: [
+                                              checkbox: api.security.smsAlerts,
+                                              label: SMS_Notifications
+                                            ],row: [
+                                              checkbox: api.security.pushAlerts,
+                                              label: Push_Notifications
+                                            ]
+                                          ]
+                                        ]
+                                      ]
+                                    )
+                                  ]
+                                ),section$notifications: (
+                                  column: [
+                                    h2: Notification_Preferences,
+                                    forEach: api.notifications.categories: [
+                                      card$notification-category: (
+                                        column: [
+                                          h3: item.categoryName,
+                                          forEach: item.types: [
+                                            row$notification-option: [
+                                              checkbox: item.enabled,
+                                              column: [
+                                                span: item.name,
+                                                small: item.description
+                                              ]
+                                            ]
+                                          ]
+                                        ]
+                                      )
+                                    ]
+                                  ]
+                                )
+                              ]
+                            ),section$preferences: (
+                              column: [
+                                h2: Account_Preferences,
+                                row$preference-cards: [
+                                  card$display: (
+                                    column: [
+                                      h3: Display_Settings,
+                                      row$theme: [
+                                        label: Theme,
+                                        select$theme: api.preferences.theme
+                                      ],row$language: [
+                                        label: Language,
+                                        select$language: api.preferences.language
+                                      ],row$currency: [
+                                        label: Default_Currency,
+                                        select$currency: api.preferences.currency
+                                      ]
+                                    ]
+                                  ),card$privacy: (
+                                    column: [
+                                      h3: Privacy_Settings,
+                                      row$privacy-options: [
+                                        column: [
+                                          row: [
+                                            checkbox: api.preferences.dataSharing,
+                                            label: Allow_Data_Sharing_for_Better_Experience
+                                          ],row: [
+                                            checkbox: api.preferences.marketingEmails,
+                                            label: Receive_Marketing_Communications
+                                          ],row: [
+                                            checkbox: api.preferences.thirdPartyOffers,
+                                            label: Third-Party_Offers
+                                          ]
+                                        ]
+                                      ]
+                                    ]
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    ]
+                  )
+                ]
+              ),api: (
+                auth: (
+                  POST:/auth/login: (
+                    body: (
+                      email: string,
+                      password: string,
+                      deviceId: string
+                    ),validate: (
+                      email: required_valid,
+                      password: required_min_8
+                    ),rateLimit: (
+                      max: 5_per_15min,
+                      key: ip
+                    ),exec: (
+                      user: db.users.findByEmail(
+                        body.email
+                      ),if: user.exists: (
+                        if: user.accountLocked: (
+                          audit: log_blocked_login_attempt(
+                            user.id,
+                            request.ip
+                          ),returns: error.account_locked
+                        ),if: bcrypt.compare(
+                          body.password,
+                          user.hashedPassword
+                        )
+                        : (
+                          if: user.twoFactorEnabled: (
+                            session: create_mfa_session(
+                              user.id,
+                              body.deviceId
+                            ),sms: send_mfa_code(
+                              user.phone
+                            ),audit: log_mfa_required(
+                              user.id
+                            ),returns: (
+                              requiresMFA: true,
+                              sessionId: session.id
+                            )
+                          ),else: (
+                            token: jwt.sign(
+                              {
+                                userId: user.id,
+                                role: user.role,
+                                accountType: user.accountType
+                              }
+                            ),session: create_user_session(
+                              user.id,
+                              body.deviceId,
+                              request.ip
+                            ),audit: log_successful_login(
+                              user.id,
+                              request.ip
+                            ),returns: (
+                              token: token,
+                              user: user.safe_profile,
+                              accounts: db.accounts.findByUserId(
+                                user.id
+                              )
+                            )
+                          )
+                        ),else: (
+                          audit: log_failed_login_attempt(
+                            body.email,
+                            request.ip
+                          ),db.users.incrementFailedAttempts(
+                            user.id
+                          ),if: user.failedAttempts>=5: (
+                            db.users.lockAccount(
+                              user.id
+                            ),notification: send_account_locked_alert(
+                              user.email
+                            )
+                          ),returns: error.invalid_credentials
+                        )
+                      ),else: (
+                        audit: log_unknown_email_attempt(
+                          body.email,
+                          request.ip
+                        ),returns: error.invalid_credentials
+                      )
+                    )
+                  ),POST:/auth/verify-mfa: (
+                    body: (
+                      sessionId: string,
+                      mfaCode: string
+                    ),validate: (
+                      sessionId: required_uuid,
+                      mfaCode: required_6_digits
+                    ),exec: (
+                      session: db.mfa_sessions.findById(
+                        body.sessionId
+                      ),if: session.valid_and_not_expired: (
+                        if: verify_mfa_code(
+                          session.userId,
+                          body.mfaCode
+                        )
+                        : (
+                          user: db.users.findById(
+                            session.userId
+                          ),token: jwt.sign(
+                            {
+                              userId: user.id,
+                              role: user.role,
+                              accountType: user.accountType
+                            }
+                          ),user_session: create_user_session(
+                            user.id,
+                            session.deviceId,
+                            request.ip
+                          ),db.mfa_sessions.delete(
+                            body.sessionId
+                          ),audit: log_mfa_success(
+                            user.id
+                          ),returns: (
+                            token: token,
+                            user: user.safe_profile,
+                            accounts: db.accounts.findByUserId(
+                              user.id
+                            )
+                          )
+                        ),else: (
+                          audit: log_mfa_failure(
+                            session.userId
+                          ),returns: error.invalid_mfa_code
+                        )
+                      ),else: (
+                        returns: error.invalid_session
+                      )
+                    )
+                  ),POST:/auth/biometric-verify: (
+                    body: (
+                      sessionId: string,
+                      biometricData: string,
+                      biometricType: enum
+                    ),validate: (
+                      sessionId: required_uuid,
+                      biometricData: required,
+                      biometricType: required_enum
+                    ),exec: (
+                      session: db.mfa_sessions.findById(
+                        body.sessionId
+                      ),if: session.valid: (
+                        biometric_result: verify_biometric(
+                          session.userId,
+                          body.biometricData,
+                          body.biometricType
+                        ),if: biometric_result.valid: (
+                          user: db.users.findById(
+                            session.userId
+                          ),token: jwt.sign(
+                            {
+                              userId: user.id,
+                              role: user.role
+                            }
+                          ),user_session: create_user_session(
+                            user.id,
+                            session.deviceId,
+                            request.ip
+                          ),audit: log_biometric_success(
+                            user.id,
+                            body.biometricType
+                          ),returns: (
+                            token: token,
+                            user: user.safe_profile
+                          )
+                        ),else: (
+                          audit: log_biometric_failure(
+                            session.userId,
+                            body.biometricType
+                          ),returns: error.biometric_failed
+                        )
+                      ),else: (
+                        returns: error.invalid_session
+                      )
+                    )
+                  ),POST:/auth/logout: (
+                    auth: jwt_required,
+                    exec: (
+                      db.user_sessions.invalidate(
+                        auth.sessionId
+                      ),audit: log_logout(
+                        auth.userId
+                      ),returns: success
+                    )
+                  )
+                ),accounts: (
+                  GET:/accounts: (
+                    auth: jwt_required,
+                    returns: (
+                      accounts: db.accounts.findByUserIdWithBalances(
+                        auth.userId
+                      ),summary: calculate_account_summary(
+                        auth.userId
+                      )
+                    )
+                  ),GET:/accounts/: id: (
+                    auth: jwt_required,
+                    validate: account_ownership,
+                    returns: (
+                      account: db.accounts.findByIdWithDetails(
+                        params.id
+                      ),transactions: db.transactions.findByAccountId(
+                        params.id,
+                        limit: 50
+                      ),statements: db.statements.findByAccountId(
+                        params.id,
+                        limit: 12
+                      )
+                    )
+                  ),GET:/accounts/: id/transactions: (
+                    auth: jwt_required,
+                    validate: account_ownership,
+                    query: (
+                      page: int,
+                      limit: int,
+                      startDate: date,
+                      endDate: date,
+                      category: string
+                    ),returns: (
+                      transactions: db.transactions.findByAccountIdWithFilters(
+                        params.id,
+                        query
+                      ),pagination: calculate_pagination(
+                        query.page,
+                        query.limit
+                      ),summary: calculate_transaction_summary(
+                        params.id,
+                        query
+                      )
+                    )
+                  ),POST:/accounts/: id/transfer: (
+                    auth: jwt_required,
+                    validate: account_ownership,
+                    body: (
+                      toAccountId: string,
+                      amount: decimal,
+                      transferType: enum,
+                      memo: string
+                    ),validate: (
+                      toAccountId: required_uuid,
+                      amount: required_positive_decimal,
+                      transferType: required_enum
+                    ),exec: (
+                      from_account: db.accounts.findById(
+                        params.id
+                      ),to_account: db.accounts.findById(
+                        body.toAccountId
+                      ),if: from_account.balance>=body.amount: (
+                        if: body.transferType==='immediate': (
+                          transfer: db.transfers.create(
+                            {
+                              fromAccountId: params.id,
+                              toAccountId: body.toAccountId,
+                              amount: body.amount,
+                              memo: body.memo,
+                              userId: auth.userId
+                            }
+                          ),db.accounts.debit(
+                            params.id,
+                            body.amount
+                          ),db.accounts.credit(
+                            body.toAccountId,
+                            body.amount
+                          ),notification: send_transfer_confirmation(
+                            auth.userId,
+                            transfer
+                          ),audit: log_transfer(
+                            auth.userId,
+                            transfer.id
+                          ),returns: (
+                            transfer: transfer,
+                            newBalance: from_account.balance-body.amount
+                          )
+                        ),else: (
+                          scheduled_transfer: db.scheduled_transfers.create(
+                            {
+                              fromAccountId: params.id,
+                              toAccountId: body.toAccountId,
+                              amount: body.amount,
+                              memo: body.memo,
+                              userId: auth.userId,
+                              scheduledDate: body.scheduledDate
+                            }
+                          ),audit: log_scheduled_transfer(
+                            auth.userId,
+                            scheduled_transfer.id
+                          ),returns: (
+                            scheduledTransfer: scheduled_transfer,
+                            message: transfer_scheduled
+                          )
+                        )
+                      ),else: (
+                        returns: error.insufficient_funds
+                      )
+                    )
+                  )
+                ),transactions: (
+                  GET:/transactions: (
+                    auth: jwt_required,
+                    query: (
+                      page: int,
+                      limit: int,
+                      accountId: string,
+                      startDate: date,
+                      endDate: date,
+                      category: string,
+                      minAmount: decimal,
+                      maxAmount: decimal
+                    ),returns: (
+                      transactions: db.transactions.findByUserIdWithFilters(
+                        auth.userId,
+                        query
+                      ),pagination: calculate_pagination(
+                        query.page,
+                        query.limit
+                      ),summary: calculate_filtered_summary(
+                        auth.userId,
+                        query
+                      )
+                    )
+                  ),GET:/transactions/: id: (
+                    auth: jwt_required,
+                    validate: transaction_ownership,
+                    returns: (
+                      transaction: db.transactions.findByIdWithDetails(
+                        params.id
+                      ),relatedTransactions: db.transactions.findRelated(
+                        params.id
+                      )
+                    )
+                  ),POST:/transactions/categorize: (
+                    auth: jwt_required,
+                    body: (
+                      transactionId: string,
+                      categoryId: string
+                    ),validate: (
+                      transactionId: required_uuid,
+                      categoryId: required_uuid
+                    ),exec: (
+                      transaction: db.transactions.findById(
+                        body.transactionId
+                      ),if: transaction.userId===auth.userId: (
+                        db.transactions.updateCategory(
+                          body.transactionId,
+                          body.categoryId
+                        ),audit: log_transaction_categorization(
+                          auth.userId,
+                          body.transactionId
+                        ),returns: success
+                      ),else: (
+                        returns: error.unauthorized
+                      )
+                    )
+                  ),GET:/transactions/export: (
+                    auth: jwt_required,
+                    query: (
+                      format: enum,
+                      startDate: date,
+                      endDate: date,
+                      accountIds: array
+                    ),validate: (
+                      format: required_enum_csv_pdf_xlsx
+                    ),exec: (
+                      transactions: db.transactions.findByUserIdWithFilters(
+                        auth.userId,
+                        query
+                      ),export_data: format_export_data(
+                        transactions,
+                        query.format
+                      ),audit: log_data_export(
+                        auth.userId,
+                        query.format
+                      ),returns: (
+                        downloadUrl: generate_secure_download_url(
+                          export_data
+                        ),expiresAt: now(
+                        )
+                        +1_hour
+                      )
+                    )
+                  )
+                )
+              ),bills: (
+                GET:/bills: (
+                  auth: jwt_required,
+                  returns: (
+                    bills: db.bills.findByUserId(
+                      auth.userId
+                    ),upcoming: db.bills.findUpcomingByUserId(
+                      auth.userId
+                    ),autoPay: db.bills.findAutoPayByUserId(
+                      auth.userId
+                    ),summary: calculate_bills_summary(
+                      auth.userId
+                    )
+                  )
+                ),POST:/bills/pay: (
+                  auth: jwt_required,
+                  body: (
+                    billId: string,
+                    amount: decimal,
+                    payFromAccountId: string,
+                    paymentDate: date
+                  ),validate: (
+                    billId: required_uuid,
+                    amount: required_positive_decimal,
+                    payFromAccountId: required_uuid
+                  ),exec: (
+                    bill: db.bills.findById(
+                      body.billId
+                    ),account: db.accounts.findById(
+                      body.payFromAccountId
+                    ),if: bill.userId===auth.userIdANDaccount.userId===auth.userId: (
+                      if: account.balance>=body.amount: (
+                        payment: db.bill_payments.create(
+                          {
+                            billId: body.billId,
+                            amount: body.amount,
+                            payFromAccountId: body.payFromAccountId,
+                            userId: auth.userId,
+                            paymentDate: body.paymentDate
+                          }
+                        ),db.accounts.debit(
+                          body.payFromAccountId,
+                          body.amount
+                        ),db.bills.markAsPaid(
+                          body.billId
+                        ),notification: send_payment_confirmation(
+                          auth.userId,
+                          payment
+                        ),audit: log_bill_payment(
+                          auth.userId,
+                          payment.id
+                        ),returns: (
+                          payment: payment,
+                          newBalance: account.balance-body.amount
+                        )
+                      ),else: (
+                        returns: error.insufficient_funds
+                      )
+                    ),else: (
+                      returns: error.unauthorized
+                    )
+                  )
+                ),POST:/bills/schedule: (
+                  auth: jwt_required,
+                  body: (
+                    billId: string,
+                    payFromAccountId: string,
+                    frequency: enum,
+                    startDate: date,
+                    endDate: date
+                  ),validate: (
+                    billId: required_uuid,
+                    payFromAccountId: required_uuid,
+                    frequency: required_enum
+                  ),exec: (
+                    bill: db.bills.findById(
+                      body.billId
+                    ),if: bill.userId===auth.userId: (
+                      scheduled_payment: db.scheduled_payments.create(
+                        {
+                          billId: body.billId,
+                          payFromAccountId: body.payFromAccountId,
+                          frequency: body.frequency,
+                          startDate: body.startDate,
+                          endDate: body.endDate,
+                          userId: auth.userId
+                        }
+                      ),audit: log_scheduled_payment(
+                        auth.userId,
+                        scheduled_payment.id
+                      ),returns: (
+                        scheduledPayment: scheduled_payment,
+                        message: payment_scheduled
+                      )
+                    ),else: (
+                      returns: error.unauthorized
+                    )
+                  )
+                )
+              )
+            ),investments: (
+              GET:/portfolio: (
+                auth: jwt_required,
+                returns: (
+                  portfolio: db.portfolios.findByUserId(
+                    auth.userId
+                  ),holdings: db.holdings.findByUserId(
+                    auth.userId
+                  ),performance: calculate_portfolio_performance(
+                    auth.userId
+                  ),allocation: calculate_asset_allocation(
+                    auth.userId
+                  )
+                )
+              ),GET:/holdings: (
+                auth: jwt_required,
+                query: (
+                  sortBy: string,
+                  order: enum
+                ),returns: (
+                  holdings: db.holdings.findByUserIdSorted(
+                    auth.userId,
+                    query
+                  ),marketData: get_current_market_data(
+                    holdings.map(
+                      h=>h.symbol
+                    )
+                  )
+                )
+              ),POST:/holdings/buy: (
+                auth: jwt_required,
+                body: (
+                  symbol: string,
+                  quantity: int,
+                  orderType: enum,
+                  priceLimit: decimal
+                ),validate: (
+                  symbol: required_string,
+                  quantity: required_positive_int,
+                  orderType: required_enum
+                ),exec: (
+                  market_price: get_current_price(
+                    body.symbol
+                  ),total_cost: calculate_total_cost(
+                    body.quantity,
+                    market_price
+                  ),investment_account: db.accounts.findInvestmentAccount(
+                    auth.userId
+                  ),if: investment_account.balance>=total_cost: (
+                    order: db.orders.create(
+                      {
+                        userId: auth.userId,
+                        symbol: body.symbol,
+                        quantity: body.quantity,
+                        orderType: body.orderType,
+                        priceLimit: body.priceLimit,
+                        status: 'pending'
+                      }
+                    ),execute_order_result: execute_market_order(
+                      order
+                    ),if: execute_order_result.success: (
+                      db.accounts.debit(
+                        investment_account.id,
+                        total_cost
+                      ),db.holdings.upsert(
+                        {
+                          userId: auth.userId,
+                          symbol: body.symbol,
+                          quantity: body.quantity,
+                          averagePrice: execute_order_result.executionPrice
+                        }
+                      ),notification: send_order_confirmation(
+                        auth.userId,
+                        order
+                      ),audit: log_investment_purchase(
+                        auth.userId,
+                        order.id
+                      ),returns: (
+                        order: order,
+                        execution: execute_order_result
+                      )
+                    ),else: (
+                      db.orders.updateStatus(
+                        order.id,
+                        'failed'
+                      ),returns: error.order_execution_failed
+                    )
+                  ),else: (
+                    returns: error.insufficient_funds
+                  )
+                )
+              ),POST:/holdings/sell: (
+                auth: jwt_required,
+                body: (
+                  symbol: string,
+                  quantity: int,
+                  orderType: enum,
+                  priceLimit: decimal
+                ),validate: (
+                  symbol: required_string,
+                  quantity: required_positive_int
+                ),exec: (
+                  holding: db.holdings.findByUserIdAndSymbol(
+                    auth.userId,
+                    body.symbol
+                  ),if: holding.quantity>=body.quantity: (
+                    order: db.orders.create(
+                      {
+                        userId: auth.userId,
+                        symbol: body.symbol,
+                        quantity: body.quantity,
+                        orderType: body.orderType,
+                        priceLimit: body.priceLimit,
+                        status: 'pending',
+                        side: 'sell'
+                      }
+                    ),execute_order_result: execute_market_order(
+                      order
+                    ),if: execute_order_result.success: (
+                      proceeds: body.quantity*execute_order_result.executionPrice,
+                      db.holdings.decreaseQuantity(
+                        holding.id,
+                        body.quantity
+                      ),investment_account: db.accounts.findInvestmentAccount(
+                        auth.userId
+                      ),db.accounts.credit(
+                        investment_account.id,
+                        proceeds
+                      ),notification: send_order_confirmation(
+                        auth.userId,
+                        order
+                      ),audit: log_investment_sale(
+                        auth.userId,
+                        order.id
+                      ),returns: (
+                        order: order,
+                        execution: execute_order_result,
+                        proceeds: proceeds
+                      )
+                    ),else: (
+                      returns: error.order_execution_failed
+                    )
+                  ),else: (
+                    returns: error.insufficient_shares
+                  )
+                )
+              )
+            )
+          ),reports: (
+            GET:/reports: (
+              auth: jwt_required,
+              query: (
+                reportType: enum,
+                period: enum,
+                format: enum
+              ),returns: (
+                reports: db.reports.findByUserId(
+                  auth.userId
+                ),availableTypes: get_available_report_types(
+                  auth.userId
+                )
+              )
+            ),POST:/reports/generate: (
+              auth: jwt_required,
+              body: (
+                reportType: enum,
+                period: enum,
+                includeGraphs: boolean,
+                emailDelivery: boolean
+              ),validate: (
+                reportType: required_enum,
+                period: required_enum
+              ),exec: (
+                report_data: generate_report_data(
+                  auth.userId,
+                  body.reportType,
+                  body.period
+                ),report: db.reports.create(
+                  {
+                    userId: auth.userId,
+                    reportType: body.reportType,
+                    period: body.period,
+                    data: report_data,
+                    includeGraphs: body.includeGraphs
+                  }
+                ),if: body.emailDelivery: (
+                  email: send_report_email(
+                    auth.userId,
+                    report
+                  )
+                ),audit: log_report_generation(
+                  auth.userId,
+                  report.id
+                ),returns: (
+                  report: report,
+                  downloadUrl: generate_secure_download_url(
+                    report
+                  )
+                )
+              )
+            ),GET:/reports/: id/download: (
+              auth: jwt_required,
+              validate: report_ownership,
+              exec: (
+                report: db.reports.findById(
+                  params.id
+                ),audit: log_report_download(
+                  auth.userId,
+                  params.id
+                ),returns: (
+                  downloadUrl: generate_secure_download_url(
+                    report
+                  ),expiresAt: now(
+                  )
+                  +24_hours
+                )
+              )
+            )
+          )
+        ),users: (
+          GET:/profile: (
+            auth: jwt_required,
+            returns: (
+              user: db.users.findByIdWithProfile(
+                auth.userId
+              ),preferences: db.user_preferences.findByUserId(
+                auth.userId
+              ),security: db.security_settings.findByUserId(
+                auth.userId
+              )
+            )
+          ),PUT:/profile: (
+            auth: jwt_required,
+            body: (
+              firstName: string,
+              lastName: string,
+              email: string,
+              phone: string,
+              address: object
+            ),validate: (
+              firstName: required_string,
+              lastName: required_string,
+              email: required_valid_email,
+              phone: required_valid_phone
+            ),exec: (
+              if: body.email!==current_user.email: (
+                email_verification: send_email_verification(
+                  body.email
+                ),db.users.updateWithEmailPending(
+                  auth.userId,
+                  body,
+                  email_verification.token
+                )
+              ),else: (
+                db.users.update(
+                  auth.userId,
+                  body
+                )
+              ),audit: log_profile_update(
+                auth.userId
+              ),returns: success
+            )
+          ),PUT:/profile/preferences: (
+            auth: jwt_required,
+            body: (
+              theme: enum,
+              language: enum,
+              currency: enum,
+              notifications: object
+            ),exec: (
+              db.user_preferences.upsert(
+                auth.userId,
+                body
+              ),audit: log_preferences_update(
+                auth.userId
+              ),returns: success
+            )
+          ),PUT:/profile/security: (
+            auth: jwt_required,
+            body: (
+              twoFactorEnabled: boolean,
+              biometricEnabled: boolean,
+              loginAlerts: boolean
+            ),exec: (
+              if: body.twoFactorEnabledANDNOTcurrent_security.twoFactorEnabled: (
+                mfa_setup: setup_two_factor_auth(
+                  auth.userId
+                ),returns: (
+                  message: scan_qr_code,
+                  qrCode: mfa_setup.qrCode,
+                  backupCodes: mfa_setup.backupCodes
+                )
+              ),if: NOTbody.twoFactorEnabledANDcurrent_security.twoFactorEnabled: (
+                db.security_settings.disableTwoFactor(
+                  auth.userId
+                ),audit: log_2fa_disabled(
+                  auth.userId
+                )
+              ),db.security_settings.update(
+                auth.userId,
+                body
+              ),audit: log_security_settings_update(
+                auth.userId
+              ),returns: success
+            )
+          )
+        ),admin: (
+          GET:/admin/users: (
+            auth: admin_required,
+            query: (
+              page: int,
+              limit: int,
+              search: string,
+              status: enum
+            ),returns: (
+              users: db.users.findAllWithFilters(
+                query
+              ),pagination: calculate_pagination(
+                query.page,
+                query.limit
+              ),statistics: calculate_user_statistics(
+              )
+            )
+          ),PUT:/admin/users/: id/status: (
+            auth: admin_required,
+            body: (
+              status: enum,
+              reason: string
+            ),validate: (
+              status: required_enum,
+              reason: required_string
+            ),exec: (
+              target_user: db.users.findById(
+                params.id
+              ),db.users.updateStatus(
+                params.id,
+                body.status
+              ),notification: send_account_status_notification(
+                params.id,
+                body.status,
+                body.reason
+              ),audit: log_admin_action(
+                auth.userId,
+                'user_status_change',
+                {
+                  targetUserId: params.id,
+                  newStatus: body.status,
+                  reason: body.reason
+                }
+              ),returns: success
+            )
+          ),GET:/admin/transactions: (
+            auth: admin_required,
+            query: (
+              page: int,
+              limit: int,
+              flagged: boolean,
+              minAmount: decimal
+            ),returns: (
+              transactions: db.transactions.findAllWithFilters(
+                query
+              ),flaggedTransactions: db.transactions.findFlagged(
+              ),statistics: calculate_transaction_statistics(
+              )
+            )
+          ),POST:/admin/fraud-alert: (
+            auth: admin_required,
+            body: (
+              transactionId: string,
+              alertType: enum,
+              notes: string
+            ),exec: (
+              transaction: db.transactions.findById(
+                body.transactionId
+              ),fraud_alert: db.fraud_alerts.create(
+                {
+                  transactionId: body.transactionId,
+                  alertType: body.alertType,
+                  notes: body.notes,
+                  createdBy: auth.userId
+                }
+              ),notification: send_fraud_alert_notification(
+                transaction.userId,
+                fraud_alert
+              ),audit: log_admin_action(
+                auth.userId,
+                'fraud_alert_created',
+                fraud_alert
+              ),returns: success
+            )
+          )
+        )
+      ),database: (
+        users: (
+          id: uuid_primary,
+          firstName: string_required,
+          lastName: string_required,
+          email: string_unique_required,
+          phone: string_required,
+          hashedPassword: string_required,
+          role: enum_customer_admin_manager_default_customer,
+          accountType: enum_basic_premium_business_default_basic,
+          emailVerified: boolean_default_false,
+          phoneVerified: boolean_default_false,
+          twoFactorEnabled: boolean_default_false,
+          twoFactorSecret: string_nullable,
+          biometricEnabled: boolean_default_false,
+          accountLocked: boolean_default_false,
+          failedAttempts: integer_default_0,
+          lastLoginAt: timestamp_nullable,
+          passwordChangedAt: timestamp_nullable,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),user_profiles: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          dateOfBirth: date_nullable,
+          ssn: string_encrypted_nullable,
+          address: json_nullable,
+          employmentInfo: json_nullable,
+          annualIncome: decimal_nullable,
+          riskTolerance: enum_conservative_moderate_aggressive_nullable,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),accounts: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          accountNumber: string_unique_required,
+          accountType: enum_checking_savings_credit_investment_loan,
+          accountName: string_required,
+          balance: decimal_default_0,
+          availableBalance: decimal_default_0,
+          interestRate: decimal_default_0,
+          minimumBalance: decimal_default_0,
+          overdraftLimit: decimal_default_0,
+          status: enum_active_inactive_closed_frozen_default_active,
+          openedAt: timestamp_auto,
+          closedAt: timestamp_nullable,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),transactions: (
+          id: uuid_primary,
+          accountId: uuid_foreign_accounts,
+          userId: uuid_foreign_users,
+          transactionType: enum_debit_credit_transfer_payment_fee,
+          amount: decimal_required,
+          description: string_required,
+          merchant: string_nullable,
+          category: string_nullable,
+          subcategory: string_nullable,
+          transactionDate: timestamp_required,
+          postedDate: timestamp_auto,
+          balanceAfter: decimal_required,
+          referenceNumber: string_unique_required,
+          status: enum_pending_posted_reversed_failed_default_pending,
+          metadata: json_nullable,
+          createdAt: timestamp_auto
+        ),transfers: (
+          id: uuid_primary,
+          fromAccountId: uuid_foreign_accounts,
+          toAccountId: uuid_foreign_accounts,
+          userId: uuid_foreign_users,
+          amount: decimal_required,
+          fee: decimal_default_0,
+          transferType: enum_immediate_scheduled_recurring,
+          memo: string_nullable,
+          status: enum_pending_completed_failed_cancelled_default_pending,
+          scheduledDate: timestamp_nullable,
+          completedAt: timestamp_nullable,
+          createdAt: timestamp_auto
+        ),bills: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          payeeName: string_required,
+          payeeAccountNumber: string_nullable,
+          categoryId: uuid_foreign_bill_categories,
+          amountDue: decimal_required,
+          dueDate: date_required,
+          minimumPayment: decimal_nullable,
+          autoPay: boolean_default_false,
+          autoPayAccountId: uuid_foreign_accounts_nullable,
+          status: enum_unpaid_paid_overdue_scheduled_default_unpaid,
+          lastPaidAmount: decimal_nullable,
+          lastPaidDate: date_nullable,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),bill_payments: (
+          id: uuid_primary,
+          billId: uuid_foreign_bills,
+          userId: uuid_foreign_users,
+          payFromAccountId: uuid_foreign_accounts,
+          amount: decimal_required,
+          paymentDate: date_required,
+          confirmationNumber: string_unique_nullable,
+          status: enum_pending_completed_failed_reversed_default_pending,
+          processingFee: decimal_default_0,
+          createdAt: timestamp_auto
+        ),scheduled_payments: (
+          id: uuid_primary,
+          billId: uuid_foreign_bills,
+          userId: uuid_foreign_users,
+          payFromAccountId: uuid_foreign_accounts,
+          frequency: enum_weekly_biweekly_monthly_quarterly_annually,
+          nextPaymentDate: date_required,
+          endDate: date_nullable,
+          isActive: boolean_default_true,
+          createdAt: timestamp_auto
+        ),portfolios: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          portfolioName: string_required,
+          totalValue: decimal_default_0,
+          totalCost: decimal_default_0,
+          totalGainLoss: decimal_default_0,
+          riskLevel: enum_conservative_moderate_aggressive,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),holdings: (
+          id: uuid_primary,
+          portfolioId: uuid_foreign_portfolios,
+          userId: uuid_foreign_users,
+          symbol: string_required,
+          companyName: string_required,
+          quantity: decimal_required,
+          averagePrice: decimal_required,
+          currentPrice: decimal_nullable,
+          marketValue: decimal_nullable,
+          dayChange: decimal_nullable,
+          totalReturn: decimal_nullable,
+          lastUpdated: timestamp_auto,
+          createdAt: timestamp_auto
+        ),orders: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          portfolioId: uuid_foreign_portfolios,
+          symbol: string_required,
+          orderType: enum_market_limit_stop_stop_limit,
+          side: enum_buy_sell,
+          quantity: decimal_required,
+          priceLimit: decimal_nullable,
+          stopPrice: decimal_nullable,
+          status: enum_pending_filled_cancelled_rejected_expired_default_pending,
+          filledQuantity: decimal_default_0,
+          executionPrice: decimal_nullable,
+          commission: decimal_default_0,
+          orderDate: timestamp_auto,
+          filledDate: timestamp_nullable
+        ),credit_cards: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          cardNumber: string_encrypted_unique_required,
+          cardType: enum_visa_mastercard_amex_discover,
+          cardholderName: string_required,
+          expiryDate: date_required,
+          cvv: string_encrypted_required,
+          creditLimit: decimal_required,
+          currentBalance: decimal_default_0,
+          availableCredit: decimal_generated,
+          minimumPayment: decimal_default_0,
+          interestRate: decimal_required,
+          cashAdvanceLimit: decimal_default_0,
+          status: enum_active_inactive_blocked_expired_default_active,
+          issuedAt: timestamp_auto,
+          createdAt: timestamp_auto
+        ),loans: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          loanType: enum_personal_auto_mortgage_student_business,
+          loanAmount: decimal_required,
+          currentBalance: decimal_required,
+          interestRate: decimal_required,
+          monthlyPayment: decimal_required,
+          paymentsDue: integer_default_0,
+          paymentsRemaining: integer_required,
+          nextPaymentDate: date_required,
+          originationDate: date_required,
+          maturityDate: date_required,
+          status: enum_active_paid_defaulted_deferred_default_active,
+          collateralInfo: json_nullable,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),loan_payments: (
+          id: uuid_primary,
+          loanId: uuid_foreign_loans,
+          userId: uuid_foreign_users,
+          payFromAccountId: uuid_foreign_accounts,
+          paymentAmount: decimal_required,
+          principalAmount: decimal_required,
+          interestAmount: decimal_required,
+          paymentDate: date_required,
+          lateFee: decimal_default_0,
+          status: enum_pending_posted_failed_default_pending,
+          createdAt: timestamp_auto
+        ),reports: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          reportType: enum_spending_tax_investment_credit_income_default_spending,
+          reportPeriod: enum_monthly_quarterly_yearly_custom,
+          startDate: date_required,
+          endDate: date_required,
+          reportData: json_required,
+          fileUrl: string_nullable,
+          status: enum_generating_completed_failed_default_generating,
+          requestedAt: timestamp_auto,
+          completedAt: timestamp_nullable
+        ),user_preferences: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          theme: enum_light_dark_auto_default_auto,
+          language: enum_en_es_fr_de_default_en,
+          currency: enum_usd_eur_gbp_cad_default_usd,
+          timezone: string_default_UTC,
+          dateFormat: enum_mdy_dmy_ymd_default_mdy,
+          numberFormat: enum_us_eu_default_us,
+          emailNotifications: boolean_default_true,
+          smsNotifications: boolean_default_false,
+          pushNotifications: boolean_default_true,
+          marketingEmails: boolean_default_false,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),security_settings: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          twoFactorEnabled: boolean_default_false,
+          twoFactorMethod: enum_sms_email_app_nullable,
+          biometricEnabled: boolean_default_false,
+          biometricTypes: json_nullable,
+          loginAlerts: boolean_default_true,
+          sessionTimeout: integer_default_30,
+          passwordExpiryDays: integer_default_90,
+          allowedIpRanges: json_nullable,
+          deviceTrustEnabled: boolean_default_true,
+          createdAt: timestamp_auto,
+          updatedAt: timestamp_auto
+        ),user_sessions: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          sessionToken: string_unique_required,
+          deviceId: string_required,
+          deviceInfo: json_nullable,
+          ipAddress: string_required,
+          userAgent: string_nullable,
+          isActive: boolean_default_true,
+          lastActivityAt: timestamp_auto,
+          expiresAt: timestamp_required,
+          createdAt: timestamp_auto
+        ),mfa_sessions: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          sessionId: string_unique_required,
+          deviceId: string_required,
+          mfaCode: string_required,
+          attemptsRemaining: integer_default_3,
+          expiresAt: timestamp_required,
+          createdAt: timestamp_auto
+        ),audit_logs: (
+          id: uuid_primary,
+          userId: uuid_foreign_users_nullable,
+          action: string_required,
+          resourceType: string_nullable,
+          resourceId: string_nullable,
+          details: json_nullable,
+          ipAddress: string_required,
+          userAgent: string_nullable,
+          success: boolean_required,
+          errorMessage: string_nullable,
+          createdAt: timestamp_auto
+        ),fraud_alerts: (
+          id: uuid_primary,
+          transactionId: uuid_foreign_transactions_nullable,
+          userId: uuid_foreign_users,
+          alertType: enum_unusual_spending_location_anomaly_velocity_large_transaction,
+          severity: enum_low_medium_high_critical_default_medium,
+          description: string_required,
+          status: enum_new_investigating_resolved_false_positive_default_new,
+          assignedTo: uuid_foreign_users_nullable,
+          notes: text_nullable,
+          createdAt: timestamp_auto,
+          resolvedAt: timestamp_nullable
+        ),notifications: (
+          id: uuid_primary,
+          userId: uuid_foreign_users,
+          notificationType: enum_transaction_security_bill_reminder_promotion_system,
+          title: string_required,
+          message: text_required,
+          data: json_nullable,
+          isRead: boolean_default_false,
+          priority: enum_low_normal_high_urgent_default_normal,
+          deliveryMethod: enum_email_sms_push_in_app,
+          sentAt: timestamp_nullable,
+          readAt: timestamp_nullable,
+          createdAt: timestamp_auto
+        ),bill_categories: (
+          id: uuid_primary,
+          categoryName: string_unique_required,
+          description: string_nullable,
+          iconName: string_nullable,
+          colorCode: string_nullable,
+          isDefault: boolean_default_false,
+          createdAt: timestamp_auto
+        )
+      ),security: (
+        encryption: (
+          algorithms: [
+            AES-256-GCM,
+            RSA-4096
+          ],keyRotation: quarterly,
+          fieldEncryption: [
+            ssn,
+            cardNumber,
+            cvv,
+            routingNumber
+          ]
+        ),authentication: (
+          jwt: (
+            secret: env.JWT_SECRET,
+            algorithm: HS256,
+            expiry: 24h,
+            refreshExpiry: 30d
+          ),sessions: (
+            timeout: 30m,
+            maxConcurrent: 5,
+            deviceTracking: true
+          ),passwordPolicy: (
+            minLength: 12,
+            requireUppercase: true,
+            requireNumbers: true,
+            requireSymbols: true,
+            preventReuse: 12,
+            maxAge: 90d
+          ),accountLocking: (
+            maxAttempts: 5,
+            lockDuration: 15m,
+            progressiveLockout: true
+          )
+        ),authorization: (
+          rbac: (
+            roles: [
+              customer,
+              manager,
+              admin,
+              superadmin
+            ],permissions: [
+              read_accounts,
+              write_accounts,
+              transfer_funds,
+              admin_users,
+              view_reports,
+              manage_settings
+            ]
+          ),apiSecurity: (
+            rateLimit: (
+              auth: 10_per_hour,
+              transfers: 50_per_day,
+              reports: 20_per_day
+            ),ipWhitelist: env.ALLOWED_IPS,
+            requestSigning: required
+          )
+        ),compliance: (
+          pci: (
+            level: 1,
+            tokenization: required,
+            encryptionAtRest: true,
+            encryptionInTransit: true
+          ),sox: (
+            auditTrail: comprehensive,
+            dataRetention: 7_years,
+            accessControls: strict
+          ),gdpr: (
+            dataEncryption: true,
+            rightToDelete: implemented,
+            consentManagement: active
+          ),kyc: (
+            identityVerification: required,
+            documentUpload: encrypted,
+            riskAssessment: automated
+          ),aml: (
+            transactionMonitoring: realtime,
+            suspiciousActivityReporting: automated,
+            sanctionsScreening: enabled
+          )
+        ),monitoring: (
+          fraudDetection: (
+            mlModels: enabled,
+            velocityChecks: true,
+            geoLocationTracking: true,
+            deviceFingerprinting: true,
+            behavioralAnalysis: active
+          ),alerting: (
+            realtime: true,
+            escalation: automated,
+            channels: [
+              email,
+              sms,
+              slack,
+              pagerduty
+            ]
+          ),logging: (
+            level: comprehensive,
+            retention: 10_years,
+            encryption: true,
+            tamperProofing: enabled
+          )
+        )
+      ),deployment: (
+        infrastructure: (
+          primary: (
+            provider: aws,
+            region: us-east-1,
+            zones: [
+              us-east-1a,
+              us-east-1b,
+              us-east-1c
+            ]
+          ),disaster_recovery: (
+            provider: aws,
+            region: us-west-2,
+            rpo: 1h,
+            rto: 4h
+          )
+        ),frontend: (
+          platform: vercel,
+          cdn: cloudflare,
+          build: npm_run_build,
+          env: (
+            NEXT_PUBLIC_API_URL: env.API_URL,
+            NEXT_PUBLIC_STRIPE_KEY: env.STRIPE_PUBLIC_KEY
+          )
+        ),backend: (
+          platform: aws_ecs,
+          runtime: node20,
+          scaling: (
+            min: 3,
+            max: 50,
+            cpu_threshold: 70,
+            memory_threshold: 80
+          ),loadBalancer: (
+            type: application,
+            healthCheck:/health,
+            sslTermination: true
+          ),env: (
+            DATABASE_URL: env.DATABASE_URL,
+            REDIS_URL: env.REDIS_URL,
+            JWT_SECRET: env.JWT_SECRET,
+            STRIPE_SECRET: env.STRIPE_SECRET,
+            PLAID_CLIENT_ID: env.PLAID_CLIENT_ID,
+            PLAID_SECRET: env.PLAID_SECRET,
+            TWILIO_SID: env.TWILIO_SID,
+            SENDGRID_API_KEY: env.SENDGRID_API_KEY
+          )
+        ),database: (
+          provider: postgresql,
+          version: 15,
+          instances: (
+            primary: (
+              type: db.r6g.2xlarge,
+              storage: 1000gb_gp3,
+              iops: 10000
+            ),replicas: (
+              count: 2,
+              type: db.r6g.xlarge,
+              zones: [
+                us-east-1b,
+                us-east-1c
+              ]
+            )
+          ),backup: (
+            automated: daily,
+            retention: 30d,
+            encryption: true,
+            crossRegion: true
+          )
+        ),cache: (
+          provider: redis,
+          cluster: (
+            nodes: 3,
+            type: cache.r7g.large,
+            mode: cluster
+          ),eviction: allkeys-lru,
+          persistence: daily_snapshot
+        ),monitoring: (
+          apm: datadog,
+          logging: cloudwatch,
+          metrics: (
+            custom: business_metrics,
+            alerts: [
+              high_error_rate,
+              slow_response_time,
+              failed_transactions
+            ]
+          ),uptime: (
+            target: 99.99,
+            monitoring: pingdom
+          )
+        ),security: (
+          waf: cloudflare,
+          ddos: protection_enabled,
+          ssl: (
+            provider: lets_encrypt,
+            hsts: enabled,
+            cipher_suites: modern
+          ),secrets: (
+            provider: aws_secrets_manager,
+            rotation: quarterly
+          )
+        ),compliance: (
+          backups: (
+            frequency: hourly,
+            retention: 7_years,
+            testing: monthly
+          ),auditing: (
+            access_logs: enabled,
+            query_logs: enabled,
+            change_tracking: comprehensive
+          ),dataClassification: (
+            pii: encrypted,
+            financial: encrypted,
+            public: standard
+          )
+        )
+      )
+    )
+  }

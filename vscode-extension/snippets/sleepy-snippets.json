@@ -1,0 +1,82 @@
+{
+  "Basic Structure": {
+    "prefix": "sleepy-basic",
+    "body": [
+      "{app:",
+      "\tstyles:(",
+      "\t\t$1",
+      "\t),",
+      "\tfrontend:(",
+      "\t\t$2",
+      "\t),",
+      "\tapi:(",
+      "\t\t$3",
+      "\t),",
+      "\tdatabase:(",
+      "\t\t$4",
+      "\t)",
+      "}"
+    ],
+    "description": "Basic SleepySyntax structure"
+  },
+  "Frontend Page": {
+    "prefix": "sleepy-page",
+    "body": [
+      "frontend:(",
+      "\t${1:pageName}:(",
+      "\t\tcolumn:[",
+      "\t\t\t$2",
+      "\t\t]",
+      "\t)",
+      ")"
+    ],
+    "description": "Frontend page definition"
+  },
+  "API Endpoint": {
+    "prefix": "sleepy-api",
+    "body": [
+      "${1|GET,POST,PUT,DELETE,PATCH|}:${2:/api/path}:(",
+      "\tbody:(${3:fields}),",
+      "\texec:(${4:logic}),",
+      "\treturns:(${5:response})",
+      ")"
+    ],
+    "description": "API endpoint definition"
+  },
+  "Database Table": {
+    "prefix": "sleepy-table",
+    "body": [
+      "${1:tableName}:(",
+      "\tid:uuid_primary,",
+      "\t${2:field}:${3|string_required,string_nullable,integer,boolean,timestamp_auto|},",
+      "\tcreated_at:timestamp_auto",
+      ")"
+    ],
+    "description": "Database table definition"
+  },
+  "UI Component": {
+    "prefix": "sleepy-component",
+    "body": [
+      "${1:component}${2:\\$variant}:${3|[elements],content,(reference)|}$0"
+    ],
+    "description": "UI component with optional style variant"
+  },
+  "ForEach Loop": {
+    "prefix": "sleepy-foreach",
+    "body": [
+      "forEach:api.${1:items}:[",
+      "\t${2:template}",
+      "]"
+    ],
+    "description": "ForEach loop for API data"
+  },
+  "Conditional": {
+    "prefix": "sleepy-if",
+    "body": [
+      "${1|if,unless|}:api.${2:condition}:[",
+      "\t${3:content}",
+      "]"
+    ],
+    "description": "Conditional rendering"
+  }
+}

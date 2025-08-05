@@ -1,0 +1,16 @@
+// MINIMAL WEATHER - "Want to rebuild Google with StupidSyntax? Go nuts!"
+
+{weather:(
+  frontend:(
+    current:(temp, conditions, location),
+    forecast:(daily, hourly),
+    search:(cities)
+  ),
+  api:(
+    GET:/weather/:location,
+    GET:/forecast/:location
+  ),
+  external:(
+    openweather:api_key
+  )
+)}

@@ -1,0 +1,264 @@
+// KEY-VALUE MAPPING EXAMPLES - "Put key-value thing in display thing"
+
+{
+  character_traits_example:(
+    // METHOD 1: forEach with Object.entries() style
+    character_card:(
+      column:[
+        h2:api.character.name,
+        section$traits:(
+          h3:Personality_Traits,
+          forEach:api.character.traits:[
+            row$trait:[
+              span$trait-key:item.key,
+              span$separator::,
+              span$trait-value:item.value
+            ]
+          ]
+        )
+      ]
+    ),
+
+    // METHOD 2: Direct key access with known structure
+    character_display:(
+      column:[
+        h2:api.character.name,
+        grid$traits:[
+          card$trait:(
+            h4:Confidence,
+            p:api.character.traits.confidence
+          ),
+          card$trait:(
+            h4:Intelligence,
+            p:api.character.traits.intelligence
+          ),
+          card$trait:(
+            h4:Humor,
+            p:api.character.traits.humor
+          )
+        ]
+      ]
+    ),
+
+    // METHOD 3: Dynamic rendering with conditional styling
+    dynamic_traits:(
+      section$traits:(
+        h3:Character_Traits,
+        forEach:api.character.traits:[
+          badge$trait:(
+            text:item.key:_item.value,
+            &highValue:[bg:success, if:item.value>80],
+            &mediumValue:[bg:warning, if:item.value>=50&&item.value<=80],
+            &lowValue:[bg:danger, if:item.value<50]
+          )
+        ]
+      )
+    ),
+
+    // METHOD 4: Table format for key-value pairs
+    traits_table:(
+      table$traits:(
+        thead:[
+          th:Trait,
+          th:Level,
+          th:Description
+        ],
+        tbody:(
+          forEach:api.character.traits:[
+            tr:[
+              td:item.key,
+              td:(
+                progress:(
+                  value:item.value,
+                  max:100,
+                  color:item.value>70?success:item.value>40?warning:danger
+                )
+              ),
+              td:item.description
+            ]
+          ]
+        )
+      )
+    ),
+
+    // METHOD 5: Mixed content with different value types
+    mixed_attributes:(
+      section$character-info:(
+        forEach:api.character.attributes:[
+          row$attribute:[
+            span$label:item.key,
+            if:item.type=='number':[
+              span$number-value:item.value
+            ],
+            if:item.type=='text':[
+              span$text-value:item.value
+            ],
+            if:item.type=='boolean':[
+              icon:(
+                &true:[checkmark, color:success, if:item.value],
+                &false:[x, color:danger, unless:item.value]
+              )
+            ],
+            if:item.type=='array':[
+              row$tags:[
+                forEach:item.value:[
+                  badge$tag:arrayItem
+                ]
+              ]
+            ]
+          ]
+        ]
+      )
+    )
+  ),
+
+  // REAL WORLD EXAMPLES
+
+  // User profile with dynamic fields
+  user_profile:(
+    card$profile:(
+      column:[
+        img$avatar:api.user.avatar,
+        h2:api.user.name,
+        section$details:(
+          forEach:api.user.profile:[
+            row$detail:(
+              span$field-name:item.key,
+              span$field-value:item.value,
+              &editable:[
+                button$edit:(icon:edit, onClick:editField(item.key))
+              ]
+            )
+          ]
+        )
+      ]
+    )
+  ),
+
+  // Product specifications
+  product_specs:(
+    section$specifications:(
+      h3:Specifications,
+      dl$spec-list:(
+        forEach:api.product.specifications:[
+          dt:item.key,
+          dd:item.value
+        ]
+      )
+    )
+  ),
+
+  // Settings panel with various input types
+  settings_panel:(
+    form$settings:(
+      forEach:api.settings:[
+        field$setting:(
+          label:item.key,
+          if:item.type=='toggle':[
+            toggle:(
+              value:item.value,
+              onChange:updateSetting(item.key, value)
+            )
+          ],
+          if:item.type=='select':[
+            select:(
+              options:item.options,
+              value:item.value,
+              onChange:updateSetting(item.key, value)
+            )
+          ],
+          if:item.type=='text':[
+            input:(
+              value:item.value,
+              placeholder:item.placeholder,
+              onChange:updateSetting(item.key, value)
+            )
+          ],
+          if:item.type=='number':[
+            slider:(
+              min:item.min,
+              max:item.max,
+              value:item.value,
+              onChange:updateSetting(item.key, value)
+            )
+          ]
+        )
+      ]
+    )
+  ),
+
+  // API responses showing metadata
+  api_response_viewer:(
+    card$response:(
+      header:(
+        h3:Response_Data
+      ),
+      section$headers:(
+        h4:Headers,
+        forEach:api.response.headers:[
+          row$header:[
+            code$key:item.key,
+            code$value:item.value
+          ]
+        ]
+      ),
+      section$data:(
+        h4:Data,
+        forEach:api.response.data:[
+          row$data-row:[
+            span$key:item.key,
+            pre$value:JSON.stringify(item.value, null, 2)
+          ]
+        ]
+      )
+    )
+  )
+)
+
+// API STRUCTURE EXAMPLES
+
+{
+  api_examples:(
+    // Character traits API structure
+    GET:/characters/:id:(
+      returns:(
+        character:(
+          name:string,
+          traits:[
+            {key:"confidence", value:85, description:"Very self-assured"},
+            {key:"intelligence", value:92, description:"Highly analytical"},
+            {key:"humor", value:73, description:"Quick-witted and playful"},
+            {key:"empathy", value:68, description:"Understanding of others"}
+          ]
+        )
+      )
+    ),
+
+    // User profile with dynamic fields
+    GET:/users/:id/profile:(
+      returns:(
+        user:(
+          name:string,
+          profile:[
+            {key:"Location", value:"San Francisco, CA", editable:true},
+            {key:"Company", value:"Tech Startup", editable:true},
+            {key:"Experience", value:"5 years", editable:false},
+            {key:"Skills", value:["JavaScript", "Python", "React"], type:"array"}
+          ]
+        )
+      )
+    ),
+
+    // Settings with mixed types
+    GET:/settings:(
+      returns:(
+        settings:[
+          {key:"Dark Mode", type:"toggle", value:true},
+          {key:"Language", type:"select", value:"en", options:["en", "es", "fr"]},
+          {key:"Username", type:"text", value:"john_doe", placeholder:"Enter username"},
+          {key:"Volume", type:"number", value:75, min:0, max:100}
+        ]
+      )
+    )
+  )
+}

@@ -1,0 +1,404 @@
+{
+  "name": "SleepySyntax Rainbow Pro",
+  "type": "dark",
+  "semanticHighlighting": true,
+  "colors": {
+    "editor.background": "#1e1e1e",
+    "editor.foreground": "#d4d4d4",
+    "editorCursor.foreground": "#ffcc02",
+    "editor.selectionBackground": "#264f78",
+    "editor.lineHighlightBackground": "#2d2d30",
+    "editorBracketMatch.background": "#0064001a",
+    "editorBracketMatch.border": "#00ff00"
+  },
+  "tokenColors": [
+    {
+      "name": "Comments",
+      "scope": ["comment"],
+      "settings": {
+        "fontStyle": "italic",
+        "foreground": "#6a9955"
+      }
+    },
+    {
+      "name": "Strings",
+      "scope": ["string"],
+      "settings": {
+        "foreground": "#ce9178"
+      }
+    },
+    {
+      "name": "Numbers",
+      "scope": ["constant.numeric"],
+      "settings": {
+        "foreground": "#b5cea8"
+      }
+    },
+    {
+      "name": "Rainbow Column Level 1 - Red",
+      "scope": [
+        "entity.name.column.level1.sleepy",
+        "punctuation.separator.column.level1.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ff6b6b",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Rainbow Column Level 2 - Blue",
+      "scope": [
+        "entity.name.column.level2.sleepy",
+        "punctuation.separator.column.level2.sleepy",
+        "punctuation.definition.group.begin.level2.sleepy",
+        "punctuation.definition.group.end.level2.sleepy"
+      ],
+      "settings": {
+        "foreground": "#4ecdc4",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Rainbow Column Level 3 - Green",
+      "scope": [
+        "entity.name.column.level3.sleepy",
+        "punctuation.separator.column.level3.sleepy",
+        "punctuation.definition.array.begin.level3.sleepy",
+        "punctuation.definition.array.end.level3.sleepy"
+      ],
+      "settings": {
+        "foreground": "#50fa7b",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Rainbow Column Level 4 - Magenta",
+      "scope": [
+        "entity.name.column.level4.sleepy",
+        "punctuation.separator.column.level4.sleepy",
+        "punctuation.definition.group.begin.level4.sleepy",
+        "punctuation.definition.group.end.level4.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ff79c6",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Rainbow Column Level 5 - Orange",
+      "scope": [
+        "entity.name.column.level5.sleepy",
+        "punctuation.separator.column.level5.sleepy",
+        "punctuation.definition.array.begin.level5.sleepy",
+        "punctuation.definition.array.end.level5.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ffb86c",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Rainbow Column Level 6 - Yellow",
+      "scope": [
+        "entity.name.column.level6.sleepy",
+        "punctuation.separator.column.level6.sleepy",
+        "punctuation.definition.group.begin.level6.sleepy",
+        "punctuation.definition.group.end.level6.sleepy"
+      ],
+      "settings": {
+        "foreground": "#f1fa8c",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Sections - All Types",
+      "scope": [
+        "keyword.section.styles.sleepy", 
+        "keyword.section.frontend.sleepy", 
+        "keyword.section.api.sleepy",
+        "keyword.section.database.sleepy", 
+        "keyword.section.security.sleepy", 
+        "keyword.section.deployment.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ff6b6b",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Brackets Level 1 - Bright Rainbow",
+      "scope": [
+        "punctuation.definition.container.begin.root.sleepy", 
+        "punctuation.definition.container.end.root.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ff79c6"
+      }
+    },
+    {
+      "name": "Brackets Level 2 - Rainbow",
+      "scope": [
+        "punctuation.definition.list.begin.sleepy", 
+        "punctuation.definition.list.end.sleepy"
+      ],
+      "settings": {
+        "foreground": "#50fa7b"
+      }
+    },
+    {
+      "name": "Brackets Level 3 - Rainbow",
+      "scope": [
+        "punctuation.definition.component-ref.begin.sleepy", 
+        "punctuation.definition.component-ref.end.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ffb86c"
+      }
+    },
+    {
+      "name": "HTTP Methods - Rainbow Colors",
+      "scope": ["keyword.other.http-method.sleepy"],
+      "settings": {
+        "foreground": "#8be9fd",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "API Paths",
+      "scope": ["string.other.api-path.sleepy"],
+      "settings": {
+        "foreground": "#f1fa8c"
+      }
+    },
+    {
+      "name": "UI Components - Vibrant",
+      "scope": ["entity.name.tag.ui-element.sleepy"],
+      "settings": {
+        "foreground": "#bd93f9"
+      }
+    },
+    {
+      "name": "Style Variant Level 1 - Bright Red",
+      "scope": [
+        "entity.name.style.variant.level1.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ff5555",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Style Variant Level 2 - Bright Blue",
+      "scope": [
+        "entity.name.style.variant.level2.sleepy"
+      ],
+      "settings": {
+        "foreground": "#8be9fd",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Style Variant Level 3 - Bright Green",
+      "scope": [
+        "entity.name.style.variant.level3.sleepy"
+      ],
+      "settings": {
+        "foreground": "#50fa7b",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Style Variant Level 4 - Bright Magenta",
+      "scope": [
+        "entity.name.style.variant.level4.sleepy"
+      ],
+      "settings": {
+        "foreground": "#bd93f9",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Style Variant Level 5 - Bright Orange",
+      "scope": [
+        "entity.name.style.variant.level5.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ffb86c",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Style Variant Level 6 - Bright Yellow",
+      "scope": [
+        "entity.name.style.variant.level6.sleepy"
+      ],
+      "settings": {
+        "foreground": "#f1fa8c",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Style Variant Markers",
+      "scope": [
+        "punctuation.definition.style-variant.sleepy", 
+        "punctuation.definition.style-modifier.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ffb86c",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Style Variants - Light Yellow",
+      "scope": [
+        "entity.name.style.variant.sleepy",
+        "punctuation.separator.inline-style.sleepy"
+      ],
+      "settings": {
+        "foreground": "#fff3a0",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "API Calls - Light Blue", 
+      "scope": [
+        "variable.other.api.binding.sleepy",
+        "variable.other.item.binding.sleepy"
+      ],
+      "settings": {
+        "foreground": "#b8e6ff",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Control Flow - Light Green",
+      "scope": [
+        "keyword.control.flow.sleepy"
+      ],
+      "settings": {
+        "foreground": "#a7f3d0",
+        "fontWeight": "bold"
+      }
+    },
+    {
+      "name": "Database Fields - Green",
+      "scope": [
+        "variable.other.field-name.sleepy", 
+        "storage.type.field-type.sleepy"
+      ],
+      "settings": {
+        "foreground": "#50fa7b"
+      }
+    },
+    {
+      "name": "Database Tables",
+      "scope": ["entity.name.type.table.sleepy"],
+      "settings": {
+        "foreground": "#ff79c6",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Control Flow - Purple",
+      "scope": [
+        "keyword.control.foreach.sleepy", 
+        "keyword.control.conditional.sleepy", 
+        "keyword.control.flow.sleepy"
+      ],
+      "settings": {
+        "foreground": "#bd93f9",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "CSS Properties - Orange",
+      "scope": ["support.type.property-name.css.sleepy"],
+      "settings": {
+        "foreground": "#ffb86c"
+      }
+    },
+    {
+      "name": "CSS Values - Yellow",
+      "scope": ["support.constant.property-value.css.sleepy"],
+      "settings": {
+        "foreground": "#f1fa8c"
+      }
+    },
+    {
+      "name": "Container Types - Purple",
+      "scope": [
+        "entity.name.type.container.root.sleepy",
+        "entity.name.type.nested-container.sleepy",
+        "entity.name.type.layout.sleepy"
+      ],
+      "settings": {
+        "foreground": "#bd93f9",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Pages and Components - Pink",
+      "scope": [
+        "entity.name.type.page.sleepy",
+        "variable.other.component-name.sleepy"
+      ],
+      "settings": {
+        "foreground": "#ff79c6"
+      }
+    },
+    {
+      "name": "Database Operations",
+      "scope": ["support.function.database.sleepy"],
+      "settings": {
+        "foreground": "#50fa7b",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Environment Variables",
+      "scope": ["variable.other.environment.sleepy"],
+      "settings": {
+        "foreground": "#ff5555",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Separators",
+      "scope": ["punctuation.separator.sleepy"],
+      "settings": {
+        "foreground": "#6272a4"
+      }
+    },
+    {
+      "name": "Static Content",
+      "scope": ["string.unquoted.static.sleepy"],
+      "settings": {
+        "foreground": "#d4d4d4"
+      }
+    },
+    {
+      "name": "API Parameter Keywords",
+      "scope": ["keyword.other.api-parameter.sleepy"],
+      "settings": {
+        "foreground": "#c586c0",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Security Features",
+      "scope": ["entity.name.type.security-feature.sleepy"],
+      "settings": {
+        "foreground": "#ff5555",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Deployment Keys",
+      "scope": ["keyword.other.deployment-key.sleepy"],
+      "settings": {
+        "foreground": "#4fc1ff",
+        "fontStyle": "italic"
+      }
+    }
+  ]
+}

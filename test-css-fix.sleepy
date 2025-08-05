@@ -1,0 +1,9 @@
+{
+  testStyles: [
+    border: 1px solid #84827c,
+    margin: 0 2 0 2,
+    padding: 5px 10px,
+    boxShadow: 0 2px 10px rgba(0, 0, 0, 0.1),
+    backgroundColor: #30302e
+  ]
+}

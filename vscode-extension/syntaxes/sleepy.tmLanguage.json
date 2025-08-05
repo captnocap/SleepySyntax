@@ -1,0 +1,557 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "SleepySyntax",
+  "scopeName": "source.sleepy",
+  "fileTypes": ["sleepy"],
+  "patterns": [
+    {
+      "include": "#main-structure"
+    }
+  ],
+  "repository": {
+    "main-structure": {
+      "patterns": [
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#level1-container"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.sleepy",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.sleepy",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "level1-container": {
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.container.begin.sleepy"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.container.end.sleepy"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level1-content"
+        }
+      ]
+    },
+    "level1-content": {
+      "patterns": [
+        {
+          "include": "#css-style-properties"
+        },
+        {
+          "include": "#inline-style-properties"
+        },
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)?(?:,([a-zA-Z_][a-zA-Z0-9_]*))?(\\s*:)(?:\\s*(\\([^)]+\\)))?(?:\\s*:)?\\s*(api\\.[a-zA-Z0-9_.]+)?",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level1.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "3": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "4": {
+              "name": "punctuation.separator.column.level1.sleepy"
+            },
+            "5": {
+              "name": "string.quoted.parentheses.sleepy"
+            },
+            "6": {
+              "name": "variable.other.api.binding.sleepy"
+            }
+          }
+        },
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level1.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.sleepy"
+            }
+          }
+        },
+        {
+          "include": "#level2-container"
+        },
+        {
+          "include": "#control-flow"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "level2-container": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.group.begin.sleepy"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.group.end.sleepy"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level2-content"
+        }
+      ]
+    },
+    "level2-content": {
+      "patterns": [
+        {
+          "include": "#css-style-properties"
+        },
+        {
+          "include": "#inline-style-properties"
+        },
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)?(?:,([a-zA-Z_][a-zA-Z0-9_]*))?(\\s*:)(?:\\s*(\\([^)]+\\)))?(?:\\s*:)?\\s*(api\\.[a-zA-Z0-9_.]+)?",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level2.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "3": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "4": {
+              "name": "punctuation.separator.column.level2.sleepy"
+            },
+            "5": {
+              "name": "string.quoted.parentheses.sleepy"
+            },
+            "6": {
+              "name": "variable.other.api.binding.sleepy"
+            }
+          }
+        },
+        {
+          "include": "#level3-container"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "level3-container": {
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.array.begin.sleepy"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.array.end.sleepy"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level3-content"
+        }
+      ]
+    },
+    "level3-content": {
+      "patterns": [
+        {
+          "include": "#css-style-properties"
+        },
+        {
+          "include": "#inline-style-properties"
+        },
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)?(?:,([a-zA-Z_][a-zA-Z0-9_]*))?(\\s*:)(?:\\s*(\\([^)]+\\)))?(?:\\s*:)?\\s*(api\\.[a-zA-Z0-9_.]+)?",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level3.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "3": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "4": {
+              "name": "punctuation.separator.column.level3.sleepy"
+            },
+            "5": {
+              "name": "string.quoted.parentheses.sleepy"
+            },
+            "6": {
+              "name": "variable.other.api.binding.sleepy"
+            }
+          }
+        },
+        {
+          "include": "#level4-container"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "level4-container": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.group.begin.sleepy"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.group.end.sleepy"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level4-content"
+        }
+      ]
+    },
+    "level4-content": {
+      "patterns": [
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)?\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level4.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.level4.sleepy"
+            },
+            "3": {
+              "name": "punctuation.separator.column.level4.sleepy"
+            }
+          }
+        },
+        {
+          "include": "#level5-container"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "level5-container": {
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.array.begin.sleepy"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.array.end.sleepy"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level5-content"
+        }
+      ]
+    },
+    "level5-content": {
+      "patterns": [
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)?\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level5.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.level5.sleepy"
+            },
+            "3": {
+              "name": "punctuation.separator.column.level5.sleepy"
+            }
+          }
+        },
+        {
+          "include": "#level6-container"
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "level6-container": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.group.begin.sleepy"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.group.end.sleepy"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#level6-content"
+        }
+      ]
+    },
+    "level6-content": {
+      "patterns": [
+        {
+          "match": "\\s*([a-zA-Z_][a-zA-Z0-9_]*)(\\$[a-zA-Z_][a-zA-Z0-9_-]*)?\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "entity.name.column.level6.sleepy"
+            },
+            "2": {
+              "name": "entity.name.style.variant.level6.sleepy"
+            },
+            "3": {
+              "name": "punctuation.separator.column.level6.sleepy"
+            }
+          }
+        },
+        {
+          "include": "#values"
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#booleans"
+        },
+        {
+          "include": "#api-patterns"
+        },
+        {
+          "include": "#static-content"
+        }
+      ]
+    },
+    "api-patterns": {
+      "patterns": [
+        {
+          "name": "string.other.api-path.sleepy",
+          "match": "(/[a-zA-Z0-9/_:-]+)"
+        },
+        {
+          "name": "variable.other.api.binding.sleepy",
+          "match": "\\bapi\\.[a-zA-Z0-9_.]+\\b"
+        },
+        {
+          "name": "variable.other.item.binding.sleepy",
+          "match": "\\bitem\\.[a-zA-Z0-9_.]+\\b"
+        },
+        {
+          "name": "variable.other.environment.sleepy",
+          "match": "\\benv\\.[a-zA-Z0-9_]+\\b"
+        },
+        {
+          "name": "support.function.database.sleepy",
+          "match": "\\bdb\\.[a-zA-Z0-9_.]+\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.sleepy",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.sleepy",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.double.sleepy",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.sleepy",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.decimal.sleepy",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.sleepy",
+          "match": "\\b\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.hex.sleepy",
+          "match": "#[0-9a-fA-F]{3,8}\\b"
+        }
+      ]
+    },
+    "booleans": {
+      "name": "constant.language.boolean.sleepy",
+      "match": "\\b(true|false)\\b"
+    },
+    "control-flow": {
+      "patterns": [
+        {
+          "match": "\\b(forEach|if|unless|else)\\b",
+          "name": "keyword.control.flow.sleepy"
+        }
+      ]
+    },
+    "static-content": {
+      "name": "string.unquoted.static.sleepy",
+      "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+    },
+    "css-style-properties": {
+      "patterns": [
+        {
+          "name": "meta.css-style-property.sleepy",
+          "begin": "\\b(display|flexDirection|justifyContent|alignItems|padding|margin|width|height|backgroundColor|color|fontSize|borderRadius|border|boxShadow|position|zIndex|overflow|opacity|visibility|cursor|pointerEvents|transform|transition|animation|gridTemplateColumns|gridTemplateRows|gridGap|flexWrap|flexBasis|flexGrow|flexShrink|textAlign|textDecoration|fontWeight|fontFamily|lineHeight|letterSpacing|wordSpacing|textTransform|whiteSpace|wordWrap|textOverflow|verticalAlign|float|clear|top|right|bottom|left|minWidth|maxWidth|minHeight|maxHeight|clipPath|filter|backdropFilter|mixBlendMode|isolation|objectFit|objectPosition)\\s*(:)\\s*",
+          "end": "(?=,|\\]|\\)|\\}|$|\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*:)",
+          "beginCaptures": {
+            "1": {
+              "name": "support.type.property-name.css.sleepy"
+            },
+            "2": {
+              "name": "punctuation.separator.key-value.css.sleepy"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#css-values"
+            }
+          ]
+        }
+      ]
+    },
+    "inline-style-properties": {
+      "patterns": [
+        {
+          "match": "\\b(placeholder|hover|focus|active|disabled|selected|required|readonly|checked|invalid|valid|loading|error|success|warning|info)\\s*(:)",
+          "captures": {
+            "1": {
+              "name": "entity.name.style.variant.sleepy"
+            },
+            "2": {
+              "name": "punctuation.separator.inline-style.sleepy"
+            }
+          }
+        }
+      ]
+    },
+    "css-values": {
+      "patterns": [
+        {
+          "name": "support.constant.color.w3c-standard-color-name.css.sleepy",
+          "match": "\\b(aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow|transparent|currentColor|inherit|initial|unset|revert)\\b"
+        },
+        {
+          "name": "constant.numeric.css.sleepy",
+          "match": "\\b\\d+(\\.\\d+)?(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc|deg|rad|grad|turn|s|ms|dpi|dpcm|dppx)?\\b"
+        },
+        {
+          "name": "constant.other.color.rgb-value.hex.css.sleepy",
+          "match": "#[0-9a-fA-F]{3,8}\\b"
+        },
+        {
+          "name": "support.function.misc.css.sleepy",
+          "begin": "(rgba?|hsla?|calc|var|url|linear-gradient|radial-gradient|repeating-linear-gradient|repeating-radial-gradient|cubic-bezier|steps|attr|counter|counters|symbols|format|local)\\s*\\(",
+          "end": "\\)",
+          "beginCaptures": {
+            "1": {
+              "name": "support.function.misc.css.sleepy"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#css-values"
+            },
+            {
+              "name": "punctuation.separator.css.sleepy",
+              "match": ","
+            }
+          ]
+        },
+        {
+          "name": "keyword.other.important.css.sleepy",
+          "match": "!important\\b"
+        },
+        {
+          "name": "support.constant.property-value.css.sleepy",
+          "match": "\\b(none|auto|normal|inherit|initial|unset|revert|flex|block|inline|inline-block|grid|table|table-cell|table-row|absolute|relative|fixed|sticky|static|visible|hidden|scroll|clip|ellipsis|break-word|nowrap|pre|pre-wrap|pre-line|baseline|top|middle|bottom|left|right|center|justify|start|end|space-between|space-around|space-evenly|stretch|row|column|row-reverse|column-reverse|wrap|wrap-reverse|nowrap|content-box|border-box|both|horizontal|vertical|solid|dashed|dotted|double|groove|ridge|inset|outset|thick|medium|thin|bold|bolder|lighter|italic|oblique|underline|overline|line-through|uppercase|lowercase|capitalize|cover|contain|fill|scale-down|repeat|repeat-x|repeat-y|no-repeat|round|space)\\b"
+        },
+        {
+          "name": "string.quoted.single.css.sleepy",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.css.sleepy",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.double.css.sleepy",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.css.sleepy",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.unquoted.css.sleepy",
+          "match": "[^,\\]\\)\\}]+(?:\\s+[^,\\]\\)\\}]+)*"
+        }
+      ]
+    }
+  }
+}

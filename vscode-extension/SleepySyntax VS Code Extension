@@ -1,0 +1,81 @@
+{
+  "name": "sleepy-syntax",
+  "displayName": "SleepySyntax",
+  "description": "Language support for SleepySyntax - the notation that lets you sleep at night",
+  "version": "1.0.0",
+  "publisher": "sleepy-team",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": ["Programming Languages", "Formatters"],
+  "keywords": ["sleepy", "syntax", "ui", "layout", "dsl"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "sleepy",
+        "aliases": ["SleepySyntax", "sleepy"],
+        "extensions": [".sleepy"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/sleepy-light.svg",
+          "dark": "./icons/sleepy-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "sleepy",
+        "scopeName": "source.sleepy",
+        "path": "./syntaxes/sleepy.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "SleepySyntax Rainbow",
+        "uiTheme": "vs-dark",
+        "path": "./themes/sleepy-rainbow-theme.json"
+      }
+    ],
+    "configuration": {
+      "title": "SleepySyntax",
+      "properties": {
+        "sleepy.enableRainbowNesting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable rainbow coloring for nested brackets"
+        },
+        "sleepy.enableAutoFormat": {
+          "type": "boolean", 
+          "default": true,
+          "description": "Auto-format SleepySyntax on save"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "sleepy.format",
+        "title": "Format SleepySyntax",
+        "category": "SleepySyntax"
+      },
+      {
+        "command": "sleepy.validate",
+        "title": "Validate Structure",
+        "category": "SleepySyntax"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onLanguage:sleepy"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "14.x",
+    "typescript": "^4.4.4"
+  }
+}

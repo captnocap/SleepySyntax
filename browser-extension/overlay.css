@@ -1,0 +1,35 @@
+.sleepy-highlight {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  cursor: crosshair !important;
+  position: relative !important;
+}
+
+.sleepy-selected {
+  outline: 3px solid #ef4444 !important;
+  outline-offset: 2px !important;
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.sleepy-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 999999 !important;
+  pointer-events: none !important;
+}
+
+.sleepy-tooltip {
+  position: absolute !important;
+  background: #1f2937 !important;
+  color: white !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-family: monospace !important;
+  font-size: 12px !important;
+  pointer-events: none !important;
+  z-index: 1000000 !important;
+}
