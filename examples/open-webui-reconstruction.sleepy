@@ -1,0 +1,1199 @@
+# Open WebUI - Modern AI Chat Interface
+# Complete reverse engineering from Python/SvelteKit codebase to Sleepy syntax
+
+config:[
+  name:"Open WebUI",
+  description:"Extensible, feature-rich, and user-friendly AI chat interface",
+  version:"v0.6.18",
+  author:"Open WebUI Team"
+]
+
+# Core Data Models
+models:[
+  User:[
+    id:string*,
+    name:string*,
+    email:string*,
+    role:string="pending", # user|admin|pending
+    profile_image_url:string,
+    last_active_at:timestamp,
+    updated_at:timestamp,
+    created_at:timestamp,
+    api_key:string?,
+    settings:UserSettings?,
+    info:object?,
+    oauth_sub:string?  # OAuth subject identifier
+  ],
+
+  UserSettings:[
+    ui:object={},
+    model_config:dict
+  ],
+
+  Chat:[
+    id:string*,
+    user_id:string*,
+    title:string*,
+    chat:object*,  # Full chat conversation data
+    created_at:timestamp,
+    updated_at:timestamp,
+    share_id:string?,
+    archived:bool=false,
+    pinned:bool=false,
+    tags:[]string,
+    folder_id:string?
+  ],
+
+  Message:[
+    id:string*,
+    role:string*, # system|user|assistant
+    content:string*,
+    timestamp:timestamp,
+    model:string?,
+    annotations:[]object?,
+    citations:[]object?,
+    tools:[]object?,
+    files:[]object?,
+    images:[]string?
+  ],
+
+  Model:[
+    id:string*,
+    name:string*,
+    object:string="model",
+    created:timestamp,
+    owned_by:string,
+    pipeline:ModelPipeline?,
+    info:ModelInfo?,
+    access_control:AccessControl?
+  ],
+
+  ModelInfo:[
+    meta:object,
+    params:object,
+    size:int?,
+    quantization_level:string?,
+    architecture:string?
+  ],
+
+  ModelPipeline:[
+    type:string, # filter|function|tool
+    id:string,
+    name:string,
+    config:object
+  ],
+
+  Function:[
+    id:string*,
+    user_id:string*,
+    name:string*,
+    type:string="function",
+    content:string*,
+    meta:FunctionMeta,
+    created_at:timestamp,
+    updated_at:timestamp
+  ],
+
+  FunctionMeta:[
+    description:string?,
+    manifest:object?,
+    requirements:[]string?,
+    citation:bool=false
+  ],
+
+  Tool:[
+    id:string*,
+    user_id:string*,
+    name:string*,
+    content:string*,
+    meta:ToolMeta,
+    created_at:timestamp,
+    updated_at:timestamp,
+    access_control:AccessControl?
+  ],
+
+  ToolMeta:[
+    description:string?,
+    manifest:object?,
+    requirements:[]string?
+  ],
+
+  Knowledge:[
+    id:string*,
+    user_id:string*,
+    name:string*,
+    description:string?,
+    data:object?,
+    meta:object?,
+    created_at:timestamp,
+    updated_at:timestamp,
+    access_control:AccessControl?
+  ],
+
+  File:[
+    id:string*,
+    user_id:string*,
+    filename:string*,
+    meta:FileMeta,
+    created_at:timestamp,
+    data:bytes?
+  ],
+
+  FileMeta:[
+    content_type:string,
+    size:int,
+    path:string?,
+    url:string?,
+    source:string?
+  ],
+
+  Prompt:[
+    command:string*,
+    user_id:string*,
+    title:string*,
+    content:string*,
+    timestamp:timestamp
+  ],
+
+  AccessControl:[
+    read:AccessPermission,
+    write:AccessPermission
+  ],
+
+  AccessPermission:[
+    group_ids:[]string?,
+    user_ids:[]string?
+  ],
+
+  # Configuration Models
+  AppConfig:[
+    # Core settings
+    webui_name:string="Open WebUI",
+    webui_url:string="http://localhost:8080",
+    webui_auth:bool=true,
+    default_locale:string="en-US",
+    enable_signup:bool=true,
+    enable_login_form:bool=true,
+    jwt_expires_in:string="1d",
+    
+    # Model connections
+    enable_ollama_api:bool=true,
+    ollama_base_urls:[]string=["http://localhost:11434"],
+    enable_openai_api:bool=true,
+    openai_api_base_urls:[]string=["https://api.openai.com/v1"],
+    enable_direct_connections:bool=false,
+    
+    # Features
+    enable_channels:bool=false,
+    enable_notes:bool=false,
+    enable_community_sharing:bool=false,
+    enable_message_rating:bool=false,
+    enable_web_search:bool=false,
+    enable_image_generation:bool=false,
+    enable_code_execution:bool=false,
+    enable_api_key:bool=false,
+    
+    # RAG/Retrieval
+    rag_embedding_engine:string="sentence_transformers",
+    rag_embedding_model:string="all-MiniLM-L6-v2",
+    rag_reranking_model:string?,
+    chunk_size:int=1500,
+    chunk_overlap:int=100,
+    top_k:int=5,
+    
+    # Audio
+    tts_engine:string="openai",
+    tts_model:string="tts-1",
+    stt_engine:string="openai",
+    stt_model:string="whisper-1",
+    
+    # Admin
+    enable_admin_export:bool=true,
+    enable_admin_chat_access:bool=true,
+    
+    # OAuth/LDAP
+    enable_ldap:bool=false,
+    oauth_providers:object={}
+  ]
+]
+
+# API Endpoints
+api:[
+  # Authentication
+  POST:"/api/v1/auths/signin" -> authenticate:[
+    validate:credentials(email, password),
+    generate:jwt_token(user),
+    return:user_profile
+  ],
+
+  POST:"/api/v1/auths/signup" -> register:[
+    validate:email_not_exists(email),
+    create:user_account(data),
+    generate:jwt_token(user),
+    return:user_profile
+  ],
+
+  POST:"/api/v1/auths/signout" -> logout:[
+    invalidate:session_token,
+    return:success_response
+  ],
+
+  # User Management
+  GET:"/api/v1/users" -> list_users:[
+    authorize:admin_required,
+    return:paginated_users(page, limit)
+  ],
+
+  GET:"/api/v1/users/{user_id}" -> get_user:[
+    authorize:user_access(user_id),
+    return:user_profile(user_id)
+  ],
+
+  PUT:"/api/v1/users/{user_id}" -> update_user:[
+    authorize:user_or_admin(user_id),
+    validate:user_data(payload),
+    update:user_record(user_id, data),
+    return:updated_user
+  ],
+
+  DELETE:"/api/v1/users/{user_id}" -> delete_user:[
+    authorize:admin_required,
+    cascade_delete:user_chats(user_id),
+    delete:user_record(user_id),
+    return:success_response
+  ],
+
+  # Chat Management
+  GET:"/api/v1/chats" -> list_chats:[
+    authorize:verified_user,
+    filter:user_chats(user.id),
+    paginate:chat_list(page, limit),
+    return:chat_summaries
+  ],
+
+  POST:"/api/v1/chats/new" -> create_chat:[
+    authorize:verified_user,
+    validate:chat_data(payload),
+    create:chat_record(user.id, data),
+    return:chat_response
+  ],
+
+  GET:"/api/v1/chats/{chat_id}" -> get_chat:[
+    authorize:chat_owner(chat_id, user.id),
+    return:full_chat(chat_id)
+  ],
+
+  PUT:"/api/v1/chats/{chat_id}" -> update_chat:[
+    authorize:chat_owner(chat_id, user.id),
+    validate:chat_updates(payload),
+    update:chat_record(chat_id, data),
+    emit:chat_updated(chat_id),
+    return:updated_chat
+  ],
+
+  DELETE:"/api/v1/chats/{chat_id}" -> delete_chat:[
+    authorize:chat_owner(chat_id, user.id),
+    delete:chat_record(chat_id),
+    return:success_response
+  ],
+
+  DELETE:"/api/v1/chats" -> delete_all_chats:[
+    authorize:verified_user,
+    check_permission:chat.delete,
+    delete:user_chats(user.id),
+    return:success_response
+  ],
+
+  # Chat Completions (Core AI Interface)
+  POST:"/api/chat/completions" -> chat_completion:[
+    authorize:verified_user,
+    validate:completion_request(payload),
+    load_model:required_model(model_id),
+    check_access:model_permissions(user, model),
+    process_payload:chat_middleware(request, payload, user),
+    generate:chat_response(model, messages, options),
+    stream_response:completion_chunks,
+    save_chat:conversation_history,
+    return:completion_response
+  ],
+
+  POST:"/api/chat/completed" -> chat_completed:[
+    authorize:verified_user,
+    handle:completion_webhook(payload),
+    return:success_response
+  ],
+
+  POST:"/api/chat/actions/{action_id}" -> chat_action:[
+    authorize:verified_user,
+    execute:chat_action(action_id, payload),
+    return:action_response
+  ],
+
+  # Models
+  GET:"/api/models" -> list_models:[
+    authorize:verified_user,
+    aggregate:all_available_models(user),
+    filter:accessible_models(user),
+    sort:model_order_preference,
+    return:model_list
+  ],
+
+  GET:"/api/models/base" -> list_base_models:[
+    authorize:admin_required,
+    return:base_model_list
+  ],
+
+  # Embeddings
+  POST:"/api/embeddings" -> generate_embeddings:[
+    authorize:verified_user,
+    validate:embedding_request(payload),
+    load_model:embedding_model,
+    generate:text_embeddings(input_text),
+    return:embedding_vectors
+  ],
+
+  # Knowledge Management
+  GET:"/api/v1/knowledge" -> list_knowledge:[
+    authorize:verified_user,
+    filter:accessible_knowledge(user),
+    return:knowledge_list
+  ],
+
+  POST:"/api/v1/knowledge" -> create_knowledge:[
+    authorize:verified_user,
+    validate:knowledge_data(payload),
+    process:document_chunks(files),
+    generate:embeddings(chunks),
+    store:vector_database(embeddings),
+    create:knowledge_record(user.id, data),
+    return:knowledge_response
+  ],
+
+  GET:"/api/v1/knowledge/{knowledge_id}" -> get_knowledge:[
+    authorize:knowledge_access(knowledge_id, user),
+    return:knowledge_details(knowledge_id)
+  ],
+
+  DELETE:"/api/v1/knowledge/{knowledge_id}" -> delete_knowledge:[
+    authorize:knowledge_owner(knowledge_id, user),
+    delete:vector_data(knowledge_id),
+    delete:knowledge_record(knowledge_id),
+    return:success_response
+  ],
+
+  # File Management
+  POST:"/api/v1/files" -> upload_file:[
+    authorize:verified_user,
+    validate:file_constraints(file),
+    process:file_content(file),
+    store:file_data(file),
+    create:file_record(user.id, metadata),
+    return:file_response
+  ],
+
+  GET:"/api/v1/files" -> list_files:[
+    authorize:verified_user,
+    return:user_files(user.id)
+  ],
+
+  GET:"/api/v1/files/{file_id}" -> get_file:[
+    authorize:file_owner(file_id, user),
+    return:file_content(file_id)
+  ],
+
+  DELETE:"/api/v1/files/{file_id}" -> delete_file:[
+    authorize:file_owner(file_id, user),
+    delete:file_data(file_id),
+    delete:file_record(file_id),
+    return:success_response
+  ],
+
+  # Functions
+  GET:"/api/v1/functions" -> list_functions:[
+    authorize:verified_user,
+    filter:accessible_functions(user),
+    return:function_list
+  ],
+
+  POST:"/api/v1/functions" -> create_function:[
+    authorize:verified_user,
+    validate:function_code(payload.content),
+    install:function_dependencies(payload.meta.requirements),
+    create:function_record(user.id, payload),
+    return:function_response
+  ],
+
+  PUT:"/api/v1/functions/{function_id}" -> update_function:[
+    authorize:function_owner(function_id, user),
+    validate:function_code(payload.content),
+    update:function_record(function_id, payload),
+    return:updated_function
+  ],
+
+  DELETE:"/api/v1/functions/{function_id}" -> delete_function:[
+    authorize:function_owner(function_id, user),
+    delete:function_record(function_id),
+    return:success_response
+  ],
+
+  # Tools
+  GET:"/api/v1/tools" -> list_tools:[
+    authorize:verified_user,
+    filter:accessible_tools(user),
+    return:tool_list
+  ],
+
+  POST:"/api/v1/tools" -> create_tool:[
+    authorize:verified_user,
+    validate:tool_manifest(payload),
+    create:tool_record(user.id, payload),
+    return:tool_response
+  ],
+
+  # Prompts
+  GET:"/api/v1/prompts" -> list_prompts:[
+    authorize:verified_user,
+    return:user_prompts(user.id)
+  ],
+
+  POST:"/api/v1/prompts" -> create_prompt:[
+    authorize:verified_user,
+    validate:prompt_data(payload),
+    create:prompt_record(user.id, payload),
+    return:prompt_response
+  ],
+
+  # Image Generation
+  POST:"/api/v1/images/generations" -> generate_image:[
+    authorize:verified_user,
+    check_feature:image_generation_enabled,
+    validate:image_request(payload),
+    generate:image_content(prompt, options),
+    return:image_response
+  ],
+
+  # Audio
+  POST:"/api/v1/audio/speech" -> text_to_speech:[
+    authorize:verified_user,
+    validate:tts_request(payload),
+    generate:audio_content(text, voice, model),
+    return:audio_response
+  ],
+
+  POST:"/api/v1/audio/transcriptions" -> speech_to_text:[
+    authorize:verified_user,
+    validate:audio_file(payload.file),
+    transcribe:audio_content(file, model),
+    return:transcription_response
+  ],
+
+  # Web Search & Retrieval
+  POST:"/api/v1/retrieval/web/search" -> web_search:[
+    authorize:verified_user,
+    check_feature:web_search_enabled,
+    execute:search_query(query, engine),
+    process:search_results(results),
+    return:search_response
+  ],
+
+  POST:"/api/v1/retrieval/query" -> query_knowledge:[
+    authorize:verified_user,
+    validate:query_request(payload),
+    search:vector_database(query_embedding),
+    rerank:search_results(results),
+    return:relevant_context
+  ],
+
+  # Admin Configuration
+  GET:"/api/v1/configs" -> get_config:[
+    authorize:admin_required,
+    return:app_configuration
+  ],
+
+  POST:"/api/v1/configs" -> update_config:[
+    authorize:admin_required,
+    validate:config_updates(payload),
+    update:app_configuration(payload),
+    return:updated_config
+  ],
+
+  # System
+  GET:"/api/config" -> get_app_config:[
+    detect:user_from_token(optional),
+    return:public_configuration
+  ],
+
+  GET:"/api/version" -> get_version:[
+    return:{ version: "0.6.18" }
+  ],
+
+  GET:"/health" -> health_check:[
+    return:{ status: true }
+  ],
+
+  GET:"/health/db" -> health_check_db:[
+    test:database_connection,
+    return:{ status: true }
+  ]
+]
+
+# Core Functions
+functions:[
+  # Authentication & Authorization
+  authenticate:(email, password) -> [
+    lookup:user_by_email(email),
+    verify:password_hash(password, user.password_hash),
+    update:last_active_timestamp(user.id),
+    return:authenticated_user
+  ],
+
+  generate_jwt_token:(user) -> [
+    create:payload({ id: user.id, email: user.email, role: user.role }),
+    sign:jwt_token(payload, secret_key, expires_in),
+    return:token_string
+  ],
+
+  verify_token:(token) -> [
+    decode:jwt_payload(token, secret_key),
+    validate:token_expiration(payload),
+    lookup:user_by_id(payload.id),
+    return:verified_user
+  ],
+
+  # Chat Processing
+  process_chat_payload:(request, form_data, user, metadata, model) -> [
+    apply:message_filters(form_data.messages, metadata.filter_ids),
+    inject:system_prompts(form_data, model),
+    process:file_attachments(form_data.files),
+    apply:function_calling(form_data, metadata.tool_ids),
+    validate:message_format(form_data.messages),
+    return:processed_payload
+  ],
+
+  generate_chat_completion:(request, form_data, user) -> [
+    determine:model_backend(form_data.model),
+    route:completion_request(backend, form_data),
+    stream:model_response(request_stream),
+    process:response_chunks(chunks),
+    return:completion_stream
+  ],
+
+  process_chat_response:(request, response, form_data, user, metadata, model, events, tasks) -> [
+    save:chat_message(metadata.chat_id, response),
+    trigger:background_tasks(tasks),
+    emit:socket_events(events),
+    apply:response_filters(response),
+    return:final_response
+  ],
+
+  # Model Management
+  get_all_models:(request, user) -> [
+    fetch:ollama_models(ollama_base_urls),
+    fetch:openai_models(openai_api_keys),
+    fetch:pipeline_models(tool_servers),
+    aggregate:model_list(all_sources),
+    filter:user_accessible(models, user),
+    cache:model_data(app.state.MODELS),
+    return:available_models
+  ],
+
+  check_model_access:(user, model) -> [
+    verify:model_exists(model.id),
+    check:access_control(user.id, model.access_control),
+    validate:user_permissions(user.role, model),
+    return:access_granted
+  ],
+
+  # Knowledge & RAG
+  process_documents:(files, knowledge_id) -> [
+    extract:text_content(files),
+    split:document_chunks(content, chunk_size, chunk_overlap),
+    generate:embeddings(chunks, embedding_model),
+    store:vector_database(embeddings, knowledge_id),
+    return:processed_chunks
+  ],
+
+  query_knowledge:(query, knowledge_ids, user) -> [
+    generate:query_embedding(query, embedding_model),
+    search:vector_database(query_embedding, knowledge_ids),
+    rerank:search_results(results, reranking_model),
+    filter:top_k_results(results, top_k),
+    return:relevant_context
+  ],
+
+  # File Processing
+  process_file_upload:(file, user) -> [
+    validate:file_constraints(file, max_size, allowed_extensions),
+    detect:content_type(file),
+    extract:text_content(file) # if text-extractable,
+    compress:images(file) # if image,
+    generate:file_hash(file.content),
+    store:file_data(file, user.id),
+    return:file_metadata
+  ],
+
+  # Function & Tool Execution
+  execute_function:(function_code, parameters) -> [
+    validate:function_syntax(function_code),
+    create:execution_environment(sandboxed),
+    inject:function_parameters(parameters),
+    execute:function_code(safe_environment),
+    capture:execution_result(output, errors),
+    return:function_response
+  ],
+
+  install_dependencies:(requirements) -> [
+    parse:requirement_specs(requirements),
+    validate:allowed_packages(packages),
+    install:python_packages(packages),
+    verify:installation_success(packages),
+    return:installation_status
+  ],
+
+  # Image Generation
+  generate_image:(prompt, model, options) -> [
+    route:generation_engine(model),
+    validate:prompt_safety(prompt),
+    generate:image_content(prompt, options),
+    encode:image_base64(image_data),
+    return:image_response
+  ],
+
+  # Audio Processing
+  text_to_speech:(text, voice, model) -> [
+    validate:text_length(text),
+    route:tts_engine(model),
+    synthesize:audio_content(text, voice),
+    encode:audio_data(content),
+    return:audio_response
+  ],
+
+  speech_to_text:(audio_file, model) -> [
+    validate:audio_format(audio_file),
+    route:stt_engine(model),
+    transcribe:audio_content(audio_file),
+    return:transcription_text
+  ],
+
+  # Web Search
+  web_search:(query, engine, result_count) -> [
+    route:search_engine(engine),
+    execute:search_query(query, result_count),
+    extract:page_content(search_results),
+    filter:relevant_content(content),
+    return:search_context
+  ]
+]
+
+# Frontend (SvelteKit)
+frontend:[
+  # Main Layout
+  layout:[
+    sidebar:[
+      nav$chat-list:[
+        forEach:user_chats:[
+          button$chat-item.[item.id]:[
+            text:item.title,
+            onClick:navigate_to_chat(item.id)
+          ]
+        ]
+      ],
+      
+      button$new-chat:[
+        icon:"plus",
+        text:"New Chat",
+        onClick:create_new_chat()
+      ],
+      
+      div$user-menu:[
+        avatar:user.profile_image_url,
+        dropdown:[
+          button$settings:open_settings(),
+          button$sign-out:logout()
+        ]
+      ]
+    ],
+
+    main$chat-container:[
+      div$chat-header:[
+        h1:current_chat.title,
+        div$model-selector:[
+          select#model:[
+            forEach:available_models:[
+              option:item.name:[value:item.id]
+            ]
+          ]
+        ]
+      ],
+
+      div$messages-container#messages:[
+        forEach:chat_messages:[
+          div$message.(item.role):[
+            div$avatar:[
+              img:role_avatar(item.role)
+            ],
+            div$content:[
+              markdown:item.content,
+              if:item.images:[
+                forEach:item.images:[
+                  img:item:[alt:"Attached image"]
+                ]
+              ],
+              if:item.tools:[
+                div$tool-calls:[
+                  forEach:item.tools:[
+                    div$tool-result:[
+                      h4:item.name,
+                      pre:item.result
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ],
+        
+        if:is_loading:[
+          div$loading-indicator:[
+            spinner,
+            text:"Generating response..."
+          ]
+        ]
+      ],
+
+      form$chat-input:[
+        textarea#prompt:[
+          placeholder:"Type your message...",
+          onKeyDown:handle_submit(event),
+          bind:input_value
+        ],
+        
+        div$input-actions:[
+          input$file-upload:[
+            type:"file",
+            multiple:true,
+            onChange:handle_file_upload(files)
+          ],
+          
+          button$submit:[
+            type:"submit",
+            disabled:is_loading,
+            icon:"send",
+            onClick:send_message()
+          ]
+        ]
+      ]
+    ]
+  ],
+
+  # Settings Modal
+  settings_modal:[
+    tabs:[
+      tab$general:[
+        form$user-settings:[
+          input$name:[
+            label:"Display Name",
+            bind:user.name
+          ],
+          input$email:[
+            label:"Email",
+            bind:user.email,
+            disabled:true
+          ],
+          select$interface-language:[
+            label:"Interface Language",
+            bind:settings.language
+          ]
+        ]
+      ],
+
+      tab$models:[
+        div$model-connections:[
+          h3:"Model Connections",
+          forEach:model_sources:[
+            div$connection-item:[
+              toggle$enabled:[
+                bind:item.enabled,
+                label:item.name
+              ],
+              if:item.enabled:[
+                input$base-url:[
+                  label:"Base URL",
+                  bind:item.base_url
+                ],
+                input$api-key:[
+                  label:"API Key",
+                  type:"password",
+                  bind:item.api_key
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+
+      tab$interface:[
+        form$ui-settings:[
+          select$theme:[
+            label:"Theme",
+            bind:settings.theme,
+            options:["light", "dark", "auto"]
+          ],
+          select$chat-direction:[
+            label:"Chat Direction",
+            bind:settings.chat_direction,
+            options:["LTR", "RTL"]
+          ],
+          toggle$code-execution:[
+            label:"Enable Code Execution",
+            bind:settings.code_execution
+          ]
+        ]
+      ],
+
+      tab$audio:[
+        form$audio-settings:[
+          select$tts-voice:[
+            label:"Text-to-Speech Voice",
+            bind:settings.tts_voice
+          ],
+          select$stt-engine:[
+            label:"Speech-to-Text Engine",
+            bind:settings.stt_engine
+          ],
+          range$tts-speed:[
+            label:"TTS Speed",
+            min:0.5,
+            max:2.0,
+            bind:settings.tts_speed
+          ]
+        ]
+      ]
+    ]
+  ],
+
+  # Admin Panel
+  admin_panel:[
+    tabs:[
+      tab$users:[
+        table$user-list:[
+          thead:[
+            tr:[
+              th:"Name",
+              th:"Email", 
+              th:"Role",
+              th:"Last Active",
+              th:"Actions"
+            ]
+          ],
+          tbody:[
+            forEach:admin_users:[
+              tr:[
+                td:item.name,
+                td:item.email,
+                td:item.role,
+                td:format_date(item.last_active_at),
+                td:[
+                  button$edit:edit_user(item.id),
+                  button$delete:delete_user(item.id)
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+
+      tab$configuration:[
+        form$app-config:[
+          fieldset$general:[
+            legend:"General Settings",
+            input$app-name:[
+              label:"Application Name",
+              bind:config.webui_name
+            ],
+            toggle$signup-enabled:[
+              label:"Enable User Registration", 
+              bind:config.enable_signup
+            ]
+          ],
+
+          fieldset$features:[
+            legend:"Features",
+            toggle$web-search:[
+              label:"Enable Web Search",
+              bind:config.enable_web_search
+            ],
+            toggle$image-generation:[
+              label:"Enable Image Generation",
+              bind:config.enable_image_generation
+            ],
+            toggle$code-execution:[
+              label:"Enable Code Execution",
+              bind:config.enable_code_execution
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+]
+
+# Real-time Features (WebSocket)
+websocket:[
+  connection:"/ws/socket.io",
+  
+  events:[
+    # Chat events
+    "chat:start" -> [
+      join:chat_room(chat_id),
+      emit:user_typing(user_id, chat_id)
+    ],
+
+    "chat:message" -> [
+      broadcast:new_message(chat_id, message),
+      save:message_to_db(message)
+    ],
+
+    "chat:stop" -> [
+      emit:user_stopped_typing(user_id, chat_id),
+      leave:chat_room(chat_id)
+    ],
+
+    # Model events  
+    "model:loading" -> [
+      emit:model_status(model_id, "loading")
+    ],
+
+    "model:ready" -> [
+      emit:model_status(model_id, "ready")
+    ],
+
+    # System events
+    "system:update" -> [
+      broadcast:system_message(message)
+    ]
+  ]
+]
+
+# Background Tasks & Jobs
+tasks:[
+  # Periodic cleanup
+  cleanup_expired_chats:[
+    schedule:"0 2 * * *", # Daily at 2 AM
+    action:delete_expired_chats(retention_days)
+  ],
+
+  cleanup_temp_files:[
+    schedule:"0 1 * * *", # Daily at 1 AM  
+    action:remove_temp_files(temp_directory)
+  ],
+
+  # Model management
+  update_model_list:[
+    schedule:"0 */6 * * *", # Every 6 hours
+    action:refresh_available_models()
+  ],
+
+  # Usage analytics
+  generate_usage_stats:[
+    schedule:"0 0 * * 0", # Weekly on Sunday
+    action:compile_usage_metrics()
+  ]
+]
+
+# Database Schema
+database:[
+  engine:"postgresql", # or sqlite for development
+  
+  tables:[
+    user:[
+      id:string:primary_key,
+      name:string,
+      email:string:unique,
+      role:string:default("pending"),
+      profile_image_url:text,
+      last_active_at:bigint,
+      updated_at:bigint,
+      created_at:bigint,
+      api_key:string:unique:nullable,
+      settings:json:nullable,
+      info:json:nullable,
+      oauth_sub:text:unique:nullable
+    ],
+
+    chat:[
+      id:string:primary_key,
+      user_id:string:foreign_key(user.id):cascade,
+      title:string,
+      chat:json,
+      created_at:bigint,
+      updated_at:bigint,
+      share_id:string:unique:nullable,
+      archived:boolean:default(false),
+      pinned:boolean:default(false),
+      folder_id:string:nullable
+    ],
+
+    tag:[
+      id:string:primary_key,
+      name:string,
+      user_id:string:foreign_key(user.id):cascade,
+      data:json:nullable
+    ],
+
+    model:[
+      id:string:primary_key,
+      user_id:string:foreign_key(user.id):cascade,
+      base_model_id:string:nullable,
+      name:string,
+      meta:json,
+      params:json,
+      created_at:bigint,
+      updated_at:bigint,
+      access_control:json:nullable
+    ],
+
+    function:[
+      id:string:primary_key,
+      user_id:string:foreign_key(user.id):cascade,
+      name:string,
+      type:string:default("function"),
+      content:text,
+      meta:json,
+      created_at:bigint,
+      updated_at:bigint,
+      is_active:boolean:default(true),
+      is_global:boolean:default(false)
+    ],
+
+    knowledge:[
+      id:string:primary_key,
+      user_id:string:foreign_key(user.id):cascade,
+      name:string,
+      description:text:nullable,
+      data:json:nullable,
+      meta:json:nullable,
+      created_at:bigint,
+      updated_at:bigint,
+      access_control:json:nullable
+    ],
+
+    file:[
+      id:string:primary_key,
+      user_id:string:foreign_key(user.id):cascade,
+      filename:string,
+      meta:json,
+      created_at:bigint,
+      data:bytea:nullable
+    ]
+  ],
+
+  indexes:[
+    user_email_idx:[table:user, columns:[email], unique:true],
+    chat_user_created_idx:[table:chat, columns:[user_id, created_at]],
+    chat_share_id_idx:[table:chat, columns:[share_id], unique:true],
+    function_user_name_idx:[table:function, columns:[user_id, name]],
+    knowledge_user_idx:[table:knowledge, columns:[user_id]]
+  ]
+]
+
+# Deployment
+deploy:[
+  docker:[
+    FROM:"python:3.11-slim",
+    
+    # Backend setup
+    WORKDIR:"/app/backend",
+    COPY:"backend/requirements.txt .",
+    RUN:"pip install --no-cache-dir -r requirements.txt",
+    COPY:"backend/ .",
+    
+    # Frontend build
+    WORKDIR:"/app",
+    COPY:"package*.json ./",
+    RUN:"npm ci",
+    COPY:". .",
+    RUN:"npm run build",
+    
+    # Runtime
+    WORKDIR:"/app/backend", 
+    EXPOSE:8080,
+    ENV:[
+      "WEBUI_SECRET_KEY"="your-secret-key-here",
+      "DATABASE_URL"="sqlite:///app/backend/data/webui.db"
+    ],
+    CMD:["python", "-m", "open_webui.main"]
+  ],
+
+  docker_compose:[
+    version:"3.8",
+    services:[
+      open_webui:[
+        build:".",
+        ports:["8080:8080"],
+        volumes:[
+          "./data:/app/backend/data",
+          "./static:/app/backend/static"
+        ],
+        environment:[
+          "WEBUI_SECRET_KEY"="your-secret-key-here",
+          "ENABLE_OLLAMA_API"="true",
+          "OLLAMA_BASE_URLS"="http://ollama:11434"
+        ],
+        depends_on:["ollama", "redis"]
+      ],
+      
+      ollama:[
+        image:"ollama/ollama:latest",
+        ports:["11434:11434"],
+        volumes:["ollama:/root/.ollama"],
+        environment:["OLLAMA_HOST"="0.0.0.0"]
+      ],
+      
+      redis:[
+        image:"redis:7-alpine",
+        ports:["6379:6379"],
+        volumes:["redis_data:/data"]
+      ]
+    ],
+    
+    volumes:[
+      "ollama:",
+      "redis_data:"
+    ]
+  ],
+
+  kubernetes:[
+    deployment:[
+      name:"open-webui",
+      replicas:2,
+      image:"ghcr.io/open-webui/open-webui:main",
+      ports:[8080],
+      env:[
+        "WEBUI_SECRET_KEY":"from_secret",
+        "ENABLE_OLLAMA_API":"true",
+        "OLLAMA_BASE_URLS":"http://ollama-svc:11434",
+        "DATABASE_URL":"postgresql://user:pass@postgres-svc:5432/openwebui"
+      ],
+      resources:[
+        requests:[memory:"512Mi", cpu:"250m"],
+        limits:[memory:"2Gi", cpu:"1000m"]
+      ]
+    ],
+    
+    service:[
+      name:"open-webui-svc",
+      type:"LoadBalancer",
+      ports:[port:80, targetPort:8080]
+    ],
+    
+    configmap:[
+      name:"open-webui-config",
+      data:[
+        "WEBUI_NAME":"Open WebUI",
+        "ENABLE_SIGNUP":"true",
+        "DEFAULT_LOCALE":"en-US"
+      ]
+    ]
+  ]
+]

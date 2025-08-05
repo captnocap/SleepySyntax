@@ -86,6 +86,11 @@ sleepy/
 
 Check out [`examples/`](examples/) for comprehensive demonstrations:
 
+### 🏆 Real-World Reconstructions
+- **🦙 Ollama Backend**: [`ollama-reconstruction.sleepy`](examples/ollama-reconstruction.sleepy) - Complete Go backend (15K+ lines → 370 lines)
+- **🌐 Open WebUI**: [`open-webui-reconstruction.sleepy`](examples/open-webui-reconstruction.sleepy) - Full Svelte application
+
+### 💡 Sample Applications  
 - **Simple Chat**: [`chat-simple-encapsulated.sleepy`](examples/chat-simple-encapsulated.sleepy)
 - **E-commerce**: [`ecommerce-minimal.sleepy`](examples/ecommerce-minimal.sleepy) and [`ecommerce-verbose.sleepy`](examples/ecommerce-verbose.sleepy) 
 - **Authentication**: [`auth-minimal.sleepy`](examples/auth-minimal.sleepy) and [`auth-verbose.sleepy`](examples/auth-verbose.sleepy)
@@ -117,15 +122,15 @@ Check out [`examples/`](examples/) for comprehensive demonstrations:
 **Real-world system reconstructions** in [`reverse-engineered/`](reverse-engineered/):
 
 ### 🦙 Ollama - Complete Go Backend
-- **40:1 compression ratio** - [`ollama.sleepy`](reverse-engineered/ollama/ollama.sleepy) 
+- **40:1 compression ratio** - [`ollama-reconstruction.sleepy`](examples/ollama-reconstruction.sleepy) 
 - **Full reconstruction** of the [Ollama project](https://github.com/ollama/ollama)
 - **AI validation reports** from multiple models:
-  - [Claude Sonnet 4 Analysis](reverse-engineered/ollama/sleepy/ClaudeSonnet4_Report.txt)
-  - [GPT-4o Analysis](reverse-engineered/ollama/sleepy/GPT4o_Report.txt) 
-  - [Gemini 2.5 Flash Analysis](reverse-engineered/ollama/sleepy/Gemini2.5Flash_Report.txt)
+  - [Claude Sonnet 4 Analysis](docs/ai-validation-reports/ClaudeSonnet4_Report.txt)
+  - [GPT-4o Analysis](docs/ai-validation-reports/GPT4o_Report.txt) 
+  - [Gemini 2.5 Flash Analysis](docs/ai-validation-reports/Gemini2.5Flash_Report.txt)
 
 ### 🌐 Open WebUI - Svelte Frontend
-- **Complete UI reconstruction** - [`open-webui.sleepy`](reverse-engineered/open-webui/open-webui.sleepy)
+- **Complete UI reconstruction** - [`open-webui-reconstruction.sleepy`](examples/open-webui-reconstruction.sleepy)
 - **Full feature parity** with the [Open WebUI project](https://github.com/open-webui/open-webui)
 
 ---
@@ -134,7 +139,8 @@ Check out [`examples/`](examples/) for comprehensive demonstrations:
 
 **Comprehensive testing** documented in [`docs/`](docs/) and [`conversations/`](conversations/):
 
-- **Multi-model validation** - 12+ AI systems tested the syntax
+- **Multi-model validation** - 12+ AI systems tested the syntax  
+- **AI validation reports** - [`docs/ai-validation-reports/`](docs/ai-validation-reports/)
 - **Critical analysis** - [`SYNTAX_ANALYSIS.md`](docs/SYNTAX_ANALYSIS.md)  
 - **Birth conversation** - [`conversations/birth.md`](conversations/birth.md)
 - **Full development log** - [`conversations/UI Layout Declarative Syntax - Conversation CORRECTED.txt`](conversations/UI%20Layout%20Declarative%20Syntax%20-%20Conversation%20CORRECTED.txt)

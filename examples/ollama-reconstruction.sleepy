@@ -1,0 +1,443 @@
+# Ollama - Local LLM Runner
+# Complete reverse engineering from Go codebase to Sleepy syntax
+
+config:[
+  name:ollama,
+  description:"Run large language models locally",
+  version:v0.4.0,
+  author:"Ollama Team"
+]
+
+# Core Data Models
+models:[
+  Model:[
+    name:string,
+    size:int64,
+    digest:string,
+    modified_at:timestamp,
+    details:ModelDetails
+  ],
+  
+  ModelDetails:[
+    parent_model:string,
+    format:string,
+    family:string,
+    parameter_size:string,
+    quantization_level:string
+  ],
+
+  GenerateRequest:[
+    model:string*,
+    prompt:string*,
+    system:string,
+    template:string,
+    context:[]int,
+    stream:bool=true,
+    raw:bool,
+    format:json,
+    keep_alive:duration,
+    images:[]bytes,
+    options:map,
+    think:bool
+  ],
+
+  ChatRequest:[
+    model:string*,
+    messages:[]Message*,
+    stream:bool=true,
+    format:json,
+    keep_alive:duration,
+    tools:[]Tool,
+    options:map,
+    think:bool
+  ],
+
+  Message:[
+    role:string*, # system|user|assistant
+    content:string*,
+    thinking:string,
+    images:[]bytes,
+    tool_calls:[]ToolCall
+  ],
+
+  Tool:[
+    type:string*,
+    function:ToolFunction*
+  ],
+
+  ToolFunction:[
+    name:string*,
+    description:string*,
+    parameters:object*
+  ],
+
+  Options:[
+    # Runtime options
+    num_keep:int=4,
+    seed:int=-1,
+    num_predict:int=-1,
+    top_k:int=40,
+    top_p:float=0.9,
+    temperature:float=0.8,
+    repeat_last_n:int=64,
+    repeat_penalty:float=1.1,
+    presence_penalty:float=0.0,
+    frequency_penalty:float=0.0,
+    stop:[]string,
+    
+    # Model loading options
+    num_ctx:int=2048,
+    num_batch:int=512,
+    num_gpu:int=-1,
+    main_gpu:int=0,
+    use_mmap:bool,
+    num_thread:int=0
+  ]
+]
+
+# API Endpoints
+api:[
+  # Chat completion
+  POST:/api/chat -> chatHandler:[
+    validate:req.model*,
+    validate:req.messages*,
+    load_model:req.model,
+    stream_response:chat_completion(req)
+  ],
+
+  # Generate completion  
+  POST:/api/generate -> generateHandler:[
+    validate:req.model*,
+    validate:req.prompt*,
+    load_model:req.model,
+    stream_response:generate_completion(req)
+  ],
+
+  # Model management
+  GET:/api/tags -> listModels:[
+    scan:models_directory,
+    return:model_list
+  ],
+
+  POST:/api/pull -> pullModel:[
+    validate:req.model*,
+    download:model_from_registry(req.model),
+    stream_progress:download_status
+  ],
+
+  POST:/api/push -> pushModel:[
+    validate:req.model*,
+    upload:model_to_registry(req.model),
+    stream_progress:upload_status
+  ],
+
+  DELETE:/api/delete -> deleteModel:[
+    validate:req.model*,
+    remove:model_files(req.model)
+  ],
+
+  POST:/api/create -> createModel:[
+    validate:req.model*,
+    parse:modelfile(req),
+    build:custom_model(req)
+  ],
+
+  POST:/api/copy -> copyModel:[
+    validate:req.source*,
+    validate:req.destination*,
+    copy:model(req.source, req.destination)
+  ],
+
+  POST:/api/show -> showModel:[
+    validate:req.model*,
+    return:model_info(req.model)
+  ],
+
+  # Embeddings
+  POST:/api/embed -> embedHandler:[
+    validate:req.model*,
+    validate:req.input*,
+    load_model:req.model,
+    return:embeddings(req.input)
+  ],
+
+  POST:/api/embeddings -> embeddingsHandler:[
+    validate:req.model*,
+    validate:req.prompt*,
+    load_model:req.model,
+    return:embedding_vector(req.prompt)
+  ],
+
+  # System
+  GET:/api/ps -> processModels:[
+    return:loaded_models()
+  ],
+
+  GET:/api/version -> version:[
+    return:{ version: "0.4.0" }
+  ]
+]
+
+# Core Functions
+functions:[
+  # Model management
+  load_model:(model_name) -> [
+    check:model_exists(model_name),
+    schedule:model_loading(model_name),
+    wait:model_ready(model_name),
+    return:model_instance
+  ],
+
+  unload_model:(model_name) -> [
+    find:loaded_model(model_name),
+    cleanup:model_resources(model_name),
+    remove:from_memory(model_name)
+  ],
+
+  # Text generation
+  generate_completion:(request) -> [
+    prepare:prompt_context(request),
+    stream:model_inference(request.model, context),
+    format:response_tokens,
+    return:completion_stream
+  ],
+
+  chat_completion:(request) -> [
+    format:chat_messages(request.messages),
+    apply:system_prompt(request),
+    stream:model_inference(request.model, messages),
+    parse:response_format(request.format),
+    return:chat_stream
+  ],
+
+  # Model download/upload
+  pull_model:(model_name) -> [
+    resolve:model_registry_url(model_name),
+    download:model_layers(url),
+    verify:layer_checksums,
+    extract:model_files,
+    update:local_registry
+  ],
+
+  push_model:(model_name) -> [
+    validate:model_exists(model_name),
+    package:model_layers(model_name),
+    upload:to_registry(layers),
+    cleanup:temp_files
+  ],
+
+  # Embeddings
+  generate_embeddings:(model, input) -> [
+    tokenize:input_text(input),
+    compute:embedding_vectors(tokens),
+    normalize:vectors,
+    return:embeddings_array
+  ]
+]
+
+# CLI Commands
+cli:[
+  commands:[
+    serve:[
+      description:"Start the Ollama server",
+      flags:[
+        host:string="127.0.0.1",
+        port:int=11434,
+        origins:[]string=["localhost","127.0.0.1","0.0.0.0"]
+      ],
+      action:start_server(host, port, origins)
+    ],
+
+    run:[
+      description:"Run a model and chat with it",
+      args:[model:string*],
+      flags:[
+        verbose:bool,
+        insecure:bool,
+        keepalive:duration,
+        format:string
+      ],
+      action:interactive_chat(model, flags)
+    ],
+
+    pull:[
+      description:"Pull a model from the registry",
+      args:[model:string*],
+      flags:[insecure:bool],
+      action:download_model(model, insecure)
+    ],
+
+    push:[
+      description:"Push a model to the registry", 
+      args:[model:string*],
+      flags:[insecure:bool],
+      action:upload_model(model, insecure)
+    ],
+
+    list:[
+      description:"List local models",
+      aliases:[ls],
+      action:show_models()
+    ],
+
+    show:[
+      description:"Show information about a model",
+      args:[model:string*],
+      flags:[
+        license:bool,
+        modelfile:bool,
+        parameters:bool,
+        template:bool,
+        system:bool
+      ],
+      action:display_model_info(model, flags)
+    ],
+
+    rm:[
+      description:"Remove a model",
+      args:[model:string*],
+      action:delete_model(model)
+    ],
+
+    cp:[
+      description:"Copy a model",
+      args:[source:string*, destination:string*],
+      action:copy_model(source, destination)
+    ],
+
+    create:[
+      description:"Create a model from a Modelfile",
+      args:[model:string*, path:string="./Modelfile"],
+      flags:[
+        quantize:string,
+        file:string
+      ],
+      action:build_model(model, path, flags)
+    ],
+
+    ps:[
+      description:"List running models",
+      action:list_running_models()
+    ]
+  ]
+]
+
+# Server Configuration
+server:[
+  host:"127.0.0.1",
+  port:11434,
+  origins:["localhost", "127.0.0.1", "0.0.0.0"],
+  
+  middleware:[
+    cors_handler,
+    logging_middleware,
+    auth_middleware,
+    rate_limiter
+  ],
+
+  scheduler:[
+    max_runners:3,
+    queue_size:512,
+    model_timeout:"5m",
+    cleanup_interval:"30s"
+  ],
+
+  gpu_layers:[
+    detect:available_gpus(),
+    allocate:memory_per_gpu,
+    schedule:model_placement
+  ]
+]
+
+# Model Runner System  
+runners:[
+  LlamaRunner:[
+    supports:["llama", "llama2", "llama3", "mistral", "mixtral"],
+    binary:"llama-server",
+    args:[
+      "--model", model_path,
+      "--ctx-size", num_ctx,
+      "--batch-size", num_batch,
+      "--threads", num_thread,
+      "--n-gpu-layers", num_gpu
+    ]
+  ],
+
+  LlamaCppRunner:[
+    supports:["gguf", "ggml"],
+    binary:"llama.cpp",
+    load_model:gguf_loader,
+    inference:cpp_generate
+  ]
+]
+
+# Frontend (if enabled)
+ui:[
+  # Simple chat interface
+  page$chat:[
+    header$title:"Ollama Chat",
+    
+    div$chat-container:[
+      div$messages#messages:[
+        forEach:chat.messages:[
+          div$message.(item.role):[
+            span$role:item.role,
+            span$content:item.content
+          ]
+        ]
+      ],
+      
+      form$input-form:[
+        input$prompt#prompt:[
+          type:text,
+          placeholder:"Type your message...",
+          onEnter:send_message()
+        ],
+        
+        select$model#model:[
+          forEach:available_models:[
+            option:item.name
+          ]
+        ],
+        
+        button$send:[
+          text:"Send",
+          onClick:send_message()
+        ]
+      ]
+    ]
+  ]
+]
+
+# Deployment
+deploy:[
+  docker:[
+    FROM:"ubuntu:20.04",
+    RUN:"apt-get update && apt-get install -y curl",
+    COPY:"ollama /usr/local/bin/",
+    EXPOSE:11434,
+    CMD:["ollama", "serve"]
+  ],
+
+  systemd:[
+    unit:"ollama.service",
+    description:"Ollama LLM Server",
+    after:"network.target",
+    exec_start:"/usr/local/bin/ollama serve",
+    restart:"always",
+    user:"ollama"
+  ],
+
+  kubernetes:[
+    deployment:[
+      name:"ollama",
+      replicas:1,
+      image:"ollama/ollama:latest",
+      ports:[11434],
+      resources:[
+        requests:[memory:"2Gi", cpu:"1"],
+        limits:[memory:"8Gi", cpu:"4"]
+      ]
+    ]
+  ]
+]
