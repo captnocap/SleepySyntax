@@ -10,9 +10,9 @@ It wasn't designed for traditional compilers. It was designed for **communicatin
 
 ## 🚀 What We've Built
 
-> **🦙 [Entire Ollama backend](reverse-engineered/ollama/ollama.sleepy) (15K+ lines of Go) → 370 lines of SleepySyntax**  
-> **🌐 [Complete Open WebUI](reverse-engineered/open-webui/open-webui.sleepy) (Svelte app) → Reconstructed from syntax**  
-> **🧠 [Multi-AI validation](reverse-engineered/ollama/sleepy/) - Claude, GPT-4, Gemini all confirmed accuracy**  
+> **🦙 [Entire Ollama backend](examples/ollama-reconstruction.sleepy) (15K+ lines of Go) → 370 lines of SleepySyntax**  
+> **🌐 [Complete Open WebUI](examples/open-webui-reconstruction.sleepy) (Svelte app) → Reconstructed from syntax**  
+> **🧠 [Multi-AI validation](docs/ai-validation-reports/) - Claude, GPT-4, Gemini all confirmed accuracy**  
 > **🎨 [Full VS Code extension](vscode-extension/) with syntax highlighting & themes**  
 > **🌊 [Browser extension](browser-extension/) for real-time web integration**
 
